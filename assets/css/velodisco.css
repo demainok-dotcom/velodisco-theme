@@ -370,7 +370,7 @@ body {
 /* Bloc principal : identité (gauche, 341/1440 = 23.7%) + bande dégradée (droite) */
 .vd-footer__main {
 	display: grid;
-	grid-template-columns: minmax(300px, 23.7%) minmax(0, 1fr);
+	grid-template-columns: minmax(330px, 23.7%) minmax(0, 1fr);
 	align-items: stretch;
 	min-height: 147px;
 }
