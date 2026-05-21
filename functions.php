@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'VELODISCO_VERSION' ) ) {
-	define( 'VELODISCO_VERSION', '0.1.5' );
+	define( 'VELODISCO_VERSION', '0.1.6' );
 }
 
 /**
