@@ -1,0 +1,39 @@
+<!-- wp:template-part {"slug":"header","area":"header"} /-->
+
+<!-- wp:group {"tagName":"main","className":"vd-main","style":{"spacing":{"padding":{"top":"var:preset|spacing|50","bottom":"var:preset|spacing|60"}}},"layout":{"type":"constrained"}} -->
+<main class="wp-block-group vd-main" style="padding-top:var(--wp--preset--spacing--50);padding-bottom:var(--wp--preset--spacing--60)">
+
+	<!-- wp:query {"queryId":0,"query":{"perPage":12,"pages":0,"offset":0,"postType":"post","order":"desc","orderBy":"date","inherit":true},"align":"wide","layout":{"type":"default"}} -->
+	<div class="wp-block-query alignwide">
+
+		<!-- wp:post-template {"className":"vd-post-list","layout":{"type":"grid","columnCount":3}} -->
+			<!-- wp:group {"className":"vd-reveal vd-hover-rise","layout":{"type":"constrained"}} -->
+			<div class="wp-block-group vd-reveal vd-hover-rise">
+				<!-- wp:post-featured-image {"isLink":true,"className":"vd-hover-zoom"} /-->
+				<!-- wp:post-terms {"term":"category","className":"is-style-vd-tag","style":{"typography":{"textTransform":"uppercase","fontWeight":"600","letterSpacing":"0.04em"},"spacing":{"margin":{"top":"var:preset|spacing|30"}}},"fontSize":"x-small"} /-->
+				<!-- wp:post-title {"isLink":true,"level":3,"fontSize":"large"} /-->
+				<!-- wp:post-excerpt {"moreText":"Lire","excerptLength":22} /-->
+				<!-- wp:post-date {"className":"vd-card__date","fontSize":"x-small"} /-->
+			</div>
+			<!-- /wp:group -->
+		<!-- /wp:post-template -->
+
+		<!-- wp:query-no-results -->
+			<!-- wp:paragraph {"align":"center"} -->
+			<p class="has-text-align-center">Aucun article pour le moment.</p>
+			<!-- /wp:paragraph -->
+		<!-- /wp:query-no-results -->
+
+		<!-- wp:query-pagination {"paginationArrow":"arrow","align":"wide","layout":{"type":"flex","justifyContent":"center"},"style":{"spacing":{"margin":{"top":"var:preset|spacing|60"}}}} -->
+			<!-- wp:query-pagination-previous /-->
+			<!-- wp:query-pagination-numbers /-->
+			<!-- wp:query-pagination-next /-->
+		<!-- /wp:query-pagination -->
+
+	</div>
+	<!-- /wp:query -->
+
+</main>
+<!-- /wp:group -->
+
+<!-- wp:template-part {"slug":"footer","area":"footer"} /-->

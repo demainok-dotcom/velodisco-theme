@@ -1,0 +1,634 @@
+/* ==========================================================================
+   VeloDisco — feuille de style principale
+   Sommaire :
+   1. Tokens & dark mode
+   2. Base / réglages globaux
+   3. Header (en-tête)
+   4. Menu burger mobile
+   5. Popover recherche + dropdown réglage
+   6. Footer (pied de page)
+   7. Cartes & images (tracé catégorie)
+   8. Animations (transitions, reveal au scroll)
+   9. Accessibilité (reduced motion, focus)
+   ========================================================================== */
+
+/* 1. TOKENS & DARK MODE ---------------------------------------------------- */
+/*
+ * Les couleurs de marque viennent de theme.json (--wp--preset--color--*).
+ * Le dark mode redéfinit quelques presets : tout ce qui utilise base / contrast /
+ * separator / societe bascule automatiquement, partout sur le site.
+ */
+:root {
+	--vd-header-h: var(--wp--custom--layout--header-height, 80px);
+	--vd-pill: var(--wp--custom--radius--pill, 999px);
+	--vd-ease: var(--wp--custom--motion--ease, cubic-bezier(0.22, 1, 0.36, 1));
+	--vd-t-fast: var(--wp--custom--motion--fast, 150ms);
+	--vd-t-base: var(--wp--custom--motion--base, 260ms);
+	--vd-t-slow: var(--wp--custom--motion--slow, 480ms);
+	--vd-surface: rgba(0, 0, 0, 0.035);
+	--vd-overlay: rgba(255, 255, 255, 0.92);
+	color-scheme: light;
+}
+
+[data-theme="dark"] {
+	--wp--preset--color--base: #000000;
+	--wp--preset--color--contrast: #F5F5F0;
+	--wp--preset--color--separator: #6C727F;
+	--wp--preset--color--societe: #785FD3; /* lisibilité sur fond noir */
+	--vd-surface: rgba(255, 255, 255, 0.06);
+	--vd-overlay: rgba(0, 0, 0, 0.92);
+	color-scheme: dark;
+}
+
+/* 2. BASE ------------------------------------------------------------------ */
+html {
+	-webkit-text-size-adjust: 100%;
+}
+
+body {
+	background-color: var(--wp--preset--color--base);
+	color: var(--wp--preset--color--contrast);
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	transition: background-color var(--vd-t-base) var(--vd-ease),
+		color var(--vd-t-base) var(--vd-ease);
+}
+
+::selection {
+	background: var(--wp--preset--color--velos);
+	color: #fff;
+}
+
+/* Couleurs de catégorie utilitaires (texte) */
+.vd-c-velos { color: var(--wp--preset--color--velos) !important; }
+.vd-c-accessoires { color: var(--wp--preset--color--accessoires) !important; }
+.vd-c-composants { color: var(--wp--preset--color--composants) !important; }
+.vd-c-vetements { color: var(--wp--preset--color--vetements) !important; }
+.vd-c-societe { color: var(--wp--preset--color--societe) !important; }
+
+/* Texte en gradient Grands Formats (clip sur le texte) */
+.vd-gradient-text {
+	background: var(--wp--preset--gradient--grands-formats);
+	-webkit-background-clip: text;
+	background-clip: text;
+	-webkit-text-fill-color: transparent;
+	color: transparent;
+}
+
+/* 3. HEADER ---------------------------------------------------------------- */
+.vd-header {
+	position: sticky;
+	top: 0;
+	z-index: 100;
+	background-color: var(--wp--preset--color--base);
+	border-bottom: 1px solid var(--wp--preset--color--separator);
+	min-height: var(--vd-header-h);
+	transition: background-color var(--vd-t-base) var(--vd-ease),
+		border-color var(--vd-t-base) var(--vd-ease);
+}
+
+.vd-header__inner {
+	max-width: 1440px;
+	margin: 0 auto;
+	min-height: var(--vd-header-h);
+	padding-inline: clamp(16px, 1.9vw, 27px);
+	display: grid;
+	grid-template-columns: 1fr auto 1fr;
+	align-items: center;
+	gap: 1rem;
+}
+
+/* Logo : « VeloDisco » en casse mixte (PAS tout en majuscules), Inter Bold 36px, centré */
+.vd-header__logo {
+	grid-column: 2;
+	justify-self: center;
+	font-weight: 700;
+	font-size: clamp(26px, 2.5vw, 36px);
+	letter-spacing: 0;
+	text-transform: none;
+	color: var(--wp--preset--color--contrast);
+	text-decoration: none;
+	white-space: nowrap;
+}
+
+/* Liens de nav : Inter Regular 12px (comme le Figma) */
+.vd-header__nav {
+	display: flex;
+	align-items: center;
+	font-size: 12px;
+	font-weight: 400;
+	letter-spacing: 0;
+	text-transform: uppercase;
+}
+
+.vd-header__nav--left { grid-column: 1; justify-self: start; gap: clamp(14px, 1.8vw, 25px); }
+.vd-header__nav--right { grid-column: 3; justify-self: end; gap: clamp(16px, 3.2vw, 46px); }
+
+.vd-nav__link {
+	position: relative;
+	color: var(--wp--preset--color--contrast);
+	text-decoration: none;
+	padding-block: 0.35rem;
+	transition: opacity var(--vd-t-fast) var(--vd-ease);
+}
+
+/* Couleur d'identité par catégorie */
+.vd-nav__link--velos { color: var(--wp--preset--color--velos); }
+.vd-nav__link--accessoires { color: var(--wp--preset--color--accessoires); }
+.vd-nav__link--composants { color: var(--wp--preset--color--composants); }
+.vd-nav__link--vetements { color: var(--wp--preset--color--vetements); }
+.vd-nav__link--societe { color: var(--wp--preset--color--societe); }
+
+/* Soulignement animé au survol */
+.vd-nav__link::after {
+	content: "";
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	height: 2px;
+	background: currentColor;
+	transform: scaleX(0);
+	transform-origin: left center;
+	transition: transform var(--vd-t-base) var(--vd-ease);
+}
+.vd-nav__link:hover::after,
+.vd-nav__link:focus-visible::after { transform: scaleX(1); }
+
+/* Grands Formats : libellé en gradient + soulignement gradient */
+.vd-nav__link--gf {
+	background: var(--wp--preset--gradient--grands-formats-nav);
+	-webkit-background-clip: text;
+	background-clip: text;
+	-webkit-text-fill-color: transparent;
+	color: transparent;
+}
+.vd-nav__link--gf::after { background: var(--wp--preset--gradient--grands-formats-nav); }
+
+/* Boutons icônes (loupe, réglage, burger) */
+.vd-iconbtn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 40px;
+	height: 40px;
+	padding: 0;
+	border: 0;
+	background: transparent;
+	color: var(--wp--preset--color--contrast);
+	cursor: pointer;
+	border-radius: var(--vd-pill);
+	transition: background-color var(--vd-t-fast) var(--vd-ease),
+		transform var(--vd-t-fast) var(--vd-ease);
+}
+.vd-iconbtn:hover { background: var(--vd-surface); }
+.vd-iconbtn:active { transform: scale(0.92); }
+.vd-iconbtn svg { width: 22px; height: 22px; display: block; }
+
+.vd-burger { display: none; }
+
+/* 4. MENU BURGER MOBILE ---------------------------------------------------- */
+.vd-mobile-nav {
+	position: fixed;
+	inset: 0;
+	z-index: 200;
+	background: var(--wp--preset--color--base);
+	color: var(--wp--preset--color--contrast);
+	display: flex;
+	flex-direction: column;
+	padding: 1.25rem clamp(1.25rem, 6vw, 2.5rem) 2.5rem;
+	transform: translateY(-100%);
+	visibility: hidden;
+	transition: transform var(--vd-t-slow) var(--vd-ease), visibility 0s linear var(--vd-t-slow);
+	overflow-y: auto;
+}
+.vd-mobile-nav.is-open {
+	transform: translateY(0);
+	visibility: visible;
+	transition: transform var(--vd-t-slow) var(--vd-ease);
+}
+.vd-mobile-nav__top {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	gap: 0.5rem;
+	min-height: var(--vd-header-h);
+}
+.vd-mobile-nav__list {
+	list-style: none;
+	margin: 1.5rem 0 0;
+	padding: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 0.35rem;
+}
+.vd-mobile-nav__list a {
+	display: inline-block;
+	font-size: 1.625rem;
+	font-weight: 200;
+	letter-spacing: 0.01em;
+	text-transform: uppercase;
+	text-decoration: none;
+	color: inherit;
+	padding-block: 0.35rem;
+	opacity: 0;
+	transform: translateY(12px);
+}
+.vd-mobile-nav.is-open .vd-mobile-nav__list a {
+	animation: vd-stagger-in var(--vd-t-slow) var(--vd-ease) forwards;
+}
+.vd-mobile-nav__list li:nth-child(1) a { animation-delay: 60ms; }
+.vd-mobile-nav__list li:nth-child(2) a { animation-delay: 110ms; }
+.vd-mobile-nav__list li:nth-child(3) a { animation-delay: 160ms; }
+.vd-mobile-nav__list li:nth-child(4) a { animation-delay: 210ms; }
+.vd-mobile-nav__list li:nth-child(5) a { animation-delay: 260ms; }
+.vd-mobile-nav__list li:nth-child(6) a { animation-delay: 310ms; }
+.vd-mobile-nav__list li:nth-child(7) a { animation-delay: 360ms; }
+.vd-mobile-nav__list li:nth-child(8) a { animation-delay: 410ms; }
+
+@keyframes vd-stagger-in {
+	to { opacity: 1; transform: translateY(0); }
+}
+
+/* 5. POPOVER RECHERCHE + DROPDOWN RÉGLAGE ---------------------------------- */
+.vd-pop {
+	position: absolute;
+	z-index: 250; /* au-dessus de l'overlay burger (200) pour rester utilisable dans le menu mobile */
+	background: var(--wp--preset--color--base);
+	border: 1px solid var(--wp--preset--color--separator);
+	box-shadow: 0 12px 32px rgba(0, 0, 0, 0.16);
+	opacity: 0;
+	transform: translateY(-8px) scale(0.98);
+	pointer-events: none;
+	transition: opacity var(--vd-t-base) var(--vd-ease),
+		transform var(--vd-t-base) var(--vd-ease);
+}
+.vd-pop.is-open {
+	opacity: 1;
+	transform: translateY(0) scale(1);
+	pointer-events: auto;
+}
+
+/* Popover recherche (pill 260×50) */
+.vd-search-pop {
+	right: clamp(1rem, 5vw, 2rem);
+	top: calc(var(--vd-header-h) - 6px);
+	width: 260px;
+	border-radius: var(--vd-pill);
+	padding: 0 0.5rem 0 1rem;
+	display: flex;
+	align-items: center;
+	height: 50px;
+}
+.vd-search-pop input {
+	flex: 1;
+	border: 0;
+	background: transparent;
+	color: inherit;
+	font: inherit;
+	font-size: 0.9375rem;
+	outline: none;
+}
+.vd-search-pop button { flex: 0 0 auto; }
+
+/* Dropdown réglage thème — fidèle au Figma : 72px, coins nets, bordure contrastée */
+.vd-theme-menu {
+	right: clamp(1rem, 5vw, 2rem);
+	top: calc(var(--vd-header-h) - 6px);
+	width: 72px;
+	border-radius: 0;
+	border: 1px solid var(--wp--preset--color--contrast);
+	box-shadow: none;
+	padding: 16px 8px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 16px;
+}
+/* filter_alt en tête du menu (comme dans le Figma) */
+.vd-theme-menu__head {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	color: var(--wp--preset--color--contrast);
+}
+.vd-theme-menu__head svg { width: 22px; height: 22px; }
+.vd-theme-menu button {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 6px;
+	width: 100%;
+	border: 0;
+	background: transparent;
+	color: inherit;
+	cursor: pointer;
+	padding: 6px 0;
+	border-radius: 6px;
+	font-size: 10px;
+	font-weight: 600;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+	transition: background-color var(--vd-t-fast) var(--vd-ease);
+}
+.vd-theme-menu button svg { width: 24px; height: 24px; }
+.vd-theme-menu button:hover { background: var(--vd-surface); }
+.vd-theme-menu button[aria-checked="true"] { background: var(--vd-surface); }
+
+/* 6. FOOTER ---------------------------------------------------------------- */
+/* Reproduction au pixel près du Figma (frame 1440×215). Toujours noir pur. */
+.vd-footer {
+	background: #000000;
+	color: #F5F5F0;
+}
+.vd-footer__mobile { display: none; }
+
+/* Bande de liens en haut : hauteur 68px, liens répartis (gaps ~93px à 1440) */
+.vd-footer__nav {
+	display: flex;
+	flex-wrap: nowrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: 0 12px;
+	min-height: 68px;
+	padding: 0 20px;
+	border-top: 1px solid #6C727F;
+	border-bottom: 1px solid #6C727F;
+	font-size: 12px;
+	text-transform: uppercase;
+	letter-spacing: 0;
+	white-space: nowrap;
+}
+.vd-footer__nav a {
+	color: #F5F5F0;
+	text-decoration: none;
+	opacity: 0.9;
+	transition: opacity var(--vd-t-fast) var(--vd-ease);
+}
+.vd-footer__nav a:hover { opacity: 1; }
+
+/* Bloc principal : identité (gauche, 341/1440 = 23.7%) + bande dégradée (droite) */
+.vd-footer__main {
+	display: grid;
+	grid-template-columns: minmax(300px, 23.7%) minmax(0, 1fr);
+	align-items: stretch;
+	min-height: 147px;
+}
+
+/* Bloc noir gauche : wordmark à 24px du haut, padding gauche 17px / droite 28px */
+.vd-footer__left {
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	gap: 12px;
+	padding: 24px 28px 24px 17px;
+	background: #000000;
+}
+.vd-footer__brandrow {
+	display: flex;
+	align-items: flex-start;
+	gap: 18px;
+}
+.vd-footer__brand {
+	color: #FFFFFF;
+	font-weight: 700;
+	font-size: 30px;
+	letter-spacing: 0;
+	line-height: 1;
+	text-decoration: none;
+	white-space: nowrap;
+}
+/* Mark © à droite du wordmark : image exacte exportée du Figma (nœud « Copyright ») */
+.vd-footer__mark {
+	flex: 0 0 auto;
+	width: 23px;
+	height: 23px;
+	margin-top: 6px; /* offset Figma : © à 6px sous le haut du wordmark */
+	background-image: url(../images/footer-copyright.png);
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: center;
+}
+.vd-footer__sub {
+	margin: 0;
+	font-size: 12px;
+	text-transform: uppercase;
+	letter-spacing: 0;
+	opacity: 0.95;
+}
+/* "World Wide Ride" à gauche, réseaux collés à droite du bloc noir */
+.vd-footer__taglinerow {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	font-size: 12px;
+}
+.vd-footer__tagline { opacity: 0.95; }
+.vd-footer__socials {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+}
+.vd-footer__socials a { color: #F5F5F0; display: inline-flex; }
+.vd-footer__socials svg { width: 18px; height: 18px; }
+
+/* Bande dégradée (droite) + pastilles 16px en bas à droite (14px/12px des bords) */
+.vd-footer__gradient {
+	position: relative;
+	min-height: 147px;
+	background: var(--wp--preset--gradient--grands-formats);
+}
+.vd-footer__dots {
+	position: absolute;
+	right: 14px;
+	bottom: 12px;
+	display: grid;
+	grid-template-columns: repeat(3, 16px);
+	gap: 2px;
+}
+.vd-footer__dots span {
+	display: block;
+	width: 16px;
+	height: 16px;
+	border-radius: 50%;
+}
+
+@media (max-width: 900px) {
+	/* Liens du footer : retour à la ligne et regroupés à gauche sur petit écran. */
+	.vd-footer__nav {
+		flex-wrap: wrap;
+		justify-content: flex-start;
+		white-space: normal;
+		gap: 0.6rem 1.5rem;
+		min-height: 0;
+		padding: 0.9rem 20px;
+	}
+}
+
+/* ---- Footer mobile (≤720px) : layout dédié, calé sur le Figma 375×176 ---- */
+.vd-footer__m-top { padding: 17px 18px 16px 20px; }
+.vd-footer__m-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+}
+.vd-footer__brandwrap { display: inline-flex; align-items: flex-start; min-width: 0; }
+.vd-footer__mark--sup {
+	width: 14px;
+	height: 14px;
+	margin-top: 1px;
+	margin-left: 3px;
+}
+.vd-footer__soc { color: #F5F5F0; display: inline-flex; flex: 0 0 auto; }
+.vd-footer__soc svg { width: 18px; height: 18px; }
+.vd-footer__m-top .vd-footer__sub { margin: 13px 0; }
+.vd-footer__m-gradient {
+	position: relative;
+	height: 44px;
+	background: var(--wp--preset--gradient--grands-formats);
+}
+.vd-footer__dots--sm { right: 12px; bottom: 13px; grid-template-columns: repeat(3, 8px); gap: 2px; }
+.vd-footer__dots--sm span { width: 8px; height: 8px; }
+
+@media (max-width: 720px) {
+	.vd-footer__desktop { display: none; }
+	.vd-footer__mobile { display: block; }
+	.vd-footer__mobile .vd-footer__brand { font-size: clamp(24px, 7.2vw, 30px); }
+}
+
+/* 7. CARTES & IMAGES (tracé catégorie) ------------------------------------- */
+/*
+ * Tracé 0.5px INSIDE en couleur de catégorie sur les images d'article.
+ * On utilise box-shadow inset (n'ajoute pas à la taille = équivalent INSIDE).
+ */
+.vd-img-stroke {
+	box-shadow: inset 0 0 0 0.5px var(--vd-stroke-color, var(--wp--preset--color--separator));
+}
+.vd-img-stroke--velos { --vd-stroke-color: var(--wp--preset--color--velos); }
+.vd-img-stroke--accessoires { --vd-stroke-color: var(--wp--preset--color--accessoires); }
+.vd-img-stroke--composants { --vd-stroke-color: var(--wp--preset--color--composants); }
+.vd-img-stroke--vetements { --vd-stroke-color: var(--wp--preset--color--vetements); }
+.vd-img-stroke--societe { --vd-stroke-color: var(--wp--preset--color--societe); }
+
+/* Date d'encart : alignée à droite (règle VeloDisco) */
+.vd-card__date { text-align: right; font-size: 0.8125rem; opacity: 0.7; }
+
+/* Étiquette de catégorie (core/post-terms, style "vd-tag") */
+.is-style-vd-tag,
+.is-style-vd-tag a,
+.vd-term {
+	text-transform: uppercase;
+	font-weight: 600;
+	letter-spacing: 0.04em;
+	text-decoration: none;
+}
+/* Couleur automatique selon la catégorie (classe ajoutée par PHP) */
+.vd-term--velos { color: var(--wp--preset--color--velos); }
+.vd-term--accessoires { color: var(--wp--preset--color--accessoires); }
+.vd-term--composants { color: var(--wp--preset--color--composants); }
+.vd-term--vetements { color: var(--wp--preset--color--vetements); }
+.vd-term--societe { color: var(--wp--preset--color--societe); }
+.vd-term--grands-formats {
+	background: var(--wp--preset--gradient--grands-formats);
+	-webkit-background-clip: text;
+	background-clip: text;
+	-webkit-text-fill-color: transparent;
+	color: transparent;
+}
+
+/* Image avec tracé catégorie (style de bloc "vd-stroke") */
+.is-style-vd-stroke img {
+	box-shadow: inset 0 0 0 0.5px var(--wp--preset--color--separator);
+}
+
+/* Bouton outline → pill, suit la couleur du texte */
+.wp-block-button.is-style-outline .wp-block-button__link {
+	border-radius: var(--vd-pill);
+	border-width: 1px;
+	background: transparent;
+	color: var(--wp--preset--color--contrast);
+	border-color: currentColor;
+	transition: background-color var(--vd-t-base) var(--vd-ease),
+		color var(--vd-t-base) var(--vd-ease);
+}
+.wp-block-button.is-style-outline .wp-block-button__link:hover {
+	background: var(--wp--preset--color--contrast);
+	color: var(--wp--preset--color--base);
+}
+
+/* Largeur de lecture confortable pour le corps d'article */
+.vd-single :where(p, ul, ol, h2, h3, blockquote, figure) {
+	margin-inline: auto;
+}
+.vd-single h2 { margin-top: var(--wp--preset--spacing--50); }
+
+/* 8. ANIMATIONS ------------------------------------------------------------ */
+/* Reveal au défilement : appliquer .vd-reveal sur un bloc, le JS ajoute .is-in. */
+.vd-reveal {
+	opacity: 0;
+	transform: translateY(20px);
+	transition: opacity var(--vd-t-slow) var(--vd-ease),
+		transform var(--vd-t-slow) var(--vd-ease);
+	will-change: opacity, transform;
+}
+.vd-reveal.is-in {
+	opacity: 1;
+	transform: none;
+}
+/* Variantes de délai pour un effet en cascade */
+.vd-reveal--d1 { transition-delay: 80ms; }
+.vd-reveal--d2 { transition-delay: 160ms; }
+.vd-reveal--d3 { transition-delay: 240ms; }
+
+/* Survol générique des cartes / images */
+.vd-hover-rise {
+	transition: transform var(--vd-t-base) var(--vd-ease);
+}
+.vd-hover-rise:hover { transform: translateY(-4px); }
+
+.vd-hover-zoom { overflow: hidden; }
+.vd-hover-zoom img {
+	transition: transform var(--vd-t-slow) var(--vd-ease);
+}
+.vd-hover-zoom:hover img { transform: scale(1.04); }
+
+/* 9. ACCESSIBILITÉ --------------------------------------------------------- */
+:where(a, button, input, [tabindex]):focus-visible {
+	outline: 2px solid var(--wp--preset--color--vetements);
+	outline-offset: 2px;
+	border-radius: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.001ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.001ms !important;
+		scroll-behavior: auto !important;
+	}
+	.vd-reveal { opacity: 1; transform: none; }
+}
+
+/* RESPONSIVE : bascule mobile -------------------------------------------- */
+@media (max-width: 900px) {
+	.vd-header__nav--right .vd-nav__link {
+		display: none; /* les liens passent dans le burger */
+	}
+	/* Sur mobile, le header ne montre QUE le burger.
+	   Recherche + réglage du thème s'affichent uniquement dans le burger déplié. */
+	.vd-header__nav--right .vd-iconbtn:not(.vd-burger) { display: none; }
+	.vd-burger { display: inline-flex; }
+	/* Logo aligné à gauche (et non centré) en version mobile */
+	.vd-header__nav--left { display: none; }
+	.vd-header__inner { grid-template-columns: auto 1fr auto; }
+	.vd-header__logo { grid-column: 1; justify-self: start; }
+	.vd-header__nav--right { grid-column: 3; }
+}
+
+@media (min-width: 901px) {
+	.vd-mobile-nav { display: none; }
+}

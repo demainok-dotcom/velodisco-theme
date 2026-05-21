@@ -1,0 +1,110 @@
+<!-- wp:html -->
+<header class="vd-header">
+	<div class="vd-header__inner">
+
+		<!-- Catégories (gauche) -->
+		<nav class="vd-header__nav vd-header__nav--left" aria-label="Catégories">
+			<a class="vd-nav__link vd-nav__link--velos" href="/category/velos/">Vélos</a>
+			<a class="vd-nav__link vd-nav__link--accessoires" href="/category/accessoires/">Accessoires</a>
+			<a class="vd-nav__link vd-nav__link--composants" href="/category/composants/">Composants</a>
+			<a class="vd-nav__link vd-nav__link--vetements" href="/category/vetements/">Vêtements</a>
+			<a class="vd-nav__link vd-nav__link--societe" href="/category/societe/">Société</a>
+		</nav>
+
+		<!-- Logo (centre) -->
+		<a class="vd-header__logo" href="/" aria-label="VeloDisco — accueil">VeloDisco</a>
+
+		<!-- Actu / Grands Formats / réglage / recherche (droite) -->
+		<nav class="vd-header__nav vd-header__nav--right" aria-label="Navigation principale">
+			<a class="vd-nav__link" href="/actu/">Actu</a>
+			<a class="vd-nav__link vd-nav__link--gf" href="/category/grands-formats/">Grands Formats</a>
+
+			<button type="button" class="vd-iconbtn" data-popover-target="vd-theme-menu"
+				aria-label="Réglage du thème" aria-haspopup="true" aria-expanded="false" aria-controls="vd-theme-menu">
+				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+					<path d="M12 7L20 7"></path><path d="M4 7L8 7"></path><path d="M17 17L20 17"></path><path d="M4 17L12 17"></path>
+					<circle cx="10" cy="7" r="2"></circle><circle cx="15" cy="17" r="2"></circle>
+				</svg>
+			</button>
+
+			<button type="button" class="vd-iconbtn" data-popover-target="vd-search-pop"
+				aria-label="Rechercher" aria-haspopup="true" aria-expanded="false" aria-controls="vd-search-pop">
+				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+					<circle cx="11" cy="11" r="7"></circle><line x1="16.5" y1="16.5" x2="21" y2="21"></line>
+				</svg>
+			</button>
+
+			<button type="button" class="vd-iconbtn vd-burger" data-burger-toggle
+				aria-label="Ouvrir le menu" aria-haspopup="true" aria-expanded="false" aria-controls="vd-mobile-nav">
+				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+					<line x1="3" y1="7" x2="21" y2="7"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="17" x2="21" y2="17"></line>
+				</svg>
+			</button>
+		</nav>
+	</div>
+
+	<!-- Popover recherche -->
+	<form class="vd-pop vd-search-pop" id="vd-search-pop" role="search" method="get" action="/">
+		<input type="search" name="s" placeholder="Rechercher" aria-label="Rechercher sur le site" autocomplete="off">
+		<button type="submit" class="vd-iconbtn" aria-label="Lancer la recherche">
+			<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+				<circle cx="11" cy="11" r="7"></circle><line x1="16.5" y1="16.5" x2="21" y2="21"></line>
+			</svg>
+		</button>
+	</form>
+
+	<!-- Dropdown réglage du thème (icônes exactes exportées du Figma) -->
+	<div class="vd-pop vd-theme-menu" id="vd-theme-menu" role="group" aria-label="Choix du thème">
+		<span class="vd-theme-menu__head" aria-hidden="true">
+			<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+				<path d="M12 7L20 7"></path><path d="M4 7L8 7"></path><path d="M17 17L20 17"></path><path d="M4 17L12 17"></path><circle cx="10" cy="7" r="2"></circle><circle cx="15" cy="17" r="2"></circle>
+			</svg>
+		</span>
+		<button type="button" data-theme-set="dark" role="menuitemradio" aria-checked="false">
+			<svg viewBox="0 0 29 29" fill="currentColor" aria-hidden="true">
+				<path d="M14.0468 6.05344C14.1969 6.04552 14.348 6.0415 14.5001 6.0415C19.1715 6.0415 22.9584 9.82843 22.9584 14.4998C22.9584 19.1712 19.1715 22.9582 14.5001 22.9582C12.8968 22.9582 11.3977 22.5121 10.1201 21.7372C14.5807 21.5017 18.1251 17.8102 18.1251 13.2909C18.1251 10.2227 16.4916 7.53618 14.0468 6.05344Z"></path>
+				<path d="M5.4 10.2L5.4 10.2C5.50137 10.5041 5.55206 10.6562 5.60276 10.7225C5.80288 10.9843 6.19712 10.9843 6.39724 10.7225C6.44794 10.6562 6.49863 10.5041 6.6 10.2L6.6 10.2C6.68177 9.95468 6.72266 9.83201 6.77555 9.72099C6.97291 9.30672 7.30672 8.97291 7.72099 8.77555C7.83201 8.72266 7.95468 8.68177 8.2 8.6L8.2 8.6C8.50412 8.49863 8.65618 8.44794 8.7225 8.39724C8.98431 8.19712 8.98431 7.80288 8.7225 7.60276C8.65618 7.55206 8.50412 7.50137 8.2 7.4L8.2 7.4C7.95468 7.31822 7.83201 7.27734 7.72099 7.22445C7.30672 7.02709 6.97291 6.69329 6.77555 6.27901C6.72266 6.16799 6.68177 6.04532 6.6 5.8C6.49863 5.49588 6.44794 5.34382 6.39724 5.2775C6.19712 5.01569 5.80288 5.01569 5.60276 5.2775C5.55206 5.34382 5.50137 5.49588 5.4 5.8C5.31823 6.04532 5.27734 6.16799 5.22445 6.27901C5.02709 6.69329 4.69329 7.02709 4.27901 7.22445C4.16799 7.27734 4.04532 7.31823 3.8 7.4C3.49588 7.50137 3.34382 7.55206 3.2775 7.60276C3.01569 7.80288 3.01569 8.19712 3.2775 8.39724C3.34382 8.44794 3.49588 8.49863 3.8 8.6C4.04532 8.68177 4.16799 8.72266 4.27901 8.77555C4.69329 8.97291 5.02709 9.30672 5.22445 9.72099C5.27734 9.83201 5.31822 9.95468 5.4 10.2Z"></path>
+			</svg>Sombre
+		</button>
+		<button type="button" data-theme-set="light" role="menuitemradio" aria-checked="false">
+			<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+				<circle cx="12" cy="12" r="3"></circle><path d="M12 5V3"></path><path d="M12 21V19"></path><path d="M16.95 7.05044L18.3643 5.63623"></path><path d="M5.63559 18.3639L7.0498 16.9497"></path><path d="M19 12L21 12"></path><path d="M3 12L5 12"></path><path d="M16.95 16.9496L18.3643 18.3638"></path><path d="M5.63559 5.63608L7.0498 7.05029"></path>
+			</svg>Clair
+		</button>
+		<button type="button" data-theme-set="system" role="menuitemradio" aria-checked="false">
+			<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+				<path d="M8 20C8 18.9391 8.42143 17.9217 9.17157 17.1716C9.92172 16.4214 10.9391 16 12 16C13.0609 16 14.0783 16.4214 14.8284 17.1716C15.5786 17.9217 16 18.9391 16 20"></path>
+				<path d="M17.5 14.5L19.5 12.5" stroke-linecap="round"></path>
+				<path d="M5 20H19" stroke-linecap="square"></path>
+				<path d="M4.5 12.5L6.5 14.5" stroke-linecap="round"></path>
+				<path d="M12 4L12.7071 3.29289L12 2.58579L11.2929 3.29289L12 4ZM11 12.5C11 13.0523 11.4477 13.5 12 13.5C12.5523 13.5 13 13.0523 13 12.5L12 12.5L11 12.5ZM15 7L15.7071 6.29289L12.7071 3.29289L12 4L11.2929 4.70711L14.2929 7.70711L15 7ZM12 4L11.2929 3.29289L8.29289 6.29289L9 7L9.70711 7.70711L12.7071 4.70711L12 4ZM12 4L11 4L11 12.5L12 12.5L13 12.5L13 4L12 4Z" fill="currentColor" stroke="none"></path>
+			</svg>Système
+		</button>
+	</div>
+
+	<!-- Menu burger mobile (overlay plein écran) -->
+	<div class="vd-mobile-nav" id="vd-mobile-nav" aria-hidden="true">
+		<div class="vd-mobile-nav__top">
+			<button type="button" class="vd-iconbtn" data-popover-target="vd-search-pop" aria-label="Rechercher">
+				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><line x1="16.5" y1="16.5" x2="21" y2="21"></line></svg>
+			</button>
+			<button type="button" class="vd-iconbtn" data-popover-target="vd-theme-menu" aria-label="Réglage du thème">
+				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M12 7L20 7"></path><path d="M4 7L8 7"></path><path d="M17 17L20 17"></path><path d="M4 17L12 17"></path><circle cx="10" cy="7" r="2"></circle><circle cx="15" cy="17" r="2"></circle></svg>
+			</button>
+			<button type="button" class="vd-iconbtn" data-burger-close aria-label="Fermer le menu">
+				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line></svg>
+			</button>
+		</div>
+		<ul class="vd-mobile-nav__list">
+			<li><a href="/actu/">Actu</a></li>
+			<li><a class="vd-c-velos" href="/category/velos/">Vélos</a></li>
+			<li><a class="vd-c-accessoires" href="/category/accessoires/">Accessoires</a></li>
+			<li><a class="vd-c-composants" href="/category/composants/">Composants</a></li>
+			<li><a class="vd-c-vetements" href="/category/vetements/">Vêtements</a></li>
+			<li><a class="vd-c-societe" href="/category/societe/">Société</a></li>
+			<li><a class="vd-gradient-text" href="/category/grands-formats/">Grands Formats</a></li>
+			<li><a href="/contact/">Contact</a></li>
+		</ul>
+	</div>
+</header>
+<!-- /wp:html -->

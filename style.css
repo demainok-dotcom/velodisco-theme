@@ -1,0 +1,20 @@
+/*
+Theme Name: VeloDisco
+Theme URI: https://www.velodisco.com
+Author: VeloDisco
+Author URI: https://www.velodisco.com
+Description: Thème bloc sur-mesure pour VeloDisco — média d'actualité vélo. Design system par catégorie (Vélos, Accessoires, Composants, Vêtements, Société), dark mode noir pur, gradients Grands Formats, typographie Inter auto-hébergée. Conçu pour la fidélité au design Figma, la performance (Nginx + Varnish) et la stabilité.
+Requires at least: 6.6
+Tested up to: 6.8
+Requires PHP: 8.1
+Version: 0.1.5
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: velodisco
+Tags: blog, news, full-site-editing, block-patterns, custom-colors, custom-menu, editor-style, featured-images, threaded-comments, translation-ready
+*/
+
+/*
+ * Ce fichier ne contient que les métadonnées du thème (obligatoire pour WordPress).
+ * Tous les styles réels sont dans theme.json (design system) et assets/css/velodisco.css.
+ */
