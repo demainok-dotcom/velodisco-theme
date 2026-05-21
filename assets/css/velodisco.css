@@ -625,6 +625,163 @@ body {
 }
 .vd-hover-zoom:hover img { transform: scale(1.04); }
 
+/* 9b. HOME (page d'accueil — relevé Figma 1440) ---------------------------- */
+.vd-main--home { max-width: none; padding-inline: 0; }
+
+.vd-home {
+	max-width: 1410px;
+	margin: 0 auto;
+	padding-inline: clamp(16px, 2vw, 24px);
+	display: grid;
+	grid-template-columns: 286px minmax(0, 1fr) 374px;
+	column-gap: clamp(24px, 3vw, 44px);
+	align-items: start;
+	padding-top: clamp(1.5rem, 3vw, 2.5rem);
+}
+
+/* Titres de section : Inter 600 15px majuscules */
+.vd-sectitle {
+	font-family: var(--wp--preset--font-family--inter, "Inter", sans-serif);
+	font-weight: 600;
+	font-size: 15px;
+	line-height: 18px;
+	letter-spacing: 0;
+	text-transform: uppercase;
+	color: var(--wp--preset--color--contrast);
+	margin: 0 0 1rem;
+}
+
+/* Étiquette catégorie : Inter 400 15px, couleur de catégorie (classes vd-term--*) */
+.vd-tag {
+	display: inline-block;
+	font-family: var(--wp--preset--font-family--inter, "Inter", sans-serif);
+	font-weight: 400;
+	font-size: 15px;
+	line-height: 18px;
+	letter-spacing: 0;
+	text-transform: uppercase;
+	text-decoration: none;
+	margin: 0 0 0.4rem;
+}
+
+/* Excerpt gris + date */
+.vd-card__excerpt {
+	font-family: var(--wp--preset--font-family--inter, "Inter", sans-serif);
+	font-weight: 400;
+	font-size: 16px;
+	line-height: 19px;
+	color: #6C727F;
+	margin: 0.5rem 0 0;
+}
+.vd-card__date {
+	display: block;
+	text-align: right;
+	font-size: 12px;
+	line-height: 15px;
+	color: var(--wp--preset--color--contrast);
+	margin-top: 0.6rem;
+	opacity: 0.85;
+}
+
+/* Vignettes (image liée + tracé catégorie) */
+.vd-thumb__img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.vd-thumb__ph { display: block; width: 100%; height: 100%; background: var(--vd-surface); }
+.vd-aune__img, .vd-card__img, .vd-tcard__img, .vd-gfcard__img {
+	display: block; overflow: hidden; position: relative;
+}
+.vd-aune__img { aspect-ratio: 660 / 352; }
+.vd-card__img, .vd-tcard__img { aspect-ratio: 320 / 192; }
+.vd-gfcard__img { aspect-ratio: 271 / 176; }
+
+/* Titres d'articles (serif Merriweather) */
+.vd-aune__title, .vd-card__title, .vd-tcard__title, .vd-gfcard__title, .vd-frais__title {
+	display: block;
+	color: var(--wp--preset--color--contrast);
+	text-decoration: none;
+	font-weight: 700;
+}
+.vd-aune__title  { font-size: clamp(26px, 2.5vw, 36px); line-height: 1.25; margin: 0.5rem 0; }
+.vd-card__title  { font-size: clamp(20px, 1.7vw, 24px); line-height: 1.25; margin: 0.5rem 0 0; }
+.vd-tcard__title { font-size: clamp(20px, 1.5vw, 24px); line-height: 1.25; margin: 0.5rem 0 0; }
+.vd-gfcard__title{ font-size: 16px; line-height: 20px; margin: 0.4rem 0 0; }
+
+/* ---- À LA UNE ---- */
+.vd-aune { margin-bottom: clamp(2rem, 4vw, 3rem); }
+.vd-aune .vd-tag { margin-top: 0.5rem; }
+
+/* ---- DERNIERS ARTICLES (grille 2×2) ---- */
+.vd-derniers__grid {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	column-gap: 21px;
+	row-gap: clamp(1.5rem, 3vw, 2.25rem);
+}
+.vd-card__title { font-family: var(--vd-serif); }
+
+/* ---- Colonnes latérales : séparateurs verticaux ---- */
+.vd-col--frais { border-right: 1px solid var(--wp--preset--color--separator); padding-right: clamp(16px, 2vw, 40px); }
+.vd-col--tend  { border-left: 1px solid var(--wp--preset--color--separator); padding-left: clamp(16px, 2vw, 40px); }
+
+/* ---- TOUT FRAIS (liste compacte) ---- */
+.vd-frais__list { list-style: none; margin: 0; padding: 0; }
+.vd-frais__item { padding: 0.55rem 0; }
+.vd-frais__time {
+	display: block;
+	font-size: 12px; line-height: 15px;
+	color: var(--wp--preset--color--contrast);
+	opacity: 0.6;
+	margin-bottom: 0.15rem;
+}
+.vd-frais__title { font-size: 12px; line-height: 15px; }
+
+/* ---- TENDANCES ---- */
+.vd-tcard { margin-bottom: clamp(1.75rem, 3vw, 2.5rem); }
+
+/* ---- GRANDS FORMATS (pleine largeur, 4 colonnes) ---- */
+.vd-gf {
+	max-width: 1410px;
+	margin: clamp(2.5rem, 5vw, 4rem) auto 0;
+	padding-inline: clamp(16px, 2vw, 24px);
+	border-top: 1px solid var(--wp--preset--color--separator);
+	padding-top: clamp(1.5rem, 3vw, 2rem);
+}
+.vd-gf__head {
+	display: grid;
+	grid-template-columns: auto 1fr auto;
+	align-items: baseline;
+	gap: 1rem;
+	margin-bottom: clamp(1.5rem, 3vw, 2rem);
+}
+.vd-gf__sub { font-size: 16px; line-height: 19px; color: #6C727F; margin: 0; }
+.vd-gf__all { justify-self: end; font-weight: 600; font-size: 15px; text-decoration: none; white-space: nowrap; }
+.vd-gf__grid {
+	display: grid;
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+	gap: clamp(1rem, 2vw, 28px);
+}
+.vd-gfcard .vd-tag {
+	font-size: 12px; line-height: 15px;
+	background: var(--wp--preset--gradient--grands-formats);
+	-webkit-background-clip: text; background-clip: text;
+	-webkit-text-fill-color: transparent; color: transparent;
+}
+
+.vd-empty { color: #6C727F; font-size: 14px; }
+
+/* ---- Responsive Home ---- */
+@media (max-width: 1080px) {
+	.vd-home { grid-template-columns: 1fr; row-gap: 2.5rem; }
+	.vd-col--frais, .vd-col--tend { border: 0; padding: 0; }
+	.vd-col--center { order: -1; }
+	.vd-gf__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 560px) {
+	.vd-derniers__grid { grid-template-columns: 1fr; }
+	.vd-gf__grid { grid-template-columns: 1fr; }
+	.vd-gf__head { grid-template-columns: 1fr; }
+	.vd-gf__all { justify-self: start; }
+}
+
 /* 9. ACCESSIBILITÉ --------------------------------------------------------- */
 :where(a, button, input, [tabindex]):focus-visible {
 	outline: 2px solid var(--wp--preset--color--vetements);

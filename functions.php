@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'VELODISCO_VERSION' ) ) {
-	define( 'VELODISCO_VERSION', '0.1.9' );
+	define( 'VELODISCO_VERSION', '0.2.0' );
 }
 
 /**
@@ -146,3 +146,26 @@ function velodisco_colorize_post_terms( $block_content, $block ) {
 	return $block_content;
 }
 add_filter( 'render_block_core/post-terms', 'velodisco_colorize_post_terms', 10, 2 );
+
+/**
+ * Compteur de vues maison (sans plugin) : incrémente la meta vd_views à chaque
+ * lecture d'un article. Sert au tri « Tendances » (les plus populaires).
+ * NB : si une page article est servie depuis le cache Varnish, le PHP ne tourne
+ * pas → la vue n'est pas comptée. C'est un compteur « best effort », suffisant
+ * pour ordonner les tendances.
+ */
+function velodisco_count_view() {
+	if ( is_singular( 'post' ) && ! is_admin() ) {
+		$id = get_queried_object_id();
+		if ( $id ) {
+			$v = (int) get_post_meta( $id, 'vd_views', true );
+			update_post_meta( $id, 'vd_views', $v + 1 );
+		}
+	}
+}
+add_action( 'template_redirect', 'velodisco_count_view' );
+
+/**
+ * Moteur de la page d'accueil (bloc dynamique velodisco/home).
+ */
+require_once get_template_directory() . '/inc/home.php';
