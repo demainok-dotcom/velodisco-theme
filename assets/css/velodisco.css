@@ -640,7 +640,7 @@ body {
 .vd-hover-zoom:hover img { transform: scale(1.04); }
 
 /* 9b. HOME (page d'accueil — relevé Figma 1440) ---------------------------- */
-.vd-main--home { max-width: none; padding-inline: 0; }
+.vd-main--home { max-width: none; padding-inline: 0; margin-top: 0; } /* flush sous le header : les traits verticaux touchent la ligne du header */
 
 .vd-home {
 	max-width: 1410px;
@@ -735,8 +735,9 @@ body {
 }
 .vd-card__title { font-family: var(--vd-serif); }
 
-/* ---- Colonnes : espace du haut INTERNE (les bordures démarrent en haut) ---- */
-.vd-col { padding-top: clamp(1.5rem, 3vw, 2.5rem); }
+/* ---- Colonnes : espaces haut ET bas INTERNES → les bordures verticales touchent
+ * la ligne du header (haut) et la ligne des Grands Formats (bas), sans gap. ---- */
+.vd-col { padding-top: clamp(1.5rem, 3vw, 2.5rem); padding-bottom: clamp(2.5rem, 5vw, 4rem); }
 
 /* ---- Colonnes latérales : séparateurs verticaux ---- */
 .vd-col--frais { border-right: 1px solid var(--wp--preset--color--separator); padding-right: clamp(16px, 2vw, 40px); }
@@ -760,7 +761,7 @@ body {
 /* ---- GRANDS FORMATS (pleine largeur, 4 colonnes) ---- */
 .vd-gf {
 	max-width: 1410px;
-	margin: clamp(2.5rem, 5vw, 4rem) auto 0;
+	margin: 0 auto; /* l'espace au-dessus de la ligne GF est porté par le padding-bottom des colonnes → la ligne touche les traits verticaux */
 	padding-inline: clamp(16px, 2vw, 24px);
 	border-top: 1px solid var(--wp--preset--color--separator);
 	padding-top: clamp(1.5rem, 3vw, 2rem);
@@ -791,9 +792,10 @@ body {
 /* ---- Responsive Home ---- */
 @media (max-width: 1080px) {
 	.vd-home { grid-template-columns: 1fr; row-gap: 2.5rem; }
-	.vd-col { padding-top: 0; } /* colonnes empilées : pas d'espace haut interne (row-gap gère) */
+	.vd-col { padding-top: 0; padding-bottom: 0; } /* colonnes empilées : pas d'espace interne (row-gap gère) */
 	.vd-col--frais, .vd-col--tend { border: 0; padding: 0; }
 	.vd-col--center { order: -1; }
+	.vd-gf { margin-top: 2.5rem; } /* empilé : on restaure une marge au-dessus des Grands Formats */
 	.vd-gf__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 560px) {
