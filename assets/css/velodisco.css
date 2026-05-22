@@ -131,10 +131,18 @@ body {
 	gap: 1rem;
 }
 
-/* Logo : « VeloDisco » en casse mixte (PAS tout en majuscules), Inter Bold 36px, centré */
-.vd-header__logo {
+/* Marque = wordmark + pastilles disco. Le placement (centré desktop / gauche mobile)
+ * est porté par ce conteneur. */
+.vd-header__brand {
 	grid-column: 2;
 	justify-self: center;
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+}
+
+/* Logo : « VeloDisco » en casse mixte (PAS tout en majuscules), Inter Bold 36px */
+.vd-header__logo {
 	font-weight: 700;
 	font-size: clamp(26px, 2.5vw, 36px);
 	letter-spacing: 0;
@@ -143,6 +151,22 @@ body {
 	text-decoration: none;
 	white-space: nowrap;
 }
+
+/* Pastilles disco (6 ronds 8.45px, grille 3×2) — masquées en desktop, apparaissent
+ * en fondu en version mobile/tablette (cf. demande Victor). Mesures exactes Figma. */
+.vd-header__dots {
+	display: none;
+	grid-template-columns: repeat(3, 8.45px);
+	gap: 1.27px;
+	flex: 0 0 auto;
+}
+.vd-header__dots span {
+	display: block;
+	width: 8.45px;
+	height: 8.45px;
+	border-radius: 50%;
+}
+@keyframes vd-fade-in { from { opacity: 0; } to { opacity: 1; } }
 
 /* Liens de nav : Inter Regular 12px (comme le Figma) */
 .vd-header__nav {
@@ -896,12 +920,14 @@ body {
 	 * (cf. capture Victor). Les catégories passent dans le burger. */
 	.vd-header__inner { grid-template-columns: auto 1fr auto; }
 	.vd-header__nav--left { display: none; }
-	.vd-header__logo { grid-column: 1; justify-self: start; }
+	.vd-header__brand { grid-column: 1; justify-self: start; }
 	.vd-header__nav--right { grid-column: 3; }
 	.vd-burger { display: inline-flex; }
 	/* On masque uniquement le réglage du thème (il reste dans le burger déplié) ;
 	   ACTU, Grands Formats et la loupe restent visibles dans le header. */
 	.vd-header__nav--right .vd-iconbtn[data-popover-target="vd-theme-menu"] { display: none; }
+	/* Pastilles disco : apparaissent en fondu à côté de « VeloDisco ». */
+	.vd-header__dots { display: grid; animation: vd-fade-in 0.45s var(--vd-ease, ease) both; }
 }
 
 @media (min-width: 1081px) {
