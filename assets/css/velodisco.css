@@ -438,6 +438,9 @@ body {
 	width: 23px;
 	height: 23px;
 	margin-top: 6px; /* offset Figma : © à 6px sous le haut du wordmark */
+	/* Le © (23px) est plus large que TikTok (18px) : aligner les bords droits laisse
+	 * les CENTRES décalés de 2,5px. On nudge le © à droite pour centrer pile sous TikTok. */
+	transform: translateX(2.5px);
 	background-image: url(../images/footer-copyright.png);
 	background-size: contain;
 	background-repeat: no-repeat;
@@ -647,7 +650,10 @@ body {
 	grid-template-columns: 286px minmax(0, 1fr) 374px;
 	column-gap: clamp(24px, 3vw, 44px);
 	align-items: stretch; /* colonnes de hauteur égale → les traits séparateurs courent sur toute la hauteur */
-	padding-top: clamp(1.5rem, 3vw, 2.5rem);
+	/* PAS de padding-top ici : l'espace du haut est mis DANS les colonnes (.vd-col),
+	 * ainsi les bordures verticales démarrent tout en haut (sous le header) tandis que
+	 * les titres gardent leur respiration. */
+	padding-top: 0;
 }
 
 /* Titres de section : Inter 600 15px majuscules */
@@ -729,6 +735,9 @@ body {
 }
 .vd-card__title { font-family: var(--vd-serif); }
 
+/* ---- Colonnes : espace du haut INTERNE (les bordures démarrent en haut) ---- */
+.vd-col { padding-top: clamp(1.5rem, 3vw, 2.5rem); }
+
 /* ---- Colonnes latérales : séparateurs verticaux ---- */
 .vd-col--frais { border-right: 1px solid var(--wp--preset--color--separator); padding-right: clamp(16px, 2vw, 40px); }
 .vd-col--tend  { border-left: 1px solid var(--wp--preset--color--separator); padding-left: clamp(16px, 2vw, 40px); }
@@ -782,6 +791,7 @@ body {
 /* ---- Responsive Home ---- */
 @media (max-width: 1080px) {
 	.vd-home { grid-template-columns: 1fr; row-gap: 2.5rem; }
+	.vd-col { padding-top: 0; } /* colonnes empilées : pas d'espace haut interne (row-gap gère) */
 	.vd-col--frais, .vd-col--tend { border: 0; padding: 0; }
 	.vd-col--center { order: -1; }
 	.vd-gf__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
