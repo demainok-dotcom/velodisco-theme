@@ -969,6 +969,21 @@ body.vd-cat--grands-formats .vd-single__body .wp-block-image::after {
 	background-image: linear-gradient(90deg, transparent 0%, rgba(245,245,240,0.22) 12%, rgba(245,245,240,0.22) 88%, transparent 100%);
 }
 
+/* Barre dégradée : un bloc « Séparateur » stylé en barre pleine largeur du contenu.
+ * Couleur de section (dégradé pour Grands Formats). À placer dans l'article (ex : sous « En bref »). */
+.vd-single__body .wp-block-separator {
+	border: 0;
+	height: 6px;
+	width: 100%;
+	max-width: none;
+	margin: 1.5rem 0;
+	opacity: 1;
+	background: var(--vd-cat-color, var(--wp--preset--color--separator));
+}
+body.vd-cat--grands-formats .vd-single__body .wp-block-separator {
+	background: var(--wp--preset--gradient--grands-formats);
+}
+
 /* Bouton RETOUR : pill à bord dégradé + texte dégradé, fond transparent (à droite) */
 .vd-single__retour {
 	position: relative;
