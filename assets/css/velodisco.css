@@ -834,7 +834,7 @@ body {
 	}
 	.vd-aune__title {
 		padding-inline: 20px;
-		margin: 0 0 12px;
+		margin: 0 0 20px; /* + d'air avant l'image de la une (Figma : 12px, jugé trop serré) */
 		font-size: 17px; line-height: 21px;
 	}
 	.vd-aune__img { aspect-ratio: 375 / 210; }
