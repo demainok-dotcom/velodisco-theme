@@ -923,9 +923,9 @@ body.vd-cat--societe     { --vd-cat-color: var(--wp--preset--color--societe); }
 /* Images de l'article (hero + toutes les images du corps) : coins CARRÉS + tracé 1px
  * de la couleur de catégorie (dégradé pour Grands Formats). */
 .vd-single__hero,
-.vd-single__body .wp-block-image { position: relative; }
+.vd-single__body .wp-block-image { position: relative; line-height: 0; }
 .vd-single__hero img,
-.vd-single__body .wp-block-image img { border-radius: 0; display: block; }
+.vd-single__body .wp-block-image img { border-radius: 0; display: block; vertical-align: bottom; }
 .vd-single__hero::after,
 .vd-single__body .wp-block-image::after {
 	content: ""; position: absolute; inset: 0; pointer-events: none;
