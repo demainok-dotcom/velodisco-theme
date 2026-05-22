@@ -913,18 +913,28 @@ body {
 /* Date : alignée à gauche, gris */
 .vd-single__date { text-align: left; color: #6C727F; }
 
-/* Image hero : pleine largeur du contenu, coins CARRÉS + tracé 1px par catégorie */
-.vd-single__hero { position: relative; }
-.vd-single__hero img { width: 100%; height: auto; display: block; border-radius: 0; }
-.vd-single__hero::after { content: ""; position: absolute; inset: 0; pointer-events: none; }
-/* Tracé couleur 1px (solide) selon la catégorie */
-body.vd-cat--velos       .vd-single__hero::after { box-shadow: inset 0 0 0 1px var(--wp--preset--color--velos); }
-body.vd-cat--accessoires .vd-single__hero::after { box-shadow: inset 0 0 0 1px var(--wp--preset--color--accessoires); }
-body.vd-cat--composants  .vd-single__hero::after { box-shadow: inset 0 0 0 1px var(--wp--preset--color--composants); }
-body.vd-cat--vetements   .vd-single__hero::after { box-shadow: inset 0 0 0 1px var(--wp--preset--color--vetements); }
-body.vd-cat--societe     .vd-single__hero::after { box-shadow: inset 0 0 0 1px var(--wp--preset--color--societe); }
+/* Couleur de catégorie partagée (pour tracés d'images), posée sur le body */
+body.vd-cat--velos       { --vd-cat-color: var(--wp--preset--color--velos); }
+body.vd-cat--accessoires { --vd-cat-color: var(--wp--preset--color--accessoires); }
+body.vd-cat--composants  { --vd-cat-color: var(--wp--preset--color--composants); }
+body.vd-cat--vetements   { --vd-cat-color: var(--wp--preset--color--vetements); }
+body.vd-cat--societe     { --vd-cat-color: var(--wp--preset--color--societe); }
+
+/* Images de l'article (hero + toutes les images du corps) : coins CARRÉS + tracé 1px
+ * de la couleur de catégorie (dégradé pour Grands Formats). */
+.vd-single__hero,
+.vd-single__body .wp-block-image { position: relative; }
+.vd-single__hero img,
+.vd-single__body .wp-block-image img { border-radius: 0; display: block; }
+.vd-single__hero::after,
+.vd-single__body .wp-block-image::after {
+	content: ""; position: absolute; inset: 0; pointer-events: none;
+	box-shadow: inset 0 0 0 1px var(--vd-cat-color, transparent);
+}
 /* Grands Formats : tracé 1px en DÉGRADÉ (technique du masque) */
-body.vd-cat--grands-formats .vd-single__hero::after {
+body.vd-cat--grands-formats .vd-single__hero::after,
+body.vd-cat--grands-formats .vd-single__body .wp-block-image::after {
+	box-shadow: none;
 	padding: 1px;
 	background: var(--wp--preset--gradient--grands-formats);
 	-webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
@@ -938,6 +948,26 @@ body.vd-cat--grands-formats .vd-single__hero::after {
 .vd-single__body ul, .vd-single__body ol { margin: 0 0 1.1rem 1.25rem; padding: 0; }
 .vd-single__body li { font-size: 16px; line-height: 1.65; color: var(--wp--preset--color--contrast); margin: 0.3rem 0; }
 .vd-single__body a { color: var(--wp--preset--color--vetements); text-decoration: underline; }
+
+/* Tableau minimaliste : aucune bordure de colonne ; uniquement des lignes
+ * horizontales sous chaque rangée, dont les extrémités s'estompent en fondu. */
+.vd-single__body .wp-block-table table { border-collapse: collapse; width: 100%; }
+.vd-single__body .wp-block-table td,
+.vd-single__body .wp-block-table th {
+	border: 0;
+	padding: 0.85rem 0.5rem;
+	font-size: 16px;
+	line-height: 1.5;
+}
+.vd-single__body .wp-block-table tr {
+	background-repeat: no-repeat;
+	background-position: left bottom;
+	background-size: 100% 1px;
+	background-image: linear-gradient(90deg, transparent 0%, rgba(20,18,30,0.16) 12%, rgba(20,18,30,0.16) 88%, transparent 100%);
+}
+[data-theme="dark"] .vd-single__body .wp-block-table tr {
+	background-image: linear-gradient(90deg, transparent 0%, rgba(245,245,240,0.22) 12%, rgba(245,245,240,0.22) 88%, transparent 100%);
+}
 
 /* Bouton RETOUR : pill à bord dégradé + texte dégradé, fond transparent (à droite) */
 .vd-single__retour {
