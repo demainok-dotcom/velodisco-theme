@@ -327,7 +327,7 @@ body {
 	right: clamp(1rem, 5vw, 2rem);
 	top: calc(var(--vd-header-h) - 6px);
 	width: 72px;
-	border-radius: 0;
+	border-radius: 4px;
 	border: 1px solid var(--wp--preset--color--contrast);
 	box-shadow: none;
 	padding: 16px 8px;
