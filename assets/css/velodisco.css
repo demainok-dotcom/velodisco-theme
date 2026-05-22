@@ -927,6 +927,9 @@ body.vd-cat--societe     { --vd-cat-color: var(--wp--preset--color--societe); }
 .vd-single__body .wp-block-image { position: relative; line-height: 0; }
 .vd-single__hero img,
 .vd-single__body .wp-block-image img { border-radius: 0; display: block; vertical-align: bottom; }
+/* La figure épouse EXACTEMENT la photo (sinon le cadre/tracé peut être plus large que
+ * l'image et déborder d'un côté). */
+.vd-single__body .wp-block-image { width: fit-content; max-width: 100%; }
 .vd-single__hero::after,
 .vd-single__body .wp-block-image::after {
 	content: ""; position: absolute; inset: 0; pointer-events: none;
