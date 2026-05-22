@@ -492,15 +492,11 @@ body {
 }
 
 @media (max-width: 900px) {
-	/* Liens du footer : retour à la ligne et regroupés à gauche sur petit écran. */
-	.vd-footer__nav {
-		flex-wrap: wrap;
-		justify-content: flex-start;
-		white-space: normal;
-		gap: 0.6rem 1.5rem;
-		min-height: 0;
-		padding: 0.9rem 20px;
-	}
+	/* Footer : on bascule en version MOBILE dès que la nav desktop ne tient plus
+	 * sur une seule ligne (≤900px), au lieu de la laisser passer sur deux lignes. */
+	.vd-footer__desktop { display: none; }
+	.vd-footer__mobile { display: block; }
+	.vd-footer__mobile .vd-footer__brand { font-size: clamp(24px, 7.2vw, 30px); }
 }
 
 /* ---- Footer mobile (≤720px) : layout dédié, calé sur le Figma 375×176 ---- */
@@ -529,11 +525,6 @@ body {
 .vd-footer__dots--sm { right: 12px; bottom: 13px; grid-template-columns: repeat(3, 8px); gap: 2px; }
 .vd-footer__dots--sm span { width: 8px; height: 8px; }
 
-@media (max-width: 720px) {
-	.vd-footer__desktop { display: none; }
-	.vd-footer__mobile { display: block; }
-	.vd-footer__mobile .vd-footer__brand { font-size: clamp(24px, 7.2vw, 30px); }
-}
 
 /* 7. CARTES & IMAGES (tracé catégorie) ------------------------------------- */
 /*
