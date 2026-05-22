@@ -67,10 +67,10 @@ function vd_title_html( $id, $class = '' ) {
 	return '<a class="vd-serif ' . esc_attr( $class ) . '" href="' . esc_url( get_permalink( $id ) ) . '">' . esc_html( get_the_title( $id ) ) . '</a>';
 }
 
-/** Extrait court. */
-function vd_excerpt_html( $id, $words = 22 ) {
-	$ex = get_the_excerpt( $id );
-	$ex = wp_trim_words( wp_strip_all_tags( $ex ), $words, '…' );
+/** Extrait COMPLET (plus de troncature : on affiche tout l'extrait saisi).
+ * Le 2e paramètre est conservé pour compat. mais n'est plus utilisé. */
+function vd_excerpt_html( $id, $words = 0 ) {
+	$ex = trim( wp_strip_all_tags( get_the_excerpt( $id ) ) );
 	return '<p class="vd-card__excerpt">' . esc_html( $ex ) . '</p>';
 }
 

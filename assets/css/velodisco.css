@@ -418,6 +418,7 @@ body {
 .vd-footer__brandrow {
 	display: flex;
 	align-items: flex-start;
+	justify-content: space-between; /* pousse le © au bord droit → aligné sous le logo TikTok */
 	gap: 18px;
 }
 .vd-footer__brand {
@@ -534,8 +535,16 @@ body {
  * Tracé 0.5px INSIDE en couleur de catégorie sur les images d'article.
  * On utilise box-shadow inset (n'ajoute pas à la taille = équivalent INSIDE).
  */
-.vd-img-stroke {
+/* Tracé dessiné PAR-DESSUS l'image via ::after (un box-shadow inset sur le lien
+ * lui-même est masqué par l'image qui occupe 100% de la vignette). */
+.vd-img-stroke { position: relative; }
+.vd-img-stroke::after {
+	content: "";
+	position: absolute;
+	inset: 0;
 	box-shadow: inset 0 0 0 0.5px var(--vd-stroke-color, var(--wp--preset--color--separator));
+	pointer-events: none;
+	z-index: 1;
 }
 .vd-img-stroke--velos { --vd-stroke-color: var(--wp--preset--color--velos); }
 .vd-img-stroke--accessoires { --vd-stroke-color: var(--wp--preset--color--accessoires); }
@@ -668,8 +677,8 @@ body {
 .vd-card__excerpt {
 	font-family: var(--wp--preset--font-family--inter, "Inter", sans-serif);
 	font-weight: 400;
-	font-size: 16px;
-	line-height: 19px;
+	font-size: 14px;
+	line-height: 18px;
 	color: #6C727F;
 	margin: 0.5rem 0 0;
 }
