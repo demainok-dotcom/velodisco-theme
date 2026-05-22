@@ -401,7 +401,7 @@ body {
 /* Bloc principal : identité (gauche, 341/1440 = 23.7%) + bande dégradée (droite) */
 .vd-footer__main {
 	display: grid;
-	grid-template-columns: minmax(330px, 23.7%) minmax(0, 1fr);
+	grid-template-columns: minmax(340px, 23.7%) minmax(0, 1fr);
 	align-items: stretch;
 	min-height: 147px;
 }
@@ -418,8 +418,10 @@ body {
 .vd-footer__brandrow {
 	display: flex;
 	align-items: flex-start;
-	justify-content: space-between; /* pousse le © au bord droit → aligné sous le logo TikTok */
-	gap: 18px;
+	justify-content: space-between; /* © au bord droit → aligné sous le logo TikTok */
+	/* PAS de gap forcé : avec space-between, un gap min faisait déborder le © au-delà
+	 * du bord droit (wordmark large + bloc étroit). L'espace wordmark↔© vient du space-between. */
+	gap: 8px;
 }
 .vd-footer__brand {
 	color: #FFFFFF;
@@ -644,7 +646,7 @@ body {
 	display: grid;
 	grid-template-columns: 286px minmax(0, 1fr) 374px;
 	column-gap: clamp(24px, 3vw, 44px);
-	align-items: start;
+	align-items: stretch; /* colonnes de hauteur égale → les traits séparateurs courent sur toute la hauteur */
 	padding-top: clamp(1.5rem, 3vw, 2.5rem);
 }
 

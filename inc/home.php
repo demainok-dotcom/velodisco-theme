@@ -119,8 +119,10 @@ function velodisco_render_home() {
 		$tend = array_merge( $tend, vd_query_ids( array( 'posts_per_page' => 3 - count( $tend ) ), $used ) );
 	}
 
-	// TOUT FRAIS = titres récents.
-	$frais = vd_query_ids( array( 'posts_per_page' => 16 ), $used );
+	// TOUT FRAIS = TOUS les articles récents (indépendant : on ne retire pas ceux
+	// déjà affichés en À la une / Derniers / Tendances → liste complète comme au Figma).
+	$usedfrais = array();
+	$frais     = vd_query_ids( array( 'posts_per_page' => -1, 'no_found_rows' => false ), $usedfrais );
 
 	// GRANDS FORMATS = catégorie dédiée (indépendant).
 	$usedgf = array();
