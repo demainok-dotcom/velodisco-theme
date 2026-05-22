@@ -110,8 +110,9 @@ function velodisco_render_home() {
 		$aune = ! empty( $ids ) ? $ids[0] : 0;
 	}
 
-	// DERNIERS ARTICLES = 4 récents.
-	$derniers = vd_query_ids( array( 'posts_per_page' => 4 ), $used );
+	// DERNIERS ARTICLES = 5 récents (desktop n'en montre que 4 en grille 2×2 ;
+	// le 5e n'apparaît qu'en mobile, où la section est une pile de cartes).
+	$derniers = vd_query_ids( array( 'posts_per_page' => 5 ), $used );
 
 	// TENDANCES = les plus vus (compteur maison) ; complété par des récents.
 	$tend = vd_query_ids( array( 'posts_per_page' => 3, 'meta_key' => 'vd_views', 'orderby' => 'meta_value_num', 'order' => 'DESC' ), $used );
@@ -217,6 +218,9 @@ function velodisco_render_home() {
 			<?php endif; ?>
 		</div>
 	</section>
+
+	<!-- Lien Mentions légales — affiché uniquement en mobile (cf. Figma Home Mobile) -->
+	<a class="vd-home-mentions" href="/mentions-legales/">Mentions légales</a>
 	<?php
 	return ob_get_clean();
 }

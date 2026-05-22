@@ -733,7 +733,12 @@ body {
 	column-gap: 21px;
 	row-gap: clamp(1.5rem, 3vw, 2.25rem);
 }
+/* Desktop : grille 2×2 → on n'affiche que 4 cartes (le 5e article est réservé au mobile). */
+.vd-derniers__grid > .vd-card:nth-child(n+5) { display: none; }
 .vd-card__title { font-family: var(--vd-serif); }
+
+/* Lien « Mentions légales » : présent dans le DOM mais visible uniquement en mobile. */
+.vd-home-mentions { display: none; }
 
 /* ---- Colonnes : espaces haut ET bas INTERNES → les bordures verticales touchent
  * la ligne du header (haut) et la ligne des Grands Formats (bas), sans gap. ---- */
@@ -789,14 +794,78 @@ body {
 
 .vd-empty { color: #6C727F; font-size: 14px; }
 
-/* ---- Responsive Home ---- */
+/* ---- Responsive Home : design MOBILE (Figma « Home — Mobile », base 375) ---- */
 @media (max-width: 1080px) {
-	.vd-home { grid-template-columns: 1fr; row-gap: 2.5rem; }
-	.vd-col { padding-top: 0; padding-bottom: 0; } /* colonnes empilées : pas d'espace interne (row-gap gère) */
-	.vd-col--frais, .vd-col--tend { border: 0; padding: 0; }
-	.vd-col--center { order: -1; }
-	.vd-gf { margin-top: 2.5rem; } /* empilé : on restaure une marge au-dessus des Grands Formats */
-	.vd-gf__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+	/* Pile verticale pleine largeur (images edge-to-edge), centrée sur tablette. */
+	.vd-home {
+		display: block;
+		max-width: 640px;
+		margin: 0 auto;
+		padding-inline: 0;
+		padding-top: 0;
+	}
+	/* Sections absentes du Home mobile */
+	.vd-col--frais,
+	.vd-col--tend,
+	.vd-gf { display: none; }
+
+	.vd-col { padding: 0; }
+	.vd-col--center { display: block; }
+
+	/* Filet de catégorie : en haut de l'image uniquement (pas le contour inset desktop) */
+	.vd-home .vd-img-stroke::after { display: none; }
+	.vd-aune__img.vd-img-stroke,
+	.vd-card__img.vd-img-stroke { border-top: 1px solid var(--vd-stroke-color); }
+
+	/* Labels de section */
+	.vd-home .vd-sectitle { padding: 20px 20px 0; margin: 0 0 8px; }
+	.vd-aune > .vd-sectitle { font-size: 16px; font-weight: 700; }
+
+	/* ===== Carte À LA UNE (lead) ===== */
+	.vd-aune {
+		margin-bottom: 0;
+		padding-bottom: 20px;
+		border-bottom: 1px solid var(--wp--preset--color--separator);
+	}
+	.vd-aune > .vd-tag {
+		padding-inline: 20px;
+		margin: 0 0 8px;
+		font-size: 11px; line-height: 13px; font-weight: 600;
+	}
+	.vd-aune__title {
+		padding-inline: 20px;
+		margin: 0 0 12px;
+		font-size: 17px; line-height: 21px;
+	}
+	.vd-aune__img { aspect-ratio: 375 / 210; }
+	.vd-aune__foot { padding: 12px 20px 0; }
+	.vd-aune__foot .vd-card__excerpt { margin: 0 0 8px; }
+	.vd-aune__foot .vd-card__date { margin: 0; font-size: 11px; }
+
+	/* ===== DERNIERS ARTICLES (pile de cartes) ===== */
+	.vd-derniers__grid { grid-template-columns: 1fr; gap: 24px; }
+	.vd-derniers__grid > .vd-card:nth-child(n+5) { display: flex; } /* on montre le 5e en mobile */
+	.vd-derniers .vd-card { display: flex; flex-direction: column; }
+	.vd-derniers .vd-card > .vd-tag { order: 1; padding-inline: 20px; margin: 0 0 8px;  font-size: 11px; line-height: 13px; font-weight: 600; }
+	.vd-derniers .vd-card__title    { order: 2; padding-inline: 20px; margin: 0 0 12px; font-size: 17px; line-height: 21px; }
+	.vd-derniers .vd-card__img      { order: 3; aspect-ratio: 375 / 200; }
+	.vd-derniers .vd-card__excerpt  { order: 4; padding-inline: 20px; margin: 12px 0 8px; }
+	.vd-derniers .vd-card__date     { order: 5; padding-inline: 20px; margin: 0; font-size: 11px; }
+
+	/* ===== Lien Mentions légales (mobile uniquement) ===== */
+	.vd-home-mentions {
+		display: block;
+		text-align: center;
+		padding: 22px 20px;
+		font-family: var(--wp--preset--font-family--inter, "Inter", sans-serif);
+		font-weight: 600;
+		font-size: 10px;
+		line-height: 12px;
+		text-transform: uppercase;
+		text-decoration: underline;
+		color: var(--wp--preset--color--contrast);
+		border-bottom: 1px solid var(--wp--preset--color--separator);
+	}
 }
 @media (max-width: 560px) {
 	.vd-derniers__grid { grid-template-columns: 1fr; }
