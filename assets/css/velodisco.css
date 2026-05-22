@@ -885,7 +885,10 @@ body {
 }
 
 /* RESPONSIVE : bascule mobile -------------------------------------------- */
-@media (max-width: 900px) {
+/* Header en burger dès ≤1080px (même seuil que la Home) : au-delà, la grille
+ * 3 colonnes a la place de garder une distance confortable entre les catégories
+ * et le logo centré ; en dessous, les catégories frôleraient « VeloDisco ». */
+@media (max-width: 1080px) {
 	.vd-header__nav--right .vd-nav__link {
 		display: none; /* les liens passent dans le burger */
 	}
@@ -900,6 +903,6 @@ body {
 	.vd-header__nav--right { grid-column: 3; }
 }
 
-@media (min-width: 901px) {
+@media (min-width: 1081px) {
 	.vd-mobile-nav { display: none; }
 }
