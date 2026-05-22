@@ -111,12 +111,6 @@ body {
 	position: sticky;
 	top: 0;
 	z-index: 100;
-	/* Décalage progressif du groupe de droite vers le centre quand la fenêtre rétrécit :
-	 * 0 en grand écran (groupes collés aux bords, logo centré = Figma), puis grandit
-	 * jusqu'à ~135px à 1080px pour que l'écart droite == l'écart gauche (Société↔logo)
-	 * juste avant la bascule burger. 135 = (largeur groupe gauche − droite) À AJUSTER ;
-	 * 0.375 = 135 / (1440−1080). */
-	--vd-rshift: clamp(0px, calc((1440px - 100vw) * 0.375), 135px);
 	background-color: var(--wp--preset--color--base);
 	border-bottom: 1px solid var(--wp--preset--color--separator);
 	min-height: var(--vd-header-h);
@@ -159,13 +153,14 @@ body {
 }
 
 .vd-header__nav--left { grid-column: 1; justify-self: start; gap: clamp(14px, 1.8vw, 25px); }
-.vd-header__nav--right { grid-column: 3; justify-self: end; gap: clamp(16px, 3.2vw, 46px); margin-right: var(--vd-rshift, 0px); }
+.vd-header__nav--right { grid-column: 3; justify-self: end; gap: clamp(16px, 3.2vw, 46px); }
 
 .vd-nav__link {
 	position: relative;
 	color: var(--wp--preset--color--contrast);
 	text-decoration: none;
 	padding-block: 0.35rem;
+	white-space: nowrap; /* « Grands Formats » reste sur une seule ligne */
 	transition: opacity var(--vd-t-fast) var(--vd-ease);
 }
 
@@ -306,9 +301,9 @@ body {
 	pointer-events: auto;
 }
 
-/* Popover recherche (pill 260×50) — suit le décalage du groupe de droite */
+/* Popover recherche (pill 260×50) */
 .vd-search-pop {
-	right: calc(clamp(1rem, 5vw, 2rem) + var(--vd-rshift, 0px));
+	right: clamp(1rem, 5vw, 2rem);
 	top: calc(var(--vd-header-h) - 6px);
 	width: 260px;
 	border-radius: var(--vd-pill);
@@ -330,7 +325,7 @@ body {
 
 /* Dropdown réglage thème — fidèle au Figma : 72px, coins nets, bordure contrastée */
 .vd-theme-menu {
-	right: calc(clamp(1rem, 5vw, 2rem) + var(--vd-rshift, 0px));
+	right: clamp(1rem, 5vw, 2rem);
 	top: calc(var(--vd-header-h) - 6px);
 	width: 72px;
 	border-radius: 4px;
@@ -895,8 +890,6 @@ body {
  * 3 colonnes a la place de garder une distance confortable entre les catégories
  * et le logo centré ; en dessous, les catégories frôleraient « VeloDisco ». */
 @media (max-width: 1080px) {
-	/* En burger : plus de décalage du groupe de droite (loupe/burger restent au bord). */
-	.vd-header { --vd-rshift: 0px; }
 	.vd-header__nav--right .vd-nav__link {
 		display: none; /* les liens passent dans le burger */
 	}
