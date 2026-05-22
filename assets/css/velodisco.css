@@ -913,8 +913,23 @@ body {
 /* Date : alignée à gauche, gris */
 .vd-single__date { text-align: left; color: #6C727F; }
 
-/* Image hero : pleine largeur du contenu, coins arrondis */
-.vd-single__hero img { width: 100%; height: auto; display: block; border-radius: 8px; }
+/* Image hero : pleine largeur du contenu, coins CARRÉS + tracé 1px par catégorie */
+.vd-single__hero { position: relative; }
+.vd-single__hero img { width: 100%; height: auto; display: block; border-radius: 0; }
+.vd-single__hero::after { content: ""; position: absolute; inset: 0; pointer-events: none; }
+/* Tracé couleur 1px (solide) selon la catégorie */
+body.vd-cat--velos       .vd-single__hero::after { box-shadow: inset 0 0 0 1px var(--wp--preset--color--velos); }
+body.vd-cat--accessoires .vd-single__hero::after { box-shadow: inset 0 0 0 1px var(--wp--preset--color--accessoires); }
+body.vd-cat--composants  .vd-single__hero::after { box-shadow: inset 0 0 0 1px var(--wp--preset--color--composants); }
+body.vd-cat--vetements   .vd-single__hero::after { box-shadow: inset 0 0 0 1px var(--wp--preset--color--vetements); }
+body.vd-cat--societe     .vd-single__hero::after { box-shadow: inset 0 0 0 1px var(--wp--preset--color--societe); }
+/* Grands Formats : tracé 1px en DÉGRADÉ (technique du masque) */
+body.vd-cat--grands-formats .vd-single__hero::after {
+	padding: 1px;
+	background: var(--wp--preset--gradient--grands-formats);
+	-webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+	-webkit-mask-composite: xor; mask-composite: exclude;
+}
 
 /* Corps de l'article (contenu Gutenberg) */
 .vd-single__body p { font-size: 16px; line-height: 1.65; color: var(--wp--preset--color--contrast); margin: 0 0 1.1rem; }
