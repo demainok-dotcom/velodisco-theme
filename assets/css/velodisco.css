@@ -890,6 +890,77 @@ body {
 	.vd-gf__all { justify-self: start; }
 }
 
+/* 9c. ARTICLE (single / Blog Page) ---------------------------------------- */
+.vd-single { padding-inline: clamp(20px, 5vw, 24px); }
+
+/* Étiquette catégorie : centrée sous le header (GF = gradient, autres = couleur) */
+.vd-single__cat { text-align: center; margin: 0 0 0.75rem; }
+.vd-single__cat a { font-weight: 600; text-decoration: none; letter-spacing: 0; }
+.vd-single__cat .vd-term--velos { color: var(--wp--preset--color--velos); }
+.vd-single__cat .vd-term--accessoires { color: var(--wp--preset--color--accessoires); }
+.vd-single__cat .vd-term--composants { color: var(--wp--preset--color--composants); }
+.vd-single__cat .vd-term--vetements { color: var(--wp--preset--color--vetements); }
+.vd-single__cat .vd-term--societe { color: var(--wp--preset--color--societe); }
+.vd-single__cat .vd-term--grands-formats {
+	background: var(--wp--preset--gradient--grands-formats);
+	-webkit-background-clip: text; background-clip: text;
+	-webkit-text-fill-color: transparent; color: transparent;
+}
+
+/* Titre : Merriweather gras, aligné à gauche */
+.vd-single__title { font-family: var(--vd-serif); font-weight: 700; text-align: left; }
+
+/* Date : alignée à gauche, gris */
+.vd-single__date { text-align: left; color: #6C727F; }
+
+/* Image hero : pleine largeur du contenu, coins arrondis */
+.vd-single__hero img { width: 100%; height: auto; display: block; border-radius: 8px; }
+
+/* Corps de l'article (contenu Gutenberg) */
+.vd-single__body p { font-size: 16px; line-height: 1.65; color: var(--wp--preset--color--contrast); margin: 0 0 1.1rem; }
+.vd-single__body h2 { font-family: var(--vd-serif); font-weight: 700; font-size: 24px; line-height: 1.3; margin: 2rem 0 0.75rem; }
+.vd-single__body h3 { font-family: var(--wp--preset--font-family--inter, "Inter", sans-serif); font-weight: 600; font-size: 18px; line-height: 1.35; margin: 1.5rem 0 0.5rem; }
+.vd-single__body ul, .vd-single__body ol { margin: 0 0 1.1rem 1.25rem; padding: 0; }
+.vd-single__body li { font-size: 16px; line-height: 1.65; color: var(--wp--preset--color--contrast); margin: 0.3rem 0; }
+.vd-single__body a { color: var(--wp--preset--color--vetements); text-decoration: underline; }
+
+/* Bouton RETOUR : pill à bord dégradé + texte dégradé, fond transparent (à droite) */
+.vd-single__retour {
+	position: relative;
+	display: inline-flex;
+	align-items: center;
+	padding: 7px 22px;
+	border-radius: 999px;
+	font-family: var(--wp--preset--font-family--inter, "Inter", sans-serif);
+	font-weight: 600; font-size: 12px; line-height: 15px;
+	text-transform: uppercase; text-decoration: none;
+	background: var(--wp--preset--gradient--grands-formats);
+	-webkit-background-clip: text; background-clip: text;
+	-webkit-text-fill-color: transparent; color: transparent;
+}
+.vd-single__retour::before {
+	content: ""; position: absolute; inset: 0;
+	border-radius: 999px; padding: 1px;
+	background: var(--wp--preset--gradient--grands-formats);
+	-webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+	-webkit-mask-composite: xor; mask-composite: exclude;
+}
+
+/* ---- Fonds dégradés subtils par catégorie (relevé Figma, Victor gère/ajuste) ---- */
+body[class*="vd-cat--"] { background-repeat: no-repeat; }
+body.vd-cat--velos        { background-image: linear-gradient(180deg, rgba(219,63,12,0.04) 0%, transparent 41%); }
+body.vd-cat--accessoires  { background-image: linear-gradient(180deg, rgba(27,143,41,0.04) 0%, transparent 29%); }
+body.vd-cat--composants   { background-image: linear-gradient(180deg, rgba(214,150,0,0.04) 0%, transparent 46%); }
+body.vd-cat--vetements    { background-image: linear-gradient(180deg, rgba(0,145,194,0.04) 0%, transparent 39%); }
+body.vd-cat--societe      { background-image: linear-gradient(180deg, rgba(47,0,216,0.02) 0%, transparent 34%); }
+body.vd-cat--grands-formats { background-image: linear-gradient(180deg, rgba(242,78,30,0.10) 0%, rgba(11,195,124,0.10) 29.3%, rgba(26,188,254,0.10) 73.6%, rgba(255,178,0,0.10) 100%); }
+[data-theme="dark"] body.vd-cat--velos        { background-image: linear-gradient(180deg, rgba(219,63,12,0.25) 0%, transparent 54%); }
+[data-theme="dark"] body.vd-cat--accessoires  { background-image: linear-gradient(180deg, rgba(27,143,41,0.25) 0%, transparent 100%); }
+[data-theme="dark"] body.vd-cat--composants   { background-image: linear-gradient(180deg, rgba(214,150,0,0.25) 0%, transparent 54%); }
+[data-theme="dark"] body.vd-cat--vetements    { background-image: linear-gradient(180deg, rgba(0,145,194,0.25) 0%, transparent 100%); }
+[data-theme="dark"] body.vd-cat--societe      { background-image: linear-gradient(180deg, rgba(47,0,216,0.25) 0%, transparent 100%); }
+[data-theme="dark"] body.vd-cat--grands-formats { background-image: linear-gradient(180deg, rgba(242,78,30,0.20) 0%, rgba(11,195,124,0.20) 31.3%, rgba(26,188,254,0.20) 67.8%, rgba(255,178,0,0.20) 100%); }
+
 /* 9. ACCESSIBILITÉ --------------------------------------------------------- */
 :where(a, button, input, [tabindex]):focus-visible {
 	outline: 2px solid var(--wp--preset--color--vetements);

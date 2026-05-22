@@ -148,6 +148,22 @@ function velodisco_colorize_post_terms( $block_content, $block ) {
 add_filter( 'render_block_core/post-terms', 'velodisco_colorize_post_terms', 10, 2 );
 
 /**
+ * Ajoute une classe vd-cat--{slug} sur le <body> des articles, d'après leur
+ * catégorie principale, pour appliquer le fond dégradé subtil par catégorie
+ * (Grands Formats = arc-en-ciel, Vélos = rouge→blanc, etc.).
+ */
+function velodisco_body_category_class( $classes ) {
+	if ( is_singular( 'post' ) ) {
+		$cats = get_the_category();
+		if ( ! empty( $cats ) ) {
+			$classes[] = 'vd-cat--' . sanitize_html_class( $cats[0]->slug );
+		}
+	}
+	return $classes;
+}
+add_filter( 'body_class', 'velodisco_body_category_class' );
+
+/**
  * Compteur de vues maison (sans plugin) : incrémente la meta vd_views à chaque
  * lecture d'un article. Sert au tri « Tendances » (les plus populaires).
  * NB : si une page article est servie depuis le cache Varnish, le PHP ne tourne
