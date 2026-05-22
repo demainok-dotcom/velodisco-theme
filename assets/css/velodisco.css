@@ -910,8 +910,9 @@ body {
 /* Titre : Merriweather gras, aligné à gauche */
 .vd-single__title { font-family: var(--vd-serif); font-weight: 700; text-align: left; }
 
-/* Date : alignée à gauche, gris */
-.vd-single__date { text-align: left; color: #6C727F; }
+/* Date : alignée à gauche, NOIR (#000) en clair, off-white en sombre */
+.vd-single__date { text-align: left; color: #000000; }
+[data-theme="dark"] .vd-single__date { color: var(--wp--preset--color--off-white, #F5F5F0); }
 
 /* Couleur de catégorie partagée (pour tracés d'images), posée sur le body */
 body.vd-cat--velos       { --vd-cat-color: var(--wp--preset--color--velos); }
