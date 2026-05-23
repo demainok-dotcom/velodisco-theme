@@ -201,7 +201,7 @@
 	function renderLoop() {
 		var diff = targetOffset - renderedOffset;
 		if (Math.abs(diff) < 0.5) { renderedOffset = targetOffset; }
-		else { renderedOffset += diff * 0.18; }   // lissage (plus petit = plus doux)
+		else { renderedOffset += diff * 0.14; }   // lissage (plus petit = plus doux)
 		paint(renderedOffset);
 		if (renderedOffset !== targetOffset) { window.requestAnimationFrame(renderLoop); }
 		else { rafRunning = false; }
