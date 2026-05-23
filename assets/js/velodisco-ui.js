@@ -172,53 +172,71 @@
 	/* ------------------------------------------------------------------ */
 	var vdHeader = document.querySelector('.vd-header');
 	var mqMobile = window.matchMedia ? window.matchMedia('(max-width: 1080px)') : null;
-	var lastY = window.pageYOffset || document.documentElement.scrollTop || 0;
-	var scrollTicking = false;
-	var SCROLL_THRESHOLD = 6; // ignore les micro-mouvements / rebonds
 
-	function updateHeaderOnScroll() {
-		scrollTicking = false;
+	function isMobile() { return mqMobile ? mqMobile.matches : false; }
+	function burgerOpen() { return burgerPanel && burgerPanel.classList.contains('is-open'); }
+	function scrollY() { return window.pageYOffset || document.documentElement.scrollTop || 0; }
+
+	function showHeader() { if (vdHeader) { vdHeader.classList.remove('is-hidden'); } }
+	function hideHeader() {
 		if (!vdHeader) { return; }
-		var y = window.pageYOffset || document.documentElement.scrollTop || 0;
-
-		// Hors mobile : header toujours visible.
-		if (!mqMobile || !mqMobile.matches) {
-			vdHeader.classList.remove('is-hidden');
-			lastY = y;
-			return;
-		}
-
-		// Tout en haut → toujours visible.
-		if (y <= 0) {
-			vdHeader.classList.remove('is-hidden');
-			lastY = y;
-			return;
-		}
-
-		// Menu burger ouvert → ne pas toucher au header.
-		if (burgerPanel && burgerPanel.classList.contains('is-open')) {
-			lastY = y;
-			return;
-		}
-
-		var dy = y - lastY;
-		if (Math.abs(dy) <= SCROLL_THRESHOLD) { return; }
-
-		if (dy > 0 && y > vdHeader.offsetHeight) {
-			// On descend → masquer (et refermer les popovers ouverts).
+		// Ne masque que si on a dépassé la hauteur du header et hors menu ouvert.
+		if (scrollY() > vdHeader.offsetHeight && !burgerOpen()) {
 			vdHeader.classList.add('is-hidden');
 			closeAllPopovers(null);
-		} else if (dy < 0) {
-			// On remonte → réafficher.
-			vdHeader.classList.remove('is-hidden');
+		}
+	}
+
+	/* Détection par GESTE TACTILE (signal le plus fiable sur mobile : indépendant
+	 * des sauts de scrollY dus à la barre d'adresse qui apparaît/disparaît).
+	 * Doigt qui glisse vers le BAS = on remonte la page → réafficher le header. */
+	var touchStartY = null;
+	var TOUCH_THRESHOLD = 10;
+	window.addEventListener('touchstart', function (e) {
+		touchStartY = e.touches && e.touches.length ? e.touches[0].clientY : null;
+	}, { passive: true });
+	window.addEventListener('touchmove', function (e) {
+		if (!vdHeader || !isMobile() || touchStartY === null || burgerOpen()) { return; }
+		if (!e.touches || !e.touches.length) { return; }
+		var cy = e.touches[0].clientY;
+		var diff = cy - touchStartY;
+		if (diff > TOUCH_THRESHOLD) {            // doigt vers le bas → on remonte → afficher
+			showHeader();
+			touchStartY = cy;
+		} else if (diff < -TOUCH_THRESHOLD) {    // doigt vers le haut → on descend → masquer
+			hideHeader();
+			touchStartY = cy;
+		}
+	}, { passive: true });
+
+	/* Fallback par défilement (souris/molette, momentum, et toujours afficher en
+	 * haut de page). Met à jour lastY à chaque frame (robuste). */
+	var lastY = scrollY();
+	var scrollTicking = false;
+	function onScrollFrame() {
+		scrollTicking = false;
+		if (!vdHeader) { return; }
+		var y = scrollY();
+		if (!isMobile() || y <= vdHeader.offsetHeight || burgerOpen()) {
+			showHeader();
+		} else if (y < lastY - 4) {
+			showHeader();          // remontée
+		} else if (y > lastY + 4) {
+			hideHeader();          // descente
 		}
 		lastY = y;
 	}
-
 	window.addEventListener('scroll', function () {
 		if (!scrollTicking) {
-			window.requestAnimationFrame(updateHeaderOnScroll);
+			window.requestAnimationFrame(onScrollFrame);
 			scrollTicking = true;
 		}
 	}, { passive: true });
+
+	// Si on repasse en desktop (rotation/redimensionnement), header toujours visible.
+	if (mqMobile) {
+		var onMq = function () { if (!mqMobile.matches) { showHeader(); } };
+		if (mqMobile.addEventListener) { mqMobile.addEventListener('change', onMq); }
+		else if (mqMobile.addListener) { mqMobile.addListener(onMq); }
+	}
 })();
