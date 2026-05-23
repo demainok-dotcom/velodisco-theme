@@ -1146,6 +1146,9 @@ body {
 	margin: 0 0 clamp(1.5rem, 4vw, 2.5rem);
 	color: var(--wp--preset--color--contrast);
 }
+/* Page 404 (Figma « Page 404 ») : même gabarit que l'état vide mais le grand nombre
+ * est en Merriweather 200px (vs 100px pour « Rien trouvé »). */
+.vd-404 .vd-search__empty-big { font-size: clamp(90px, 22vw, 200px); }
 /* Dessin du vélo : SVG externe (assets/images/velo-creve.svg, tracés noirs sur fond
  * transparent) utilisé comme MASQUE → peint avec la couleur « contrast » pour s'adapter
  * au dark/light, exactement comme l'ancien placeholder en currentColor. Ratio Figma 320×160. */
