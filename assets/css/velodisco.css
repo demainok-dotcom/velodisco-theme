@@ -152,14 +152,17 @@ body {
 
 /* Wordmark découpé en lettres : chaque lettre part de sa couleur disco (--c) et fond vers
  * le noir (couleur de repos = contrast → off-white en sombre) au chargement.
- * Desktop : 3s en LINÉAIRE (pour que le fondu dure vraiment 3s — l'easing par défaut est
- * très « ease-out » et donnerait l'illusion d'un fondu bien plus court).
+ * Desktop : 2s en LINÉAIRE (l'easing par défaut est très « ease-out » et donnerait
+ * l'illusion d'un fondu bien plus court ; le linéaire fait durer le fondu vraiment 2s).
  * Mobile/intermédiaire : 2s + easing des pastilles (cf. média query ≤1080). */
 .vd-header__wordmark { white-space: nowrap; }
 .vd-logo-l {
 	color: var(--wp--preset--color--contrast);
-	animation: vd-logo-letters 3s linear backwards;
+	animation: vd-logo-letters 2s linear backwards;
 }
+/* Au clic sur le logo (retour accueil) : les lettres reprennent leur couleur disco le temps
+ * que la navigation se fasse (~0,5s perçu avant le chargement de la page d'accueil). */
+.vd-header__logo:active .vd-logo-l { color: var(--c, #EE2A00); }
 
 /* Pastilles disco (6 ronds 8.45px, grille 3×2) — masquées en desktop, apparaissent
  * en fondu en version mobile/tablette (cf. demande Victor). Mesures exactes Figma. */
