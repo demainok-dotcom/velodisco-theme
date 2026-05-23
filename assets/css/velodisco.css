@@ -154,13 +154,10 @@ body {
  * à-coup) entre une couche couleur « disco » et la couche finale noire. Au chargement, la
  * couche couleur se fond (opacité 1→0, 2s linéaire) pour révéler la couche noire (= contrast,
  * off-white en sombre). Uniquement au chargement, pas de réaction au clic, pas de contour. */
-.vd-header__wordmark { position: relative; white-space: nowrap; }
-.vd-wm { display: inline-block; }
+.vd-header__wordmark { display: inline-grid; white-space: nowrap; }
+.vd-wm { grid-area: 1 / 1; } /* les deux couches dans la MÊME cellule → superposition parfaite */
 .vd-wm--ink { color: var(--wp--preset--color--contrast); }
 .vd-wm--disco {
-	position: absolute;
-	left: 0;
-	top: 0;
 	pointer-events: none;
 	animation: vd-logo-fade 2s linear forwards;
 }
@@ -1131,13 +1128,45 @@ body {
 	color: var(--wp--preset--color--contrast);
 }
 
-.vd-search__empty { text-align: center; padding: clamp(2rem, 6vw, 4rem) 20px; }
-.vd-search__empty-title { font-family: var(--vd-serif); font-weight: 700; font-size: clamp(24px, 4vw, 32px); margin: 0 0 0.5rem; color: var(--wp--preset--color--contrast); }
-.vd-search__empty-sub { font-size: 16px; line-height: 1.5; color: #6C727F; margin: 0; }
+/* État « Aucun résultat » (Figma « Page Aucun Résultat ») : grand « Rien trouvé »,
+ * dessin du vélo crevé (placeholder), sous-titre, bouton retour accueil. */
+.vd-search__empty { text-align: center; padding: clamp(2rem, 6vw, 4rem) 20px clamp(3rem, 8vw, 5rem); }
+.vd-search__empty-big {
+	font-family: var(--vd-serif); font-weight: 700;
+	font-size: clamp(56px, 12vw, 100px); line-height: 1.1;
+	margin: 0 0 clamp(1.5rem, 4vw, 2.5rem);
+	color: var(--wp--preset--color--contrast);
+}
+.vd-search__empty-img {
+	display: block; width: clamp(200px, 30vw, 320px); height: auto;
+	margin: 0 auto clamp(1.5rem, 4vw, 2.5rem);
+	color: var(--wp--preset--color--contrast);
+}
+.vd-search__empty-sub {
+	font-family: var(--vd-serif); font-weight: 700;
+	font-size: clamp(22px, 3vw, 36px); line-height: 1.25;
+	margin: 0 0 clamp(1.5rem, 3vw, 2rem);
+	color: var(--wp--preset--color--contrast);
+}
+.vd-search__empty-btn {
+	display: inline-block;
+	padding: 18px 28px;
+	border: 1px solid var(--wp--preset--color--contrast);
+	border-radius: 6px;
+	font-family: var(--wp--preset--font-family--inter, "Inter", sans-serif);
+	font-weight: 700; font-size: 13px; line-height: 16px;
+	text-transform: uppercase; letter-spacing: 0.02em; text-decoration: none;
+	color: var(--wp--preset--color--contrast);
+	transition: background-color var(--vd-t-base) var(--vd-ease), color var(--vd-t-base) var(--vd-ease);
+}
+.vd-search__empty-btn:hover { background: var(--wp--preset--color--contrast); color: var(--wp--preset--color--base); }
 
-/* Mobile : marge latérale pour le champ + l'en-tête (les cartes restent edge-to-edge). */
+/* Mobile : marge latérale pour le champ + l'en-tête (les cartes restent edge-to-edge).
+ * Le champ utilise une MARGE (pas un padding) pour que l'icône loupe, positionnée dans
+ * le form, reste alignée à l'intérieur du champ. */
 @media (max-width: 560px) {
-	.vd-search__form, .vd-search__head { padding-inline: 20px; box-sizing: border-box; }
+	.vd-search__form { margin-inline: 20px; }
+	.vd-search__head { padding-inline: 20px; box-sizing: border-box; }
 }
 
 /* 9c. ARTICLE (single / Blog Page) ---------------------------------------- */
