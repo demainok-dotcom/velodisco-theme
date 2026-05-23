@@ -35,9 +35,26 @@ function velodisco_render_actu( $attrs = array(), $content = '' ) {
 		'ignore_sticky_posts' => true,
 	) );
 
+	// --- DIAGNOSTIC TEMPORAIRE (à retirer) ---
+	$test_ids = get_posts( array(
+		'post_type'      => 'post',
+		'post_status'    => 'publish',
+		'posts_per_page' => 5,
+		'fields'         => 'ids',
+		'suppress_filters' => true,
+	) );
+
 	ob_start();
 	?>
 	<section class="vd-actu">
+
+		<p style="margin:0 0 16px;padding:10px;background:#fffae6;border:1px solid #e0c200;font:13px/1.5 monospace;color:#000;">
+			DEBUG — publiés (wp_count_posts): <?php echo (int) wp_count_posts( 'post' )->publish; ?>
+			| trouvés par la requête principale: <?php echo (int) $q->found_posts; ?> (post_count <?php echo (int) $q->post_count; ?>)
+			| requête test type Home (get_posts): <?php echo count( $test_ids ); ?>
+			| paged: <?php echo (int) $paged; ?>
+			| helper vd_thumb_html: <?php echo function_exists( 'vd_thumb_html' ) ? 'OUI' : 'NON'; ?>
+		</p>
 
 		<div class="vd-actu__head">
 			<span class="vd-actu__crumb">Actu</span>
