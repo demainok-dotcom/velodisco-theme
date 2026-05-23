@@ -109,20 +109,27 @@ function velodisco_render_contact( $attrs = array(), $content = '' ) {
 	<section class="vd-contact__wrap">
 
 		<?php if ( $state['sent'] ) : ?>
-			<p class="vd-contact__notice vd-contact__notice--ok" role="status">
-				Merci, votre message a bien été envoyé. Nous vous répondrons rapidement.
-			</p>
-		<?php endif; ?>
 
-		<?php if ( ! empty( $state['errors'] ) ) : ?>
-			<div class="vd-contact__notice vd-contact__notice--err" role="alert">
-				<?php foreach ( $state['errors'] as $err ) : ?>
-					<p><?php echo esc_html( $err ); ?></p>
-				<?php endforeach; ?>
+			<div class="vd-contact__confirm" role="status">
+				<svg class="vd-check" viewBox="0 0 120 120" fill="none" aria-hidden="true">
+					<circle class="vd-check__circle" cx="60" cy="60" r="54" pathLength="1" stroke="currentColor" stroke-width="3"/>
+					<path class="vd-check__tick" d="M38 61 L53 75 L84 44" pathLength="1" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+				</svg>
+				<p class="vd-search__empty-sub">Votre message a bien été envoyé</p>
+				<a class="vd-search__empty-btn" href="<?php echo esc_url( home_url( '/' ) ); ?>">Retour à l'accueil</a>
 			</div>
-		<?php endif; ?>
 
-		<form class="vd-contact__form" method="post" action="<?php echo $action; // phpcs:ignore WordPress.Security.EscapeOutput ?>" novalidate>
+		<?php else : ?>
+
+			<?php if ( ! empty( $state['errors'] ) ) : ?>
+				<div class="vd-contact__notice vd-contact__notice--err" role="alert">
+					<?php foreach ( $state['errors'] as $err ) : ?>
+						<p><?php echo esc_html( $err ); ?></p>
+					<?php endforeach; ?>
+				</div>
+			<?php endif; ?>
+
+			<form class="vd-contact__form" method="post" action="<?php echo $action; // phpcs:ignore WordPress.Security.EscapeOutput ?>" novalidate>
 
 			<p class="vd-field">
 				<label class="vd-field__label vd-c-velos" for="vd-nom">Nom</label>
@@ -153,6 +160,8 @@ function velodisco_render_contact( $attrs = array(), $content = '' ) {
 			<input type="hidden" name="vd_contact_nonce" value="<?php echo esc_attr( $nonce ); ?>">
 			<button class="vd-contact__btn" type="submit" name="vd_contact_submit" value="1">Envoyer</button>
 		</form>
+
+		<?php endif; ?>
 
 	</section>
 	<?php

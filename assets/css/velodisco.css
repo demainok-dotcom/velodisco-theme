@@ -1280,6 +1280,33 @@ body {
 /* Honeypot : invisible aux humains, hors flux, non focusable visuellement */
 .vd-hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
 
+/* État de confirmation (après envoi) : coche tracée à la main + message + bouton.
+ * Remplace le formulaire ; le grand titre « CONTACT » est masqué dans cet état. */
+.vd-contact:has(.vd-contact__confirm) > .wp-block-post-title { display: none; }
+.vd-contact__confirm {
+	text-align: center;
+	padding: clamp(2.5rem, 8vw, 6rem) 20px clamp(2rem, 5vw, 3rem);
+	display: flex; flex-direction: column; align-items: center;
+}
+.vd-contact__confirm .vd-search__empty-sub { margin-top: clamp(1.5rem, 4vw, 2.5rem); }
+.vd-contact__confirm .vd-search__empty-btn { margin-top: clamp(1.25rem, 3vw, 2rem); }
+
+/* La coche : cercle 120px puis coche, dessinés au trait via stroke-dashoffset.
+ * pathLength="1" normalise la longueur → dasharray/offset = 1, animés vers 0. */
+.vd-check { width: 120px; height: 120px; display: block; color: var(--wp--preset--color--contrast); }
+.vd-check__circle, .vd-check__tick {
+	fill: none;
+	stroke-dasharray: 1; stroke-dashoffset: 1;
+}
+.vd-check__circle { animation: vd-trace 0.9s var(--vd-ease) 0.15s forwards; }
+.vd-check__tick   { animation: vd-trace 0.45s var(--vd-ease) 0.95s forwards; }
+@keyframes vd-trace { to { stroke-dashoffset: 0; } }
+
+/* Accessibilité : pas d'animation si l'utilisateur la refuse → coche affichée d'emblée. */
+@media (prefers-reduced-motion: reduce) {
+	.vd-check__circle, .vd-check__tick { animation: none; stroke-dashoffset: 0; }
+}
+
 /* 9c. ARTICLE (single / Blog Page) ---------------------------------------- */
 .vd-single { padding-inline: clamp(20px, 5vw, 24px); }
 
