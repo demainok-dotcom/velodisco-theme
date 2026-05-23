@@ -115,7 +115,8 @@ body {
 	border-bottom: 1px solid var(--wp--preset--color--separator);
 	min-height: var(--vd-header-h);
 	transition: background-color var(--vd-t-base) var(--vd-ease),
-		border-color var(--vd-t-base) var(--vd-ease);
+		border-color var(--vd-t-base) var(--vd-ease),
+		transform var(--vd-t-base) var(--vd-ease);
 }
 
 .vd-header__inner {
@@ -1547,6 +1548,17 @@ body.vd-cat--grands-formats { background-image: linear-gradient(180deg, rgba(242
 	.vd-header__nav--right .vd-iconbtn[data-popover-target="vd-theme-menu"] { display: none; }
 	/* Pastilles disco : apparaissent en fondu à côté de « VeloDisco ». */
 	.vd-header__dots { display: grid; animation: vd-fade-in 2s var(--vd-ease, ease) both; }
+
+	/* Header plus court sur mobile : on réduit UNIQUEMENT la hauteur (l'espace
+	 * haut), pas la taille du logo ni du burger. La var pilote aussi le calage
+	 * des popovers, donc tout reste aligné. */
+	:root { --vd-header-h: 56px; }
+
+	/* Auto-hide : masqué en glissant vers le haut quand on scrolle vers le bas,
+	 * réaffiché au scroll vers le haut (classe .is-hidden posée par le JS).
+	 * Le transform n'existe QUE dans cet état → pas de containing-block parasite
+	 * pour l'overlay burger (position:fixed) quand le header est visible. */
+	.vd-header.is-hidden { transform: translateY(-100%); }
 }
 
 @media (min-width: 1081px) {

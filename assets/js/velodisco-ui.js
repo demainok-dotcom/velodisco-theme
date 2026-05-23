@@ -127,6 +127,8 @@
 
 	function openBurger() {
 		if (!burgerPanel) { return; }
+		// Garde-fou : header visible (pas de transform) tant que l'overlay est ouvert.
+		if (vdHeader) { vdHeader.classList.remove('is-hidden'); }
 		burgerPanel.classList.add('is-open');
 		burgerPanel.setAttribute('aria-hidden', 'false');
 		document.body.style.overflow = 'hidden';
@@ -164,4 +166,59 @@
 			window.history.back();
 		}
 	});
+
+	/* ------------------------------------------------------------------ */
+	/* Header mobile : masquer au scroll vers le bas, réafficher vers le haut */
+	/* ------------------------------------------------------------------ */
+	var vdHeader = document.querySelector('.vd-header');
+	var mqMobile = window.matchMedia ? window.matchMedia('(max-width: 1080px)') : null;
+	var lastY = window.pageYOffset || document.documentElement.scrollTop || 0;
+	var scrollTicking = false;
+	var SCROLL_THRESHOLD = 6; // ignore les micro-mouvements / rebonds
+
+	function updateHeaderOnScroll() {
+		scrollTicking = false;
+		if (!vdHeader) { return; }
+		var y = window.pageYOffset || document.documentElement.scrollTop || 0;
+
+		// Hors mobile : header toujours visible.
+		if (!mqMobile || !mqMobile.matches) {
+			vdHeader.classList.remove('is-hidden');
+			lastY = y;
+			return;
+		}
+
+		// Tout en haut → toujours visible.
+		if (y <= 0) {
+			vdHeader.classList.remove('is-hidden');
+			lastY = y;
+			return;
+		}
+
+		// Menu burger ouvert → ne pas toucher au header.
+		if (burgerPanel && burgerPanel.classList.contains('is-open')) {
+			lastY = y;
+			return;
+		}
+
+		var dy = y - lastY;
+		if (Math.abs(dy) <= SCROLL_THRESHOLD) { return; }
+
+		if (dy > 0 && y > vdHeader.offsetHeight) {
+			// On descend → masquer (et refermer les popovers ouverts).
+			vdHeader.classList.add('is-hidden');
+			closeAllPopovers(null);
+		} else if (dy < 0) {
+			// On remonte → réafficher.
+			vdHeader.classList.remove('is-hidden');
+		}
+		lastY = y;
+	}
+
+	window.addEventListener('scroll', function () {
+		if (!scrollTicking) {
+			window.requestAnimationFrame(updateHeaderOnScroll);
+			scrollTicking = true;
+		}
+	}, { passive: true });
 })();
