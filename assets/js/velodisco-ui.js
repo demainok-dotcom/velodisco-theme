@@ -178,60 +178,37 @@
 	function scrollY() { return window.pageYOffset || document.documentElement.scrollTop || 0; }
 
 	function showHeader() { if (vdHeader) { vdHeader.classList.remove('is-hidden'); } }
-	function hideHeader() {
-		if (!vdHeader) { return; }
-		// Ne masque que si on a dépassé la hauteur du header et hors menu ouvert.
-		if (scrollY() > vdHeader.offsetHeight && !burgerOpen()) {
-			vdHeader.classList.add('is-hidden');
-			closeAllPopovers(null);
-		}
-	}
+	function hideHeader() { if (vdHeader) { vdHeader.classList.add('is-hidden'); } }
 
-	/* IMPORTANT : le défilement ne fait QUE forcer l'affichage en haut de page —
-	 * il ne masque JAMAIS. Le masquage/affichage par direction vient uniquement du
-	 * geste (tactile + molette). Sans ça, le gestionnaire de scroll re-masquait
-	 * aussitôt ce que le tactile venait de réafficher (les deux se battaient). */
+	/* Auto-hide STANDARD par direction de défilement (fiable iOS & Android) :
+	 * on descend → masquer, on remonte → afficher, toujours visible près du haut.
+	 * Le bug historique était le sticky cassé (corrigé en CSS), pas cette logique. */
+	var lastY = scrollY();
 	var scrollTicking = false;
-	function onScrollFrame() {
+	function updateHeader() {
 		scrollTicking = false;
 		if (!vdHeader) { return; }
-		if (!isMobile() || scrollY() <= vdHeader.offsetHeight || burgerOpen()) {
+		var y = scrollY();
+		// Hors mobile, menu burger ouvert, ou près du haut → toujours visible.
+		if (!isMobile() || burgerOpen() || y <= vdHeader.offsetHeight) {
+			showHeader();
+			lastY = y;
+			return;
+		}
+		var dy = y - lastY;
+		if (dy > 5) {                 // on descend → masquer
+			hideHeader();
+			closeAllPopovers(null);
+		} else if (dy < -5) {         // on remonte → afficher
 			showHeader();
 		}
+		lastY = y;
 	}
 	window.addEventListener('scroll', function () {
 		if (!scrollTicking) {
-			window.requestAnimationFrame(onScrollFrame);
+			window.requestAnimationFrame(updateHeader);
 			scrollTicking = true;
 		}
-	}, { passive: true });
-
-	/* Geste TACTILE = source de vérité sur mobile (indépendant des sauts de scrollY
-	 * dus à la barre d'adresse). Doigt vers le BAS = on remonte → afficher. */
-	var touchStartY = null;
-	var TOUCH_THRESHOLD = 8;
-	window.addEventListener('touchstart', function (e) {
-		touchStartY = e.touches && e.touches.length ? e.touches[0].clientY : null;
-	}, { passive: true });
-	window.addEventListener('touchmove', function (e) {
-		if (!vdHeader || !isMobile() || touchStartY === null || burgerOpen()) { return; }
-		if (!e.touches || !e.touches.length) { return; }
-		var cy = e.touches[0].clientY;
-		var diff = cy - touchStartY;
-		if (diff > TOUCH_THRESHOLD) {            // doigt vers le bas → on remonte → afficher
-			showHeader();
-			touchStartY = cy;
-		} else if (diff < -TOUCH_THRESHOLD) {    // doigt vers le haut → on descend → masquer
-			hideHeader();
-			touchStartY = cy;
-		}
-	}, { passive: true });
-
-	/* Molette / trackpad (souris) : deltaY < 0 = on remonte → afficher. */
-	window.addEventListener('wheel', function (e) {
-		if (!vdHeader || !isMobile() || burgerOpen()) { return; }
-		if (e.deltaY < 0) { showHeader(); }
-		else if (e.deltaY > 0) { hideHeader(); }
 	}, { passive: true });
 
 	// Si on repasse en desktop (rotation/redimensionnement), header toujours visible.
