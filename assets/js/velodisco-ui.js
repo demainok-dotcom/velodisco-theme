@@ -154,4 +154,14 @@
 			closeBurger();
 		}
 	});
+
+	// Bouton RETOUR des articles : revient à la page précédente s'il y a un
+	// historique ; sinon laisse le lien (href="/") ramener à l'accueil.
+	document.addEventListener('click', function (e) {
+		var r = e.target.closest && e.target.closest('.vd-single__retour');
+		if (r && window.history.length > 1) {
+			e.preventDefault();
+			window.history.back();
+		}
+	});
 })();
