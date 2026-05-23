@@ -43,6 +43,7 @@ function velodisco_render_actu( $attrs = array(), $content = '' ) {
 			<span class="vd-actu__crumb">Actu</span>
 			<span class="vd-actu__tab">Tout frais</span>
 			<span class="vd-actu__tab vd-actu__tab--right">Derniers articles</span>
+			<span class="vd-actu__m-right">Tout est là</span>
 		</div>
 
 		<?php if ( $q->have_posts() ) : ?>

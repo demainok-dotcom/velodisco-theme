@@ -945,6 +945,7 @@ body {
 .vd-actu__crumb { font-weight: 400; }
 .vd-actu__tab   { font-weight: 600; }
 .vd-actu__tab--right { margin-left: auto; font-weight: 600; }
+.vd-actu__m-right { display: none; } /* libellé « Tout est là » : mobile uniquement */
 
 /* Grille 3 colonnes (320px à 1440, gap 127px), fluide en dessous */
 .vd-actu__grid {
@@ -1002,13 +1003,42 @@ body {
 	justify-content: center;
 }
 
-/* Responsive PROVISOIRE (en attendant la maquette « Page Actu — Mobile ») */
-@media (max-width: 880px) {
+/* Intermédiaire (tablette) : 2 colonnes, cartes style desktop. */
+@media (max-width: 780px) {
 	.vd-actu__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: clamp(20px, 4vw, 44px); }
 }
+
+/* MOBILE (relevé Figma « Page Actu — Mobile », 375) : pile verticale de cartes,
+ * catégorie + titre AU-DESSUS, image pleine largeur (filet couleur en haut), extrait + date. */
 @media (max-width: 560px) {
-	.vd-actu__grid { grid-template-columns: 1fr; }
-	.vd-actu__head { flex-wrap: wrap; }
+	.vd-actu { max-width: none; padding-inline: 0; }
+
+	/* En-tête : « ACTU » (gras 16) à gauche, « Tout est là » à droite ; divider en bas. */
+	.vd-actu__head {
+		margin: 0;
+		padding: 20px;
+		gap: 8px;
+		border-bottom: 1px solid var(--wp--preset--color--separator);
+	}
+	.vd-actu__crumb { font-weight: 700; font-size: 16px; line-height: 19px; }
+	.vd-actu__tab, .vd-actu__tab--right { display: none; }
+	.vd-actu__m-right { display: inline; margin-left: auto; font-weight: 400; font-size: 13px; line-height: 16px; }
+
+	/* Pile de cartes (gap 24px) */
+	.vd-actu__grid { display: flex; flex-direction: column; gap: 24px; }
+
+	/* Carte = catégorie + titre, puis image pleine largeur, puis extrait + date (ordre flex). */
+	.vd-actu .vd-card { display: flex; flex-direction: column; }
+	.vd-actu .vd-card .vd-tag      { order: 1; padding-inline: 20px; margin: 0; font-size: 11px; line-height: 13px; }
+	.vd-actu .vd-card__title       { order: 2; padding-inline: 20px; margin: 8px 0 0; font-size: 17px; line-height: 21px; }
+	.vd-actu .vd-card__img         { order: 3; margin: 12px 0 0; aspect-ratio: 375 / 200; }
+	.vd-actu .vd-card__img::after  { display: none; }                 /* on enlève le contour inset desktop */
+	.vd-actu .vd-card__img { border-top: 1px solid var(--vd-stroke-color, var(--wp--preset--color--separator)); } /* filet couleur en haut */
+	.vd-actu .vd-card__excerpt     { order: 4; padding-inline: 20px; margin: 12px 0 0; font-size: 13px; line-height: 16px; }
+	.vd-actu .vd-card__date        { order: 5; padding-inline: 20px; margin: 8px 0 0; font-size: 11px; line-height: 13px; text-align: left; color: #6B6B6B; }
+
+	/* Pagination centrée */
+	.vd-actu__pagination { justify-content: center; }
 }
 
 /* 9c. ARTICLE (single / Blog Page) ---------------------------------------- */
