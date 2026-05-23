@@ -148,6 +148,10 @@ body {
 	color: var(--wp--preset--color--contrast);
 	text-decoration: none;
 	white-space: nowrap;
+	/* Au chargement : le wordmark apparaît en couleur (#EE2A00) puis fond vers le noir
+	 * (couleur de repos = contrast, donc off-white en sombre). 3s en desktop ; 2s en
+	 * intermédiaire/mobile (cf. média query ≤1080, calé sur le fondu des pastilles). */
+	animation: vd-logo-color 3s var(--vd-ease, ease) backwards;
 }
 
 /* Pastilles disco (6 ronds 8.45px, grille 3×2) — masquées en desktop, apparaissent
@@ -165,6 +169,8 @@ body {
 	border-radius: 50%;
 }
 @keyframes vd-fade-in { from { opacity: 0; } to { opacity: 1; } }
+/* Wordmark « VeloDisco » : couleur → noir (couleur de repos) au chargement. */
+@keyframes vd-logo-color { from { color: #EE2A00; } to { color: var(--wp--preset--color--contrast); } }
 
 /* Liens de nav : Inter Regular 12px (comme le Figma) */
 .vd-header__nav {
@@ -1125,7 +1131,8 @@ body.vd-cat--grands-formats { background-image: linear-gradient(180deg, rgba(242
 	 * (cf. capture Victor). Les catégories passent dans le burger. */
 	.vd-header__inner { grid-template-columns: auto 1fr auto; }
 	.vd-header__nav--left { display: none; }
-	.vd-header__logo { grid-column: 1; justify-self: start; }
+	/* Fondu couleur→noir du wordmark calé sur 2s (= durée du fondu des pastilles ci-dessous). */
+	.vd-header__logo { grid-column: 1; justify-self: start; animation-duration: 2s; }
 	.vd-header__nav--right { grid-column: 3; }
 	.vd-burger { display: inline-flex; }
 	/* On masque uniquement le réglage du thème (il reste dans le burger déplié) ;
