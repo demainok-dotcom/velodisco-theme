@@ -209,3 +209,9 @@ require_once get_template_directory() . '/inc/section.php';
  * Chargé après home.php : réutilise ses helpers de cartes.
  */
 require_once get_template_directory() . '/inc/search.php';
+
+/**
+ * Page de contact (bloc dynamique velodisco/contact).
+ * Formulaire autonome : validation + wp_mail() + anti-spam.
+ */
+require_once get_template_directory() . '/inc/contact.php';
