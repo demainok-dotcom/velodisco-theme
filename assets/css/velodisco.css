@@ -1554,10 +1554,18 @@ body.vd-cat--grands-formats { background-image: linear-gradient(180deg, rgba(242
 	 * des popovers, donc tout reste aligné. */
 	:root { --vd-header-h: 56px; }
 
-	/* Auto-hide : deux états de transform EXPLICITES (translateY(0) ↔ -100%) pour
-	 * une transition fiable dans tous les navigateurs (transformer vers `none`
-	 * pouvait ne pas « revenir » correctement avec position:sticky). L'overlay
-	 * burger est désormais hors du <header>, donc ce transform ne le casse pas. */
+	/* CAUSE RACINE du sticky cassé : WordPress enveloppe le header dans
+	 * <header class="wp-block-template-part"> qui ne fait QUE la hauteur du header.
+	 * Or sticky ne peut « coller » que dans les limites de son parent → ce wrapper
+	 * trop court le libère dès qu'on défile. display:contents efface la boîte du
+	 * wrapper → .vd-header colle alors par rapport à .wp-site-blocks (toute la page).
+	 * (Diagnostiqué en direct : sans ça rect.top tombait à -554 au scroll ; avec, 0.) */
+	header.wp-block-template-part { display: contents; }
+
+	/* top tient compte de la barre d'admin WP (0 pour les visiteurs, 46px connecté). */
+	.vd-header { top: var(--wp-admin--admin-bar--height, 0px); }
+
+	/* Auto-hide : deux états de transform EXPLICITES (translateY(0) ↔ -100%). */
 	.vd-header { transform: translateY(0); }
 	.vd-header.is-hidden { transform: translateY(-100%); }
 }
