@@ -203,3 +203,9 @@ require_once get_template_directory() . '/inc/actu.php';
  * Chargé après home.php : réutilise ses helpers de cartes.
  */
 require_once get_template_directory() . '/inc/section.php';
+
+/**
+ * Page de recherche (bloc dynamique velodisco/search).
+ * Chargé après home.php : réutilise ses helpers de cartes.
+ */
+require_once get_template_directory() . '/inc/search.php';
