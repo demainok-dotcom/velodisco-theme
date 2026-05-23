@@ -1036,6 +1036,37 @@ body.vd-cat--grands-formats { background-image: linear-gradient(180deg, rgba(242
 [data-theme="dark"] body.vd-cat--societe      { background-image: linear-gradient(180deg, rgba(47,0,216,0.25) 0%, transparent 100%); }
 [data-theme="dark"] body.vd-cat--grands-formats { background-image: linear-gradient(180deg, rgba(242,78,30,0.20) 0%, rgba(11,195,124,0.20) 31.3%, rgba(26,188,254,0.20) 67.8%, rgba(255,178,0,0.20) 100%); }
 
+/* ---- Passe MOBILE de l'article (relevé Figma « Blog Page Grands Formats — Mobile », 375px) ---- */
+@media (max-width: 600px) {
+	/* Maquette mobile : pas d'étiquette catégorie au-dessus du titre. */
+	.vd-single__cat { display: none; }
+
+	/* Titre : Merriweather 700, 26px / 33px (au lieu de la taille desktop).
+	   !important nécessaire : WP met !important sur .has-xx-large-font-size, et la
+	   line-height desktop est en style inline. */
+	.vd-single__title { font-size: 26px !important; line-height: 33px !important; }
+
+	/* Date : Inter 500, 11px, gris #6B6B6B (en clair ; off-white conservé en sombre).
+	   !important sur font-size pour battre .has-small-font-size de WP. */
+	.vd-single__date { font-size: 11px !important; line-height: 13px; color: #6B6B6B; }
+
+	/* Hero : edge-to-edge (déborde le padding latéral du contenu). */
+	.vd-single__hero { margin-inline: calc(clamp(20px, 5vw, 24px) * -1); }
+
+	/* Corps : paragraphes/listes 14px, line-height 160%. */
+	.vd-single__body p,
+	.vd-single__body li { font-size: 14px; line-height: 1.6; }
+	/* Sous-titres : H2 Merriweather 700 18px / 23px ; H3 légèrement réduit. */
+	.vd-single__body h2 { font-size: 18px; line-height: 23px; margin: 1.5rem 0 0.6rem; }
+	.vd-single__body h3 { font-size: 16px; }
+	/* Tableau : cellules un peu plus compactes. */
+	.vd-single__body .wp-block-table td,
+	.vd-single__body .wp-block-table th { font-size: 14px; padding: 0.7rem 0.4rem; }
+
+	/* Bouton RETOUR : centré (au lieu d'aligné à droite en desktop). */
+	.vd-single .vd-single__retourwrap { justify-content: center; }
+}
+
 /* 9. ACCESSIBILITÉ --------------------------------------------------------- */
 :where(a, button, input, [tabindex]):focus-visible {
 	outline: 2px solid var(--wp--preset--color--vetements);
