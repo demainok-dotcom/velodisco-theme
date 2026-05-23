@@ -28,11 +28,11 @@ function velodisco_render_section( $attrs = array(), $content = '' ) {
 	$used  = array();
 	$frais = vd_query_ids( array( 'posts_per_page' => -1 ), $used );
 
-	// TENDANCES : les plus vus de la catégorie, complétés par des récents.
+	// TENDANCES : les plus vus du SITE entier (toutes catégories), complétés par des récents.
 	$tused = array();
-	$tend  = vd_query_ids( array( 'cat' => $cat_id, 'posts_per_page' => 3, 'meta_key' => 'vd_views', 'orderby' => 'meta_value_num', 'order' => 'DESC' ), $tused );
+	$tend  = vd_query_ids( array( 'posts_per_page' => 3, 'meta_key' => 'vd_views', 'orderby' => 'meta_value_num', 'order' => 'DESC' ), $tused );
 	if ( count( $tend ) < 3 ) {
-		$tend = array_merge( $tend, vd_query_ids( array( 'cat' => $cat_id, 'posts_per_page' => 3 - count( $tend ) ), $tused ) );
+		$tend = array_merge( $tend, vd_query_ids( array( 'posts_per_page' => 3 - count( $tend ) ), $tused ) );
 	}
 
 	// GRANDS FORMATS : teaser site-wide (catégorie grands-formats), comme la Home.

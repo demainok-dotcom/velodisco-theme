@@ -150,14 +150,19 @@ body {
 	white-space: nowrap;
 }
 
-/* Wordmark découpé en lettres : chaque lettre part de sa couleur disco (--c) et fond vers
- * le noir (couleur de repos = contrast → off-white en sombre) au chargement.
- * Fondu : 2s LINÉAIRE (rendu régulier, paraît plus lent). Uniquement AU CHARGEMENT de
- * la page — pas de réaction au clic, pas de contour. */
-.vd-header__wordmark { white-space: nowrap; }
-.vd-logo-l {
-	color: var(--wp--preset--color--contrast);
-	animation: vd-logo-letters 2s linear backwards;
+/* Wordmark « VeloDisco » : crossfade en OPACITÉ (composité GPU → parfaitement fluide, aucun
+ * à-coup) entre une couche couleur « disco » et la couche finale noire. Au chargement, la
+ * couche couleur se fond (opacité 1→0, 2s linéaire) pour révéler la couche noire (= contrast,
+ * off-white en sombre). Uniquement au chargement, pas de réaction au clic, pas de contour. */
+.vd-header__wordmark { position: relative; white-space: nowrap; }
+.vd-wm { display: inline-block; }
+.vd-wm--ink { color: var(--wp--preset--color--contrast); }
+.vd-wm--disco {
+	position: absolute;
+	left: 0;
+	top: 0;
+	pointer-events: none;
+	animation: vd-logo-fade 2s linear forwards;
 }
 
 /* Pastilles disco (6 ronds 8.45px, grille 3×2) — masquées en desktop, apparaissent
@@ -176,10 +181,7 @@ body {
 }
 @keyframes vd-fade-in { from { opacity: 0; } to { opacity: 1; } }
 /* Chaque lettre part de sa couleur (--c) et fond vers la couleur de repos (contrast). */
-@keyframes vd-logo-letters {
-	from { color: var(--c, #EE2A00); }
-	to   { color: var(--wp--preset--color--contrast); }
-}
+@keyframes vd-logo-fade { from { opacity: 1; } to { opacity: 0; } }
 
 /* Liens de nav : Inter Regular 12px (comme le Figma) */
 .vd-header__nav {
