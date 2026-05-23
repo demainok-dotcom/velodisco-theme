@@ -867,6 +867,9 @@ body {
 
 	.vd-col { padding: 0; }
 	.vd-col--center { display: block; }
+	/* Page de section : grille du centre en 1 colonne (mobile provisoire). */
+	.vd-section__grid { grid-template-columns: 1fr; }
+	.vd-section__head { padding-inline: 20px; }
 
 	/* Filet de catégorie : en haut de l'image uniquement (pas le contour inset desktop) */
 	.vd-home .vd-img-stroke::after { display: none; }
@@ -1062,6 +1065,32 @@ body {
 	/* Pagination centrée */
 	.vd-actu__pagination { justify-content: center; }
 }
+
+/* 9e. SECTION (archive de catégorie — grille de la Home filtrée) ----------- */
+/* En-tête du centre : nom de section (couleur de catégorie) à gauche, « Derniers articles » à droite. */
+.vd-section__head {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 1rem;
+	margin: 0 0 clamp(1.25rem, 2.5vw, 1.75rem);
+	font-family: var(--wp--preset--font-family--inter, "Inter", sans-serif);
+	font-size: 15px;
+	line-height: 18px;
+}
+.vd-section__name  { font-weight: 400; letter-spacing: 0; }            /* couleur via vd-term--{slug} */
+.vd-section__label { font-weight: 600; color: var(--wp--preset--color--contrast); white-space: nowrap; }
+
+/* Grille du centre : 2 colonnes, TOUTES les cartes (pas de plafond comme la Home). */
+.vd-section__grid {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	column-gap: 21px;
+	row-gap: clamp(1.5rem, 3vw, 2.25rem);
+}
+
+/* Pagination du centre (réutilise .vd-actu__pagination + .vd-page, alignée à droite). */
+.vd-section__pagination { margin-top: clamp(2rem, 4vw, 3rem); }
 
 /* 9c. ARTICLE (single / Blog Page) ---------------------------------------- */
 .vd-single { padding-inline: clamp(20px, 5vw, 24px); }

@@ -158,6 +158,12 @@ function velodisco_body_category_class( $classes ) {
 		if ( ! empty( $cats ) ) {
 			$classes[] = 'vd-cat--' . sanitize_html_class( $cats[0]->slug );
 		}
+	} elseif ( is_category() ) {
+		// Pages de section : même fond dégradé par catégorie que l'article.
+		$term = get_queried_object();
+		if ( $term && ! empty( $term->slug ) ) {
+			$classes[] = 'vd-cat--' . sanitize_html_class( $term->slug );
+		}
 	}
 	return $classes;
 }
@@ -191,3 +197,9 @@ require_once get_template_directory() . '/inc/home.php';
  * Chargé après home.php : réutilise ses helpers de cartes.
  */
 require_once get_template_directory() . '/inc/actu.php';
+
+/**
+ * Pages de section / archives de catégorie (bloc dynamique velodisco/section).
+ * Chargé après home.php : réutilise ses helpers de cartes.
+ */
+require_once get_template_directory() . '/inc/section.php';
