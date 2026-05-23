@@ -78,12 +78,11 @@
 		</button>
 	</div>
 
-</header>
-
-<!-- Menu burger mobile (overlay plein écran). Placé HORS du <header> : l'auto-hide
-     mobile applique un transform au header ; un enfant position:fixed prendrait alors
-     le header comme bloc conteneur, ce qui casserait cet overlay plein écran. -->
-<div class="vd-mobile-nav" id="vd-mobile-nav" aria-hidden="true">
+	<!-- Menu burger mobile (overlay plein écran). DANS le <header> pour que le popover
+	     recherche/réglages (z-index 250, enfant du header) s'empile au-dessus de cet
+	     overlay (z-index 200). L'auto-hide remet la transformation du header à zéro à
+	     l'ouverture du menu, donc l'overlay position:fixed reste bien plein écran. -->
+	<div class="vd-mobile-nav" id="vd-mobile-nav" aria-hidden="true">
 		<div class="vd-mobile-nav__top">
 			<button type="button" class="vd-iconbtn" data-popover-target="vd-search-pop" aria-label="Rechercher">
 				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><line x1="16.5" y1="16.5" x2="21" y2="21"></line></svg>
@@ -106,4 +105,5 @@
 			<li><a href="/contact/">Contact</a></li>
 		</ul>
 	</div>
+</header>
 <!-- /wp:html -->
