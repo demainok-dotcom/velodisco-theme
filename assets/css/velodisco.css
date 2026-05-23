@@ -663,7 +663,10 @@ body {
 	margin: 0 auto;
 	padding-inline: clamp(16px, 2vw, 24px);
 	display: grid;
-	grid-template-columns: 286px minmax(0, 1fr) 374px;
+	/* Colonnes latérales FLUIDES : elles rétrécissent avec la fenêtre (donc les images
+	 * de TENDANCES aussi), tout en restant plafonnées aux tailles Figma (286 / 374) sur
+	 * grand écran et avec un plancher avant la bascule en pile (≤880px). */
+	grid-template-columns: clamp(180px, 20vw, 286px) minmax(0, 1fr) clamp(280px, 26vw, 374px);
 	column-gap: clamp(24px, 3vw, 44px);
 	align-items: stretch; /* colonnes de hauteur égale → les traits séparateurs courent sur toute la hauteur */
 	/* PAS de padding-top ici : l'espace du haut est mis DANS les colonnes (.vd-col),
@@ -810,8 +813,11 @@ body {
 
 .vd-empty { color: #6C727F; font-size: 14px; }
 
-/* ---- Responsive Home : design MOBILE (Figma « Home — Mobile », base 375) ---- */
-@media (max-width: 1080px) {
+/* ---- Responsive Home : design MOBILE (Figma « Home — Mobile », base 375) ----
+ * Bascule abaissée de 1080 à 880px : on garde le 3 colonnes plus longtemps (les colonnes
+ * latérales fluides ci-dessus rétrécissent jusque-là). Le header, lui, passe en burger à
+ * 1080px (média query séparée plus bas) — donc entre 880 et 1080 : header burger + Home 3 col. */
+@media (max-width: 880px) {
 	/* Pile verticale pleine largeur (images edge-to-edge), centrée sur tablette. */
 	.vd-home {
 		display: block;
