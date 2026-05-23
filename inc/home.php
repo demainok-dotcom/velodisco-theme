@@ -27,7 +27,9 @@ function vd_tag_html( $id ) {
 		return '';
 	}
 	$slug = sanitize_html_class( $c->slug );
-	return '<a class="vd-tag vd-term vd-term--' . $slug . '" href="' . esc_url( get_category_link( $c ) ) . '">' . esc_html( strtoupper( $c->name ) ) . '</a>';
+	// Affichage : tirets → espaces (ex. catégorie nommée « grands-formats » → « GRANDS FORMATS »).
+	$label = strtoupper( str_replace( '-', ' ', $c->name ) );
+	return '<a class="vd-tag vd-term vd-term--' . $slug . '" href="' . esc_url( get_category_link( $c ) ) . '">' . esc_html( $label ) . '</a>';
 }
 
 /** Image mise en avant, liée, avec tracé catégorie 0.5px. */

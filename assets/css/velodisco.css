@@ -1039,8 +1039,8 @@ body {
 	.vd-actu__tab, .vd-actu__tab--right { display: none; }
 	.vd-actu__m-right { display: inline; margin-left: auto; font-weight: 400; font-size: 13px; line-height: 16px; }
 
-	/* Pile de cartes (gap 24px) */
-	.vd-actu__grid { display: flex; flex-direction: column; gap: 24px; }
+	/* Pile de cartes (gap 24px), avec un peu d'air sous le divider de l'en-tête */
+	.vd-actu__grid { display: flex; flex-direction: column; gap: 24px; padding-top: 16px; }
 
 	/* Carte = catégorie + titre, puis image pleine largeur, puis extrait + date (ordre flex). */
 	.vd-actu .vd-card { display: flex; flex-direction: column; }
