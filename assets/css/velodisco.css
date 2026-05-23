@@ -162,7 +162,7 @@ body {
 	 * Épaisseur = même proportion que le Figma (4,5px sur un logo 200px = 0.0225em),
 	 * donc ~0,8px sur le logo 36px du header. paint-order:stroke → contour à l'extérieur.
 	 * Au repos le contour est transparent (invisible, y compris off-white en sombre). */
-	-webkit-text-stroke: 0.0225em transparent;
+	-webkit-text-stroke: 0.06em transparent; /* contour épaissi (≈2,2px à 36px) à la demande de Victor */
 	paint-order: stroke fill;
 	transition: color 2s linear, -webkit-text-stroke-color 2s linear; /* refonte au relâchement du clic */
 	animation: vd-logo-letters 2s linear backwards;
