@@ -158,12 +158,18 @@ body {
 .vd-header__wordmark { white-space: nowrap; }
 .vd-logo-l {
 	color: var(--wp--preset--color--contrast);
-	transition: color 2s linear;   /* au RELÂCHEMENT du clic : refonte couleur → noir en 2s */
+	/* Contour noir « disco » visible UNIQUEMENT quand la lettre est en couleur.
+	 * Épaisseur = même proportion que le Figma (4,5px sur un logo 200px = 0.0225em),
+	 * donc ~0,8px sur le logo 36px du header. paint-order:stroke → contour à l'extérieur.
+	 * Au repos le contour est transparent (invisible, y compris off-white en sombre). */
+	-webkit-text-stroke: 0.0225em transparent;
+	paint-order: stroke fill;
+	transition: color 2s linear, -webkit-text-stroke-color 2s linear; /* refonte au relâchement du clic */
 	animation: vd-logo-letters 2s linear backwards;
 }
 /* Au clic sur le logo (retour accueil) : les lettres reprennent leur couleur disco D'UN COUP
- * (transition désactivée pendant l'appui), puis refondent vers le noir en 2s au relâchement. */
-.vd-header__logo:active .vd-logo-l { color: var(--c, #EE2A00); transition: none; }
+ * (couleur + contour noir, transition désactivée pendant l'appui), puis refondent en 2s au relâchement. */
+.vd-header__logo:active .vd-logo-l { color: var(--c, #EE2A00); -webkit-text-stroke-color: #000; transition: none; }
 
 /* Pastilles disco (6 ronds 8.45px, grille 3×2) — masquées en desktop, apparaissent
  * en fondu en version mobile/tablette (cf. demande Victor). Mesures exactes Figma. */
@@ -181,7 +187,10 @@ body {
 }
 @keyframes vd-fade-in { from { opacity: 0; } to { opacity: 1; } }
 /* Chaque lettre part de sa couleur (--c) et fond vers la couleur de repos (contrast). */
-@keyframes vd-logo-letters { from { color: var(--c, #EE2A00); } to { color: var(--wp--preset--color--contrast); } }
+@keyframes vd-logo-letters {
+	from { color: var(--c, #EE2A00); -webkit-text-stroke-color: #000; }
+	to   { color: var(--wp--preset--color--contrast); -webkit-text-stroke-color: transparent; }
+}
 
 /* Liens de nav : Inter Regular 12px (comme le Figma) */
 .vd-header__nav {
