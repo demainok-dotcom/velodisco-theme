@@ -1045,25 +1045,37 @@ body {
 	/* Pile de cartes (gap 24px), avec un peu d'air sous le divider de l'en-tête */
 	.vd-actu__grid { display: flex; flex-direction: column; gap: 24px; padding-top: 16px; }
 
-	/* Carte = catégorie + titre, puis image pleine largeur, puis extrait + date (ordre flex). */
-	.vd-actu .vd-card { display: flex; flex-direction: column; }
-	.vd-actu .vd-card .vd-tag      { order: 1; padding-inline: 20px; margin: 0; font-size: 11px; line-height: 13px; }
-	.vd-actu .vd-card__title       { order: 2; padding-inline: 20px; margin: 8px 0 0; font-size: 17px; line-height: 21px; }
-	.vd-actu .vd-card__img         { order: 3; margin: 12px 0 0; aspect-ratio: 375 / 200; }
-	.vd-actu .vd-card__img::after  { display: none; }                 /* on enlève le contour inset desktop */
-	.vd-actu .vd-card__img { border-top: 1px solid var(--vd-stroke-color, var(--wp--preset--color--separator)); } /* filet couleur en haut */
+	/* Carte = catégorie + titre, puis image pleine largeur, puis extrait + date (ordre flex).
+	   Style MUTUALISÉ entre la Page Actu et les pages de section (même maquette mobile). */
+	:is(.vd-actu, .vd-section) .vd-card { display: flex; flex-direction: column; }
+	:is(.vd-actu, .vd-section) .vd-card .vd-tag   { order: 1; padding-inline: 20px; margin: 0; font-size: 11px; line-height: 13px; }
+	:is(.vd-actu, .vd-section) .vd-card__title    { order: 2; padding-inline: 20px; margin: 8px 0 0; font-size: 17px; line-height: 21px; }
+	:is(.vd-actu, .vd-section) .vd-card__img      { order: 3; margin: 12px 0 0; aspect-ratio: 375 / 200; }
+	:is(.vd-actu, .vd-section) .vd-card__img::after { display: none; }   /* on enlève le contour inset desktop */
+	:is(.vd-actu, .vd-section) .vd-card__img { border-top: 1px solid var(--vd-stroke-color, var(--wp--preset--color--separator)); } /* filet couleur en haut */
 	/* Grands Formats : filet dégradé en haut au lieu du gris */
-	.vd-actu .vd-card__img.vd-img-stroke--grands-formats { border-top: 0; }
-	.vd-actu .vd-card__img.vd-img-stroke--grands-formats::after {
+	:is(.vd-actu, .vd-section) .vd-card__img.vd-img-stroke--grands-formats { border-top: 0; }
+	:is(.vd-actu, .vd-section) .vd-card__img.vd-img-stroke--grands-formats::after {
 		display: block; inset: 0 0 auto 0; height: 1px; padding: 0;
 		-webkit-mask: none; mask: none;
 		background: var(--wp--preset--gradient--grands-formats);
 	}
-	.vd-actu .vd-card__excerpt     { order: 4; padding-inline: 20px; margin: 12px 0 0; font-size: 13px; line-height: 16px; }
-	.vd-actu .vd-card__date        { order: 5; padding-inline: 20px; margin: 8px 0 0; font-size: 11px; line-height: 13px; text-align: left; color: #6B6B6B; }
+	:is(.vd-actu, .vd-section) .vd-card__excerpt  { order: 4; padding-inline: 20px; margin: 12px 0 0; font-size: 13px; line-height: 16px; }
+	:is(.vd-actu, .vd-section) .vd-card__date     { order: 5; padding-inline: 20px; margin: 8px 0 0; font-size: 11px; line-height: 13px; text-align: left; color: #6B6B6B; }
 
-	/* Pagination centrée */
-	.vd-actu__pagination { justify-content: center; }
+	/* Pagination centrée (Actu + Section) */
+	.vd-actu__pagination, .vd-section__pagination { justify-content: center; }
+
+	/* Pages de section — en-tête mobile : nom de section (gras 16, couleur catégorie) +
+	   « Derniers articles » (13) ; pile de cartes avec air sous le divider. */
+	.vd-section__head {
+		margin: 0;
+		padding: 20px;
+		border-bottom: 1px solid var(--wp--preset--color--separator);
+	}
+	.vd-section__name  { font-weight: 700; font-size: 16px; line-height: 19px; }
+	.vd-section__label { font-weight: 400; font-size: 13px; line-height: 16px; }
+	.vd-section__grid  { display: flex; flex-direction: column; gap: 24px; padding-top: 16px; }
 }
 
 /* 9e. SECTION (archive de catégorie — grille de la Home filtrée) ----------- */

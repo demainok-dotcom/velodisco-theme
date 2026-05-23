@@ -24,9 +24,9 @@ function velodisco_render_section( $attrs = array(), $content = '' ) {
 	$slug   = sanitize_html_class( $term->slug );
 	$name   = strtoupper( str_replace( '-', ' ', $term->name ) );
 
-	// TOUT FRAIS : tous les récents de la catégorie (titres + temps relatif).
+	// TOUT FRAIS : tous les récents du SITE (toutes catégories), pas seulement cette section.
 	$used  = array();
-	$frais = vd_query_ids( array( 'cat' => $cat_id, 'posts_per_page' => -1 ), $used );
+	$frais = vd_query_ids( array( 'posts_per_page' => -1 ), $used );
 
 	// TENDANCES : les plus vus de la catégorie, complétés par des récents.
 	$tused = array();
