@@ -1554,10 +1554,11 @@ body.vd-cat--grands-formats { background-image: linear-gradient(180deg, rgba(242
 	 * des popovers, donc tout reste aligné. */
 	:root { --vd-header-h: 56px; }
 
-	/* Auto-hide : masqué en glissant vers le haut quand on scrolle vers le bas,
-	 * réaffiché au scroll vers le haut (classe .is-hidden posée par le JS).
-	 * Le transform n'existe QUE dans cet état → pas de containing-block parasite
-	 * pour l'overlay burger (position:fixed) quand le header est visible. */
+	/* Auto-hide : deux états de transform EXPLICITES (translateY(0) ↔ -100%) pour
+	 * une transition fiable dans tous les navigateurs (transformer vers `none`
+	 * pouvait ne pas « revenir » correctement avec position:sticky). L'overlay
+	 * burger est désormais hors du <header>, donc ce transform ne le casse pas. */
+	.vd-header { transform: translateY(0); }
 	.vd-header.is-hidden { transform: translateY(-100%); }
 }
 
