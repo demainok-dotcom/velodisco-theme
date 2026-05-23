@@ -115,8 +115,9 @@ body {
 	border-bottom: 1px solid var(--wp--preset--color--separator);
 	min-height: var(--vd-header-h);
 	transition: background-color var(--vd-t-base) var(--vd-ease),
-		border-color var(--vd-t-base) var(--vd-ease),
-		transform var(--vd-t-base) var(--vd-ease);
+		border-color var(--vd-t-base) var(--vd-ease);
+	/* Pas de transition sur transform : l'auto-hide mobile est piloté en direct par
+	 * le JS (vd-header.style.transform) pour suivre la vitesse de défilement. */
 }
 
 .vd-header__inner {
@@ -1565,9 +1566,8 @@ body.vd-cat--grands-formats { background-image: linear-gradient(180deg, rgba(242
 	/* top tient compte de la barre d'admin WP (0 pour les visiteurs, 46px connecté). */
 	.vd-header { top: var(--wp-admin--admin-bar--height, 0px); }
 
-	/* Auto-hide : deux états de transform EXPLICITES (translateY(0) ↔ -100%). */
-	.vd-header { transform: translateY(0); }
-	.vd-header.is-hidden { transform: translateY(-100%); }
+	/* Auto-hide lié au défilement : le transform translateY est posé en inline par
+	 * le JS (suivi direct de la vitesse de scroll, zone morte d'~1 cm à la remontée). */
 }
 
 @media (min-width: 1081px) {

@@ -127,8 +127,8 @@
 
 	function openBurger() {
 		if (!burgerPanel) { return; }
-		// Garde-fou : header visible (pas de transform) tant que l'overlay est ouvert.
-		if (vdHeader) { vdHeader.classList.remove('is-hidden'); }
+		// Garde-fou : header entièrement visible (transform remis à zéro) pendant l'overlay.
+		if (typeof resetHeader === 'function') { resetHeader(); }
 		burgerPanel.classList.add('is-open');
 		burgerPanel.setAttribute('aria-hidden', 'false');
 		document.body.style.overflow = 'hidden';
@@ -177,31 +177,46 @@
 	function burgerOpen() { return burgerPanel && burgerPanel.classList.contains('is-open'); }
 	function scrollY() { return window.pageYOffset || document.documentElement.scrollTop || 0; }
 
-	function showHeader() { if (vdHeader) { vdHeader.classList.remove('is-hidden'); } }
-	function hideHeader() { if (vdHeader) { vdHeader.classList.add('is-hidden'); } }
+	function headerH() { return vdHeader ? vdHeader.offsetHeight : 56; }
+	function resetHeader() { hideOffset = 0; upAccum = 0; if (vdHeader) { vdHeader.style.transform = ''; } }
+	function applyHeader() {
+		if (!vdHeader) { return; }
+		vdHeader.style.transform = hideOffset > 0 ? 'translateY(-' + hideOffset + 'px)' : '';
+	}
 
-	/* Auto-hide STANDARD par direction de défilement (fiable iOS & Android) :
-	 * on descend → masquer, on remonte → afficher, toujours visible près du haut.
-	 * Le bug historique était le sticky cassé (corrigé en CSS), pas cette logique. */
+	/* Auto-hide LIÉ AU DÉFILEMENT : le header suit le scroll (il se masque/réapparaît
+	 * exactement à la vitesse où l'on scrolle), avec une zone morte d'~1 cm de remontée
+	 * avant qu'il ne réapparaisse. Pas de transition CSS sur le transform → suivi direct.
+	 * (Le bug historique était le sticky cassé, corrigé en CSS, pas cette logique.) */
+	var REVEAL_DEADZONE = 40;   // ~1 cm de remontée avant réapparition
+	var hideOffset = 0;          // 0 = visible, headerH() = entièrement caché
+	var upAccum = 0;             // remontée cumulée (consomme la zone morte)
 	var lastY = scrollY();
 	var scrollTicking = false;
+
 	function updateHeader() {
 		scrollTicking = false;
 		if (!vdHeader) { return; }
 		var y = scrollY();
-		// Hors mobile, menu burger ouvert, ou près du haut → toujours visible.
-		if (!isMobile() || burgerOpen() || y <= vdHeader.offsetHeight) {
-			showHeader();
+		// Desktop, menu burger ouvert, ou près du haut → header entièrement visible.
+		if (!isMobile() || burgerOpen() || y <= headerH()) {
+			resetHeader();
 			lastY = y;
 			return;
 		}
-		var dy = y - lastY;
-		if (dy > 5) {                 // on descend → masquer
-			hideHeader();
-			closeAllPopovers(null);
-		} else if (dy < -5) {         // on remonte → afficher
-			showHeader();
+		var delta = y - lastY;
+		var H = headerH();
+		if (delta > 0) {                          // on descend → masquer en suivant le scroll
+			if (hideOffset === 0) { closeAllPopovers(null); }
+			hideOffset = Math.min(H, hideOffset + delta);
+			upAccum = 0;
+		} else if (delta < 0) {                   // on remonte
+			upAccum += -delta;
+			if (upAccum > REVEAL_DEADZONE) {        // après ~1 cm → réaffiche en suivant le scroll
+				hideOffset = Math.max(0, hideOffset + delta); // delta < 0 → réduit l'offset
+			}
 		}
+		applyHeader();
 		lastY = y;
 	}
 	window.addEventListener('scroll', function () {
@@ -213,7 +228,7 @@
 
 	// Si on repasse en desktop (rotation/redimensionnement), header toujours visible.
 	if (mqMobile) {
-		var onMq = function () { if (!mqMobile.matches) { showHeader(); } };
+		var onMq = function () { if (!mqMobile.matches) { resetHeader(); } };
 		if (mqMobile.addEventListener) { mqMobile.addEventListener('change', onMq); }
 		else if (mqMobile.addListener) { mqMobile.addListener(onMq); }
 	}
