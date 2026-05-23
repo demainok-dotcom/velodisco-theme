@@ -152,22 +152,18 @@ body {
 
 /* Wordmark découpé en lettres : chaque lettre part de sa couleur disco (--c) et fond vers
  * le noir (couleur de repos = contrast → off-white en sombre) au chargement.
- * Fondu : 2s avec l'easing du thème (--vd-ease) partout — desktop comme mobile/intermédiaire
- * (Victor a demandé le même rendu que la version mobile). */
+ * Fondu : 2s LINÉAIRE (rendu régulier, paraît plus lent). Uniquement AU CHARGEMENT de
+ * la page — pas de réaction au clic. */
 .vd-header__wordmark { white-space: nowrap; }
 .vd-logo-l {
 	color: var(--wp--preset--color--contrast);
-	/* Contour noir « disco » visible UNIQUEMENT quand la lettre est en couleur.
-	 * paint-order:stroke → contour à l'extérieur. Au repos le contour est transparent
-	 * (invisible, y compris off-white en sombre). */
+	/* Contour noir « disco » visible UNIQUEMENT quand la lettre est en couleur (pendant le
+	 * fondu au chargement). paint-order:stroke → contour à l'extérieur. Au repos il est
+	 * transparent (invisible, y compris off-white en sombre). */
 	-webkit-text-stroke: 0.06em transparent;
 	paint-order: stroke fill;
-	transition: color 2s var(--vd-ease, ease), -webkit-text-stroke-color 2s var(--vd-ease, ease); /* refonte au relâchement du clic */
-	animation: vd-logo-letters 2s var(--vd-ease, ease) backwards;
+	animation: vd-logo-letters 2s linear backwards;
 }
-/* Au clic sur le logo (retour accueil) : les lettres reprennent leur couleur disco D'UN COUP
- * (couleur + contour noir, transition désactivée pendant l'appui), puis refondent en 2s au relâchement. */
-.vd-header__logo:active .vd-logo-l { color: var(--c, #EE2A00); -webkit-text-stroke-color: #000; transition: none; }
 
 /* Pastilles disco (6 ronds 8.45px, grille 3×2) — masquées en desktop, apparaissent
  * en fondu en version mobile/tablette (cf. demande Victor). Mesures exactes Figma. */
