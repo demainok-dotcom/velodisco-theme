@@ -54,7 +54,7 @@ function velodisco_render_actu( $attrs = array(), $content = '' ) {
 					$q->the_post();
 					$id = get_the_ID();
 					?>
-					<article class="vd-card vd-reveal">
+					<article class="vd-card">
 						<?php
 						echo vd_thumb_html( $id, 'vd-card__img' ); // phpcs:ignore WordPress.Security.EscapeOutput
 						echo vd_tag_html( $id );                   // phpcs:ignore WordPress.Security.EscapeOutput

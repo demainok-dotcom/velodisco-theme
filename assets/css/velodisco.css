@@ -152,20 +152,18 @@ body {
 
 /* Wordmark découpé en lettres : chaque lettre part de sa couleur disco (--c) et fond vers
  * le noir (couleur de repos = contrast → off-white en sombre) au chargement.
- * Desktop : 2s en LINÉAIRE (l'easing par défaut est très « ease-out » et donnerait
- * l'illusion d'un fondu bien plus court ; le linéaire fait durer le fondu vraiment 2s).
- * Mobile/intermédiaire : 2s + easing des pastilles (cf. média query ≤1080). */
+ * Fondu : 2s avec l'easing du thème (--vd-ease) partout — desktop comme mobile/intermédiaire
+ * (Victor a demandé le même rendu que la version mobile). */
 .vd-header__wordmark { white-space: nowrap; }
 .vd-logo-l {
 	color: var(--wp--preset--color--contrast);
 	/* Contour noir « disco » visible UNIQUEMENT quand la lettre est en couleur.
-	 * Épaisseur = même proportion que le Figma (4,5px sur un logo 200px = 0.0225em),
-	 * donc ~0,8px sur le logo 36px du header. paint-order:stroke → contour à l'extérieur.
-	 * Au repos le contour est transparent (invisible, y compris off-white en sombre). */
-	-webkit-text-stroke: 0.06em transparent; /* contour épaissi (≈2,2px à 36px) à la demande de Victor */
+	 * paint-order:stroke → contour à l'extérieur. Au repos le contour est transparent
+	 * (invisible, y compris off-white en sombre). */
+	-webkit-text-stroke: 0.06em transparent;
 	paint-order: stroke fill;
-	transition: color 2s linear, -webkit-text-stroke-color 2s linear; /* refonte au relâchement du clic */
-	animation: vd-logo-letters 2s linear backwards;
+	transition: color 2s var(--vd-ease, ease), -webkit-text-stroke-color 2s var(--vd-ease, ease); /* refonte au relâchement du clic */
+	animation: vd-logo-letters 2s var(--vd-ease, ease) backwards;
 }
 /* Au clic sur le logo (retour accueil) : les lettres reprennent leur couleur disco D'UN COUP
  * (couleur + contour noir, transition désactivée pendant l'appui), puis refondent en 2s au relâchement. */
@@ -598,6 +596,16 @@ body {
 .vd-img-stroke--composants { --vd-stroke-color: var(--wp--preset--color--composants); }
 .vd-img-stroke--vetements { --vd-stroke-color: var(--wp--preset--color--vetements); }
 .vd-img-stroke--societe { --vd-stroke-color: var(--wp--preset--color--societe); }
+/* Grands Formats : tracé en DÉGRADÉ arc-en-ciel (un box-shadow ne peut pas être un dégradé →
+ * technique du masque : le ::after a un padding = épaisseur, fond dégradé, on évide l'intérieur). */
+.vd-img-stroke--grands-formats::after {
+	box-shadow: none;
+	padding: 0.5px;
+	background: var(--wp--preset--gradient--grands-formats);
+	-webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+	-webkit-mask-composite: xor;
+	        mask-composite: exclude;
+}
 
 /* Date d'encart : alignée à droite (règle VeloDisco) */
 .vd-card__date { text-align: right; font-size: 0.8125rem; opacity: 0.7; }
@@ -864,6 +872,13 @@ body {
 	.vd-home .vd-img-stroke::after { display: none; }
 	.vd-aune__img.vd-img-stroke,
 	.vd-card__img.vd-img-stroke { border-top: 1px solid var(--vd-stroke-color); }
+	/* Grands Formats : filet dégradé en haut (le border-top uni ne peut pas être un dégradé) */
+	.vd-home .vd-img-stroke--grands-formats { border-top: 0; }
+	.vd-home .vd-img-stroke--grands-formats::after {
+		display: block; inset: 0 0 auto 0; height: 1px; padding: 0;
+		-webkit-mask: none; mask: none;
+		background: var(--wp--preset--gradient--grands-formats);
+	}
 
 	/* Labels de section */
 	.vd-home .vd-sectitle { padding: 20px 20px 0; margin: 0 0 8px; }
@@ -1034,6 +1049,13 @@ body {
 	.vd-actu .vd-card__img         { order: 3; margin: 12px 0 0; aspect-ratio: 375 / 200; }
 	.vd-actu .vd-card__img::after  { display: none; }                 /* on enlève le contour inset desktop */
 	.vd-actu .vd-card__img { border-top: 1px solid var(--vd-stroke-color, var(--wp--preset--color--separator)); } /* filet couleur en haut */
+	/* Grands Formats : filet dégradé en haut au lieu du gris */
+	.vd-actu .vd-card__img.vd-img-stroke--grands-formats { border-top: 0; }
+	.vd-actu .vd-card__img.vd-img-stroke--grands-formats::after {
+		display: block; inset: 0 0 auto 0; height: 1px; padding: 0;
+		-webkit-mask: none; mask: none;
+		background: var(--wp--preset--gradient--grands-formats);
+	}
 	.vd-actu .vd-card__excerpt     { order: 4; padding-inline: 20px; margin: 12px 0 0; font-size: 13px; line-height: 16px; }
 	.vd-actu .vd-card__date        { order: 5; padding-inline: 20px; margin: 8px 0 0; font-size: 11px; line-height: 13px; text-align: left; color: #6B6B6B; }
 
@@ -1271,8 +1293,6 @@ body.vd-cat--grands-formats { background-image: linear-gradient(180deg, rgba(242
 	.vd-header__inner { grid-template-columns: auto 1fr auto; }
 	.vd-header__nav--left { display: none; }
 	.vd-header__logo { grid-column: 1; justify-self: start; }
-	/* Fondu des lettres calé sur 2s + easing des pastilles → même rendu que les pastilles. */
-	.vd-logo-l { animation-duration: 2s; animation-timing-function: var(--vd-ease, ease); }
 	.vd-header__nav--right { grid-column: 3; }
 	.vd-burger { display: inline-flex; }
 	/* On masque uniquement le réglage du thème (il reste dans le burger déplié) ;
