@@ -112,8 +112,16 @@ function velodisco_render_contact( $attrs = array(), $content = '' ) {
 
 			<div class="vd-contact__confirm" role="status">
 				<svg class="vd-check" viewBox="0 0 120 120" fill="none" aria-hidden="true">
+					<defs>
+						<linearGradient id="vd-check-grad" x1="0" y1="0" x2="1" y2="0">
+							<stop offset="0" stop-color="#F24E1E"/>
+							<stop offset="0.34" stop-color="#12A66D"/>
+							<stop offset="0.68" stop-color="#11A6E2"/>
+							<stop offset="1" stop-color="#DD9D06"/>
+						</linearGradient>
+					</defs>
 					<circle class="vd-check__circle" cx="60" cy="60" r="54" pathLength="1" stroke="currentColor" stroke-width="3"/>
-					<path class="vd-check__tick" d="M38 61 L53 75 L84 44" pathLength="1" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+					<path class="vd-check__tick" d="M38 61 L53 75 L84 44" pathLength="1" stroke="url(#vd-check-grad)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
 				</svg>
 				<p class="vd-search__empty-sub">Votre message a bien été envoyé</p>
 				<a class="vd-search__empty-btn" href="<?php echo esc_url( home_url( '/' ) ); ?>">Retour à l'accueil</a>

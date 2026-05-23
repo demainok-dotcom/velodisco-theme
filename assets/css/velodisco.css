@@ -1296,7 +1296,10 @@ body {
 .vd-check { width: 120px; height: 120px; display: block; color: var(--wp--preset--color--contrast); }
 .vd-check__circle, .vd-check__tick {
 	fill: none;
-	stroke-dasharray: 1; stroke-dashoffset: 1;
+	/* pathLength=1 → tiret de 1 (= tracé entier) + trou de 2 (plus grand que le
+	 * tracé) et départ décalé à 1.02 : aucune extrémité de tiret ne tombe sur le
+	 * tracé → pas de point parasite avant l'animation. */
+	stroke-dasharray: 1 2; stroke-dashoffset: 1.02;
 }
 .vd-check__circle { animation: vd-trace 0.9s var(--vd-ease) 0.15s forwards; }
 .vd-check__tick   { animation: vd-trace 0.45s var(--vd-ease) 0.95s forwards; }
