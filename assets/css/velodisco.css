@@ -148,10 +148,17 @@ body {
 	color: var(--wp--preset--color--contrast);
 	text-decoration: none;
 	white-space: nowrap;
-	/* Au chargement : le wordmark apparaît en couleur (#EE2A00) puis fond vers le noir
-	 * (couleur de repos = contrast, donc off-white en sombre). 3s en desktop ; 2s en
-	 * intermédiaire/mobile (cf. média query ≤1080, calé sur le fondu des pastilles). */
-	animation: vd-logo-color 3s var(--vd-ease, ease) backwards;
+}
+
+/* Wordmark découpé en lettres : chaque lettre part de sa couleur disco (--c) et fond vers
+ * le noir (couleur de repos = contrast → off-white en sombre) au chargement.
+ * Desktop : 3s en LINÉAIRE (pour que le fondu dure vraiment 3s — l'easing par défaut est
+ * très « ease-out » et donnerait l'illusion d'un fondu bien plus court).
+ * Mobile/intermédiaire : 2s + easing des pastilles (cf. média query ≤1080). */
+.vd-header__wordmark { white-space: nowrap; }
+.vd-logo-l {
+	color: var(--wp--preset--color--contrast);
+	animation: vd-logo-letters 3s linear backwards;
 }
 
 /* Pastilles disco (6 ronds 8.45px, grille 3×2) — masquées en desktop, apparaissent
@@ -169,8 +176,8 @@ body {
 	border-radius: 50%;
 }
 @keyframes vd-fade-in { from { opacity: 0; } to { opacity: 1; } }
-/* Wordmark « VeloDisco » : couleur → noir (couleur de repos) au chargement. */
-@keyframes vd-logo-color { from { color: #EE2A00; } to { color: var(--wp--preset--color--contrast); } }
+/* Chaque lettre part de sa couleur (--c) et fond vers la couleur de repos (contrast). */
+@keyframes vd-logo-letters { from { color: var(--c, #EE2A00); } to { color: var(--wp--preset--color--contrast); } }
 
 /* Liens de nav : Inter Regular 12px (comme le Figma) */
 .vd-header__nav {
@@ -1131,8 +1138,9 @@ body.vd-cat--grands-formats { background-image: linear-gradient(180deg, rgba(242
 	 * (cf. capture Victor). Les catégories passent dans le burger. */
 	.vd-header__inner { grid-template-columns: auto 1fr auto; }
 	.vd-header__nav--left { display: none; }
-	/* Fondu couleur→noir du wordmark calé sur 2s (= durée du fondu des pastilles ci-dessous). */
-	.vd-header__logo { grid-column: 1; justify-self: start; animation-duration: 2s; }
+	.vd-header__logo { grid-column: 1; justify-self: start; }
+	/* Fondu des lettres calé sur 2s + easing des pastilles → même rendu que les pastilles. */
+	.vd-logo-l { animation-duration: 2s; animation-timing-function: var(--vd-ease, ease); }
 	.vd-header__nav--right { grid-column: 3; }
 	.vd-burger { display: inline-flex; }
 	/* On masque uniquement le réglage du thème (il reste dans le burger déplié) ;
