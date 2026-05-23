@@ -1050,8 +1050,32 @@ body.vd-cat--grands-formats { background-image: linear-gradient(180deg, rgba(242
 	   !important sur font-size pour battre .has-small-font-size de WP. */
 	.vd-single__date { font-size: 11px !important; line-height: 13px; color: #6B6B6B; }
 
-	/* Hero : edge-to-edge (déborde le padding latéral du contenu). */
-	.vd-single__hero { margin-inline: calc(clamp(20px, 5vw, 24px) * -1); }
+	/* Photos (hero + toutes les images du corps) : PLEINE LARGEUR écran.
+	   WP impose margin-left/right:auto !important aux enfants du layout « constrained » →
+	   on doit forcer la marge négative en !important pour déborder le padding latéral (20px). */
+	.vd-single__hero,
+	.vd-single__body .wp-block-image {
+		margin-left: calc(clamp(20px, 5vw, 24px) * -1) !important;
+		margin-right: calc(clamp(20px, 5vw, 24px) * -1) !important;
+		max-width: none !important;
+		width: auto !important;
+	}
+
+	/* Tracé : UNIQUEMENT en haut de la photo (0.3px, valeur du Figma), couleur de catégorie
+	   (dégradé pour Grands Formats) — au lieu du cadre 1px tout autour du desktop. */
+	.vd-single__hero::after,
+	.vd-single__body .wp-block-image::after {
+		box-shadow: none !important;
+		-webkit-mask: none !important; mask: none !important;
+		padding: 0 !important;
+		inset: 0 0 auto 0;          /* collé en haut, pleine largeur */
+		height: 0.3px;
+		background: var(--vd-cat-color, transparent);
+	}
+	body.vd-cat--grands-formats .vd-single__hero::after,
+	body.vd-cat--grands-formats .vd-single__body .wp-block-image::after {
+		background: var(--wp--preset--gradient--grands-formats);
+	}
 
 	/* Corps : paragraphes/listes 14px, line-height 160%. */
 	.vd-single__body p,
