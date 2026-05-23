@@ -158,11 +158,12 @@ body {
 .vd-header__wordmark { white-space: nowrap; }
 .vd-logo-l {
 	color: var(--wp--preset--color--contrast);
+	transition: color 2s linear;   /* au RELÂCHEMENT du clic : refonte couleur → noir en 2s */
 	animation: vd-logo-letters 2s linear backwards;
 }
-/* Au clic sur le logo (retour accueil) : les lettres reprennent leur couleur disco le temps
- * que la navigation se fasse (~0,5s perçu avant le chargement de la page d'accueil). */
-.vd-header__logo:active .vd-logo-l { color: var(--c, #EE2A00); }
+/* Au clic sur le logo (retour accueil) : les lettres reprennent leur couleur disco D'UN COUP
+ * (transition désactivée pendant l'appui), puis refondent vers le noir en 2s au relâchement. */
+.vd-header__logo:active .vd-logo-l { color: var(--c, #EE2A00); transition: none; }
 
 /* Pastilles disco (6 ronds 8.45px, grille 3×2) — masquées en desktop, apparaissent
  * en fondu en version mobile/tablette (cf. demande Victor). Mesures exactes Figma. */
