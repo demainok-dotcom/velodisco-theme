@@ -1069,7 +1069,7 @@ body.vd-cat--grands-formats { background-image: linear-gradient(180deg, rgba(242
 		-webkit-mask: none !important; mask: none !important;
 		padding: 0 !important;
 		inset: 0 0 auto 0;          /* collé en haut, pleine largeur */
-		height: 0.3px;
+		height: 1px;
 		background: var(--vd-cat-color, transparent);
 	}
 	body.vd-cat--grands-formats .vd-single__hero::after,
