@@ -178,53 +178,63 @@
 	function scrollY() { return window.pageYOffset || document.documentElement.scrollTop || 0; }
 
 	function headerH() { return vdHeader ? vdHeader.offsetHeight : 56; }
-	function resetHeader() { hideOffset = 0; upAccum = 0; if (vdHeader) { vdHeader.style.transform = ''; } }
-	function applyHeader() {
-		if (!vdHeader) { return; }
-		vdHeader.style.transform = hideOffset > 0 ? 'translateY(-' + hideOffset + 'px)' : '';
-	}
 
-	/* Auto-hide LIÉ AU DÉFILEMENT : le header suit le scroll (il se masque/réapparaît
-	 * exactement à la vitesse où l'on scrolle), avec une zone morte d'~1 cm de remontée
-	 * avant qu'il ne réapparaisse. Pas de transition CSS sur le transform → suivi direct.
-	 * (Le bug historique était le sticky cassé, corrigé en CSS, pas cette logique.) */
-	var REVEAL_DEADZONE = 80;   // ~2 cm de remontée avant réapparition
-	var hideOffset = 0;          // 0 = visible, headerH() = entièrement caché
+	/* Auto-hide à DEMI-VITESSE et FLUIDE.
+	 * - targetOffset = position « voulue » du header (0 visible → H caché), calculée
+	 *   au fil du scroll à la moitié de la vitesse de défilement (SPEED = 0.5).
+	 * - renderedOffset = position réellement affichée, qui GLISSE vers la cible dans
+	 *   une boucle requestAnimationFrame (lissage continu) → pas de saccade liée aux
+	 *   à-coups d'événements scroll d'iOS. Pas de transition CSS (la boucle s'en charge).
+	 * - Zone morte de 80px (~2 cm) de remontée avant que la réapparition commence. */
+	var REVEAL_DEADZONE = 80;
+	var SPEED = 0.5;             // le header bouge à la moitié de la vitesse du scroll
+	var targetOffset = 0;        // 0 = visible, headerH() = entièrement caché
+	var renderedOffset = 0;      // position affichée (glisse vers la cible)
 	var upAccum = 0;             // remontée cumulée (consomme la zone morte)
 	var lastY = scrollY();
-	var scrollTicking = false;
+	var rafRunning = false;
+
+	function paint(off) {
+		if (!vdHeader) { return; }
+		vdHeader.style.transform = off > 0.5 ? 'translateY(-' + off.toFixed(1) + 'px)' : '';
+	}
+	function renderLoop() {
+		var diff = targetOffset - renderedOffset;
+		if (Math.abs(diff) < 0.5) { renderedOffset = targetOffset; }
+		else { renderedOffset += diff * 0.18; }   // lissage (plus petit = plus doux)
+		paint(renderedOffset);
+		if (renderedOffset !== targetOffset) { window.requestAnimationFrame(renderLoop); }
+		else { rafRunning = false; }
+	}
+	function startRender() {
+		if (!rafRunning) { rafRunning = true; window.requestAnimationFrame(renderLoop); }
+	}
+	function resetHeader() { targetOffset = 0; renderedOffset = 0; upAccum = 0; paint(0); }
 
 	function updateHeader() {
-		scrollTicking = false;
 		if (!vdHeader) { return; }
 		var y = scrollY();
-		// Desktop, menu burger ouvert, ou près du haut → header entièrement visible.
-		if (!isMobile() || burgerOpen() || y <= headerH()) {
-			resetHeader();
-			lastY = y;
-			return;
+		var H = headerH();
+		// Desktop, menu burger ouvert, ou près du haut → cible = visible.
+		if (!isMobile() || burgerOpen() || y <= H) {
+			targetOffset = 0; upAccum = 0; lastY = y; startRender(); return;
 		}
 		var delta = y - lastY;
-		var H = headerH();
-		if (delta > 0) {                          // on descend → masquer en suivant le scroll
-			if (hideOffset === 0) { closeAllPopovers(null); }
-			hideOffset = Math.min(H, hideOffset + delta);
+		if (delta > 0) {                            // on descend → masquer (demi-vitesse)
+			if (targetOffset === 0) { closeAllPopovers(null); }
+			targetOffset = Math.min(H, targetOffset + delta * SPEED);
 			upAccum = 0;
-		} else if (delta < 0) {                   // on remonte
+		} else if (delta < 0) {                     // on remonte
 			upAccum += -delta;
-			if (upAccum > REVEAL_DEADZONE) {        // après ~1 cm → réaffiche en suivant le scroll
-				hideOffset = Math.max(0, hideOffset + delta); // delta < 0 → réduit l'offset
+			if (upAccum > REVEAL_DEADZONE) {          // après ~2 cm → réaffiche (demi-vitesse)
+				targetOffset = Math.max(0, targetOffset + delta * SPEED); // delta<0 → réduit
 			}
 		}
-		applyHeader();
 		lastY = y;
+		startRender();
 	}
-	window.addEventListener('scroll', function () {
-		if (!scrollTicking) {
-			window.requestAnimationFrame(updateHeader);
-			scrollTicking = true;
-		}
-	}, { passive: true });
+	// updateHeader est léger (maj de la cible) ; le lissage se fait dans renderLoop.
+	window.addEventListener('scroll', updateHeader, { passive: true });
 
 	// Si on repasse en desktop (rotation/redimensionnement), header toujours visible.
 	if (mqMobile) {
