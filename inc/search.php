@@ -85,14 +85,7 @@ function velodisco_render_search( $attrs = array(), $content = '' ) {
 		<?php else : ?>
 			<div class="vd-search__empty">
 				<p class="vd-search__empty-big">Rien trouvé</p>
-				<svg class="vd-search__empty-img" viewBox="0 0 240 130" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-					<!-- PLACEHOLDER « vélo crevé » — à remplacer par le SVG exact du Figma -->
-					<circle cx="178" cy="86" r="30"/>
-					<ellipse cx="62" cy="96" rx="32" ry="20"/>
-					<path d="M62 96 L108 44 H150 M108 44 L132 86 H178 M132 86 L86 96"/>
-					<path d="M132 86 V58 H114 M138 44 L150 36"/>
-					<path d="M86 96 L78 108 M86 96 L94 108" stroke-width="2"/>
-				</svg>
+				<span class="vd-search__empty-img" role="img" aria-label="Dessin d'un vélo"></span>
 				<p class="vd-search__empty-sub">Aucun article ne correspond à votre recherche</p>
 				<a class="vd-search__empty-btn" href="<?php echo esc_url( home_url( '/' ) ); ?>">Retour à l'accueil</a>
 			</div>

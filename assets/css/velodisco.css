@@ -154,7 +154,16 @@ body {
  * à-coup) entre une couche couleur « disco » et la couche finale noire. Au chargement, la
  * couche couleur se fond (opacité 1→0, 2s linéaire) pour révéler la couche noire (= contrast,
  * off-white en sombre). Uniquement au chargement, pas de réaction au clic, pas de contour. */
-.vd-header__wordmark { display: inline-grid; white-space: nowrap; }
+.vd-header__wordmark {
+	display: inline-grid;
+	white-space: nowrap;
+	/* La couche couleur découpe chaque lettre en <span> → le crénage saute entre les
+	 * lettres et la couche couleur devient plus large que la couche noire (texte d'un
+	 * seul tenant), d'où le décalage. On désactive le crénage sur les DEUX couches
+	 * pour des largeurs de glyphes identiques → superposition exacte. */
+	font-kerning: none;
+	font-feature-settings: "kern" 0, "liga" 0;
+}
 .vd-wm { grid-area: 1 / 1; } /* les deux couches dans la MÊME cellule → superposition parfaite */
 .vd-wm--ink { color: var(--wp--preset--color--contrast); }
 .vd-wm--disco {
@@ -1137,10 +1146,17 @@ body {
 	margin: 0 0 clamp(1.5rem, 4vw, 2.5rem);
 	color: var(--wp--preset--color--contrast);
 }
+/* Dessin du vélo : SVG externe (assets/images/velo-creve.svg, tracés noirs sur fond
+ * transparent) utilisé comme MASQUE → peint avec la couleur « contrast » pour s'adapter
+ * au dark/light, exactement comme l'ancien placeholder en currentColor. Ratio Figma 320×160. */
 .vd-search__empty-img {
-	display: block; width: clamp(200px, 30vw, 320px); height: auto;
+	display: block;
+	width: clamp(200px, 30vw, 320px);
+	aspect-ratio: 320 / 160;
 	margin: 0 auto clamp(1.5rem, 4vw, 2.5rem);
-	color: var(--wp--preset--color--contrast);
+	background-color: var(--wp--preset--color--contrast);
+	-webkit-mask: url(../images/velo-creve.svg) center / contain no-repeat;
+	mask: url(../images/velo-creve.svg) center / contain no-repeat;
 }
 .vd-search__empty-sub {
 	font-family: var(--vd-serif); font-weight: 700;
