@@ -913,6 +913,95 @@ body {
 	.vd-gf__all { justify-self: start; }
 }
 
+/* 9d. ACTU (Page Actu — flux des derniers articles, grille 3 colonnes) ----- */
+/* Relevé Figma « Page Actu - Ordi » (1440) : 3 colonnes de 320px, gap 127px,
+ * marges latérales 113px ; cartes identiques à la Home. */
+.vd-actu {
+	max-width: 1262px;              /* 1214 (3×320 + 2×127) + 2×24 de padding */
+	margin-inline: auto;
+	padding-inline: clamp(20px, 5vw, 24px);
+}
+
+/* En-tête de flux : « Actu  Tout frais » à gauche, « Derniers articles » à droite */
+.vd-actu__head {
+	display: flex;
+	align-items: baseline;
+	gap: 18px;
+	margin: clamp(28px, 4vw, 38px) 0 clamp(36px, 5vw, 56px);
+	font-family: var(--wp--preset--font-family--inter, "Inter", sans-serif);
+	font-size: 15px;
+	line-height: 18px;
+	color: var(--wp--preset--color--contrast);
+}
+.vd-actu__crumb { font-weight: 400; }
+.vd-actu__tab   { font-weight: 600; }
+.vd-actu__tab--right { margin-left: auto; font-weight: 600; }
+
+/* Grille 3 colonnes (320px à 1440, gap 127px), fluide en dessous */
+.vd-actu__grid {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	column-gap: clamp(28px, 8.8vw, 127px);
+	row-gap: clamp(2rem, 3vw, 36px);
+}
+
+/* Réglages propres au flux Actu (Figma) — sans toucher aux cartes de la Home :
+ * extrait 16/19, date 12/15 noire pleine opacité, écart image→étiquette 23px. */
+.vd-actu .vd-card__excerpt { font-size: 16px; line-height: 19px; }
+.vd-actu .vd-card__date { font-size: 12px; line-height: 15px; opacity: 1; }
+.vd-actu .vd-card .vd-tag { display: inline-block; margin-top: clamp(14px, 1.6vw, 23px); }
+
+/* Pagination : [1] 2 3 →  (1 actif = rond plein ; chiffres Inter Thin), à droite */
+.vd-actu__pagination {
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+	gap: 14px;
+	margin-top: clamp(2rem, 4vw, 45px);
+	font-family: var(--wp--preset--font-family--inter, "Inter", sans-serif);
+}
+.vd-page {
+	font-weight: 100;
+	font-size: 25px;
+	line-height: 30px;
+	color: var(--wp--preset--color--contrast);
+	text-decoration: none;
+	min-width: 1ch;
+	text-align: center;
+	transition: opacity var(--vd-t-fast) var(--vd-ease);
+}
+.vd-page:hover { opacity: 0.6; }
+.vd-page.is-active {
+	font-weight: 600;
+	width: 28px;
+	height: 28px;
+	border-radius: 50%;
+	background: var(--wp--preset--color--contrast);
+	color: var(--wp--preset--color--base);
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+}
+.vd-page.is-active:hover { opacity: 1; }
+.vd-page--next {
+	font-weight: 400;
+	font-size: 22px;
+	width: 21px;
+	height: 21px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+}
+
+/* Responsive PROVISOIRE (en attendant la maquette « Page Actu — Mobile ») */
+@media (max-width: 880px) {
+	.vd-actu__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: clamp(20px, 4vw, 44px); }
+}
+@media (max-width: 560px) {
+	.vd-actu__grid { grid-template-columns: 1fr; }
+	.vd-actu__head { flex-wrap: wrap; }
+}
+
 /* 9c. ARTICLE (single / Blog Page) ---------------------------------------- */
 .vd-single { padding-inline: clamp(20px, 5vw, 24px); }
 

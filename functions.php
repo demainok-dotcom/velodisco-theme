@@ -185,3 +185,9 @@ add_action( 'template_redirect', 'velodisco_count_view' );
  * Moteur de la page d'accueil (bloc dynamique velodisco/home).
  */
 require_once get_template_directory() . '/inc/home.php';
+
+/**
+ * Flux de la Page Actu (bloc dynamique velodisco/actu).
+ * Chargé après home.php : réutilise ses helpers de cartes.
+ */
+require_once get_template_directory() . '/inc/actu.php';
