@@ -187,11 +187,29 @@
 		}
 	}
 
-	/* Détection par GESTE TACTILE (signal le plus fiable sur mobile : indépendant
-	 * des sauts de scrollY dus à la barre d'adresse qui apparaît/disparaît).
-	 * Doigt qui glisse vers le BAS = on remonte la page → réafficher le header. */
+	/* IMPORTANT : le défilement ne fait QUE forcer l'affichage en haut de page —
+	 * il ne masque JAMAIS. Le masquage/affichage par direction vient uniquement du
+	 * geste (tactile + molette). Sans ça, le gestionnaire de scroll re-masquait
+	 * aussitôt ce que le tactile venait de réafficher (les deux se battaient). */
+	var scrollTicking = false;
+	function onScrollFrame() {
+		scrollTicking = false;
+		if (!vdHeader) { return; }
+		if (!isMobile() || scrollY() <= vdHeader.offsetHeight || burgerOpen()) {
+			showHeader();
+		}
+	}
+	window.addEventListener('scroll', function () {
+		if (!scrollTicking) {
+			window.requestAnimationFrame(onScrollFrame);
+			scrollTicking = true;
+		}
+	}, { passive: true });
+
+	/* Geste TACTILE = source de vérité sur mobile (indépendant des sauts de scrollY
+	 * dus à la barre d'adresse). Doigt vers le BAS = on remonte → afficher. */
 	var touchStartY = null;
-	var TOUCH_THRESHOLD = 10;
+	var TOUCH_THRESHOLD = 8;
 	window.addEventListener('touchstart', function (e) {
 		touchStartY = e.touches && e.touches.length ? e.touches[0].clientY : null;
 	}, { passive: true });
@@ -209,28 +227,11 @@
 		}
 	}, { passive: true });
 
-	/* Fallback par défilement (souris/molette, momentum, et toujours afficher en
-	 * haut de page). Met à jour lastY à chaque frame (robuste). */
-	var lastY = scrollY();
-	var scrollTicking = false;
-	function onScrollFrame() {
-		scrollTicking = false;
-		if (!vdHeader) { return; }
-		var y = scrollY();
-		if (!isMobile() || y <= vdHeader.offsetHeight || burgerOpen()) {
-			showHeader();
-		} else if (y < lastY - 4) {
-			showHeader();          // remontée
-		} else if (y > lastY + 4) {
-			hideHeader();          // descente
-		}
-		lastY = y;
-	}
-	window.addEventListener('scroll', function () {
-		if (!scrollTicking) {
-			window.requestAnimationFrame(onScrollFrame);
-			scrollTicking = true;
-		}
+	/* Molette / trackpad (souris) : deltaY < 0 = on remonte → afficher. */
+	window.addEventListener('wheel', function (e) {
+		if (!vdHeader || !isMobile() || burgerOpen()) { return; }
+		if (e.deltaY < 0) { showHeader(); }
+		else if (e.deltaY > 0) { hideHeader(); }
 	}, { passive: true });
 
 	// Si on repasse en desktop (rotation/redimensionnement), header toujours visible.
