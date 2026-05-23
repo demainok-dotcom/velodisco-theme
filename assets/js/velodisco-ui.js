@@ -188,7 +188,7 @@
 	 * exactement à la vitesse où l'on scrolle), avec une zone morte d'~1 cm de remontée
 	 * avant qu'il ne réapparaisse. Pas de transition CSS sur le transform → suivi direct.
 	 * (Le bug historique était le sticky cassé, corrigé en CSS, pas cette logique.) */
-	var REVEAL_DEADZONE = 40;   // ~1 cm de remontée avant réapparition
+	var REVEAL_DEADZONE = 80;   // ~2 cm de remontée avant réapparition
 	var hideOffset = 0;          // 0 = visible, headerH() = entièrement caché
 	var upAccum = 0;             // remontée cumulée (consomme la zone morte)
 	var lastY = scrollY();

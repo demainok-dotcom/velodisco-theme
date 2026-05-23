@@ -115,9 +115,11 @@ body {
 	border-bottom: 1px solid var(--wp--preset--color--separator);
 	min-height: var(--vd-header-h);
 	transition: background-color var(--vd-t-base) var(--vd-ease),
-		border-color var(--vd-t-base) var(--vd-ease);
-	/* Pas de transition sur transform : l'auto-hide mobile est piloté en direct par
-	 * le JS (vd-header.style.transform) pour suivre la vitesse de défilement. */
+		border-color var(--vd-t-base) var(--vd-ease),
+		transform 0.2s ease-out;
+	/* La transition courte (0.2s) sur transform lisse les paliers du scroll iOS :
+	 * le JS pose la cible (vd-header.style.transform) au fil du défilement, et la
+	 * transition « rattrape » en douceur → suivi fluide sans saccade. */
 }
 
 .vd-header__inner {
