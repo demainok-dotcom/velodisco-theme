@@ -278,6 +278,10 @@ body {
 	display: flex;
 	flex-direction: column;
 	padding: 1.25rem clamp(1.25rem, 6vw, 2.5rem) 2.5rem;
+	/* Quand on est connecté, la barre d'admin WP (46px, par-dessus tout) couvrait la
+	 * rangée recherche/réglages/fermer du menu → on décale le contenu sous elle.
+	 * Visiteurs (pas de barre) : la variable vaut 0, donc aucun effet. */
+	padding-top: calc(1.25rem + var(--wp-admin--admin-bar--height, 0px));
 	transform: translateY(-100%);
 	visibility: hidden;
 	transition: transform var(--vd-t-slow) var(--vd-ease), visibility 0s linear var(--vd-t-slow);
