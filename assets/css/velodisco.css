@@ -1188,6 +1188,41 @@ body {
 	.vd-search__head { padding-inline: 20px; box-sizing: border-box; }
 }
 
+/* 9g. PAGE TEXTE / LÉGALE (Mentions légales, et autres pages de prose) -------
+ * Gabarit page-mentions-legales.html : titre Merriweather centré + colonne de
+ * texte éditable (post-content) à 960px. Couleurs via « contrast » → dark/light. */
+.vd-legal {
+	max-width: 960px;
+	margin-inline: auto;
+	padding-inline: clamp(20px, 5vw, 24px);
+	box-sizing: border-box;
+}
+.vd-legal > .wp-block-post-title {
+	font-family: var(--vd-serif); font-weight: 700;
+	font-size: clamp(34px, 6vw, 64px); line-height: 1.25;
+	text-align: center;
+	color: var(--wp--preset--color--contrast);
+	margin: clamp(2.5rem, 7vw, 4.5rem) 0 clamp(2rem, 5vw, 3.5rem);
+}
+/* Sous-titres de section (Figma : Inter 700 14px majuscules) — quel que soit le niveau. */
+.vd-legal .wp-block-post-content :is(h2, h3, h4) {
+	font-family: var(--wp--preset--font-family--inter, "Inter", sans-serif);
+	font-weight: 700; font-size: 14px; line-height: 17px;
+	text-transform: uppercase; letter-spacing: 0.02em;
+	color: var(--wp--preset--color--contrast);
+	margin: clamp(1.75rem, 4vw, 2.5rem) 0 0.5rem;
+}
+.vd-legal .wp-block-post-content :is(h2, h3, h4):first-child { margin-top: 0; }
+.vd-legal .wp-block-post-content :is(p, li) {
+	font-family: var(--wp--preset--font-family--inter, "Inter", sans-serif);
+	font-weight: 400; font-size: 14px; line-height: 1.6;
+	color: var(--wp--preset--color--contrast);
+	margin: 0 0 0.75rem;
+}
+.vd-legal .wp-block-post-content ul,
+.vd-legal .wp-block-post-content ol { margin: 0 0 0.75rem 1.25rem; padding: 0; }
+.vd-legal .wp-block-post-content a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+
 /* 9c. ARTICLE (single / Blog Page) ---------------------------------------- */
 .vd-single { padding-inline: clamp(20px, 5vw, 24px); }
 
