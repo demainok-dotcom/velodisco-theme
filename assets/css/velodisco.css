@@ -1372,6 +1372,9 @@ body {
 
 @media (max-width: 560px) {
 	.vd-consent__inner { flex-direction: column; align-items: stretch; gap: 16px; }
+	/* En colonne, flex-basis 380px deviendrait une HAUTEUR imposée au texte (grand
+	 * vide avant les boutons) → on laisse le bloc texte se dimensionner à son contenu. */
+	.vd-consent__text { flex: 0 0 auto; }
 	.vd-consent__actions { flex-direction: column; }
 	.vd-consent__btn { width: 100%; min-width: 0; height: 42px; border-radius: 21px; }
 	/* Ordre mobile (cf. Figma) : Tout accepter, puis Tout refuser, puis Personnaliser. */
