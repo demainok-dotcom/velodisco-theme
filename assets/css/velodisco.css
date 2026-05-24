@@ -874,7 +874,10 @@ body {
 	.vd-col--center { display: block; }
 	/* Page de section : grille du centre en 1 colonne (préfixe .vd-section = priorité). */
 	.vd-section .vd-section__grid { grid-template-columns: 1fr; }
-	.vd-section .vd-section__head { padding-inline: 20px; }
+	/* En 1 colonne, le bandeau (nom de section + « Derniers articles ») devient le 1er
+	   élément sous le header → on ajoute de l'air au-dessus pour qu'il ne soit pas collé
+	   (à ≤560px la règle mobile remet padding:20px sur tous les côtés). */
+	.vd-section .vd-section__head { padding: 24px 20px 0; }
 
 	/* Filet de catégorie : en haut de l'image uniquement (pas le contour inset desktop) */
 	.vd-home .vd-img-stroke::after { display: none; }
