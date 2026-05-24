@@ -271,7 +271,13 @@ body {
 /* 4. MENU BURGER MOBILE ---------------------------------------------------- */
 .vd-mobile-nav {
 	position: fixed;
-	inset: 0;
+	/* Ancré en HAUT + hauteur plein écran stable. On évite « inset:0 » (qui ancre le
+	 * bas au viewport visible, lequel bouge quand la barre d'outils mobile se rétracte
+	 * → saut « presque en bas » puis « plein écran »). 100lvh = hauteur « large » (chrome
+	 * rétracté) → couvre tout dès l'ouverture, sans redimensionnement. */
+	top: 0; left: 0; right: 0;
+	height: 100vh;   /* repli */
+	height: 100lvh;
 	z-index: 200;
 	background: var(--wp--preset--color--base);
 	color: var(--wp--preset--color--contrast);
