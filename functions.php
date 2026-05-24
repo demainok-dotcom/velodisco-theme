@@ -349,3 +349,8 @@ require_once get_template_directory() . '/inc/search.php';
  * Formulaire autonome : validation + wp_mail() + anti-spam.
  */
 require_once get_template_directory() . '/inc/contact.php';
+
+/**
+ * Mesure d'audience + bandeau de consentement cookies (GA4 consenti + Cloudflare).
+ */
+require_once get_template_directory() . '/inc/consent.php';

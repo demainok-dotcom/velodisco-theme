@@ -247,4 +247,82 @@
 		if (mqMobile.addEventListener) { mqMobile.addEventListener('change', onMq); }
 		else if (mqMobile.addListener) { mqMobile.addListener(onMq); }
 	}
+
+	/* ------------------------------------------------------------------ */
+	/* Consentement cookies + chargement conditionnel de Google Analytics  */
+	/* ------------------------------------------------------------------ */
+	var vdConsent = document.getElementById('vd-consent');
+	if (vdConsent) {
+		var CONSENT_COOKIE = 'vd_consent';   // 'a' = mesure d'audience acceptée, 'n' = refusée
+		var CONSENT_DAYS = 180;
+
+		function vdGetCookie(name) {
+			var m = document.cookie.match('(?:^|; )' + name.replace(/([.*+?^${}()|[\]\\])/g, '\\$1') + '=([^;]*)');
+			return m ? decodeURIComponent(m[1]) : null;
+		}
+		function vdSetCookie(name, val, days) {
+			var d = new Date();
+			d.setTime(d.getTime() + days * 86400000);
+			document.cookie = name + '=' + encodeURIComponent(val) + '; expires=' + d.toUTCString() + '; path=/; SameSite=Lax';
+		}
+
+		var gaLoaded = false;
+		function vdLoadGA4() {
+			if (gaLoaded) { return; }
+			var id = vdConsent.getAttribute('data-ga4');
+			if (!id) { return; }
+			gaLoaded = true;
+			var s = document.createElement('script');
+			s.async = true;
+			s.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(id);
+			document.head.appendChild(s);
+			window.dataLayer = window.dataLayer || [];
+			window.gtag = function () { window.dataLayer.push(arguments); };
+			window.gtag('js', new Date());
+			window.gtag('config', id);
+		}
+
+		var prefsPanel = vdConsent.querySelector('.vd-consent__prefs');
+		var analyticsBox = document.getElementById('vd-consent-analytics');
+
+		function vdShowConsent() { vdConsent.hidden = false; }
+		function vdHideConsent() {
+			vdConsent.hidden = true;
+			if (prefsPanel) { prefsPanel.hidden = true; }
+		}
+		// analytics = true/false ; persist = false pour ne pas réécrire le cookie.
+		function vdApplyConsent(analytics, persist) {
+			if (persist !== false) { vdSetCookie(CONSENT_COOKIE, analytics ? 'a' : 'n', CONSENT_DAYS); }
+			if (analytics) { vdLoadGA4(); }
+			vdHideConsent();
+		}
+
+		// État initial : on respecte un choix déjà fait, sinon on affiche le bandeau.
+		var stored = vdGetCookie(CONSENT_COOKIE);
+		if (stored === 'a') { vdLoadGA4(); }
+		else if (stored === 'n') { /* refusé : on ne charge rien */ }
+		else { vdShowConsent(); }
+
+		// Boutons du bandeau / panneau.
+		vdConsent.addEventListener('click', function (e) {
+			var btn = e.target.closest && e.target.closest('[data-consent]');
+			if (!btn) { return; }
+			var act = btn.getAttribute('data-consent');
+			if (act === 'accept') { vdApplyConsent(true); }
+			else if (act === 'deny') { vdApplyConsent(false); }
+			else if (act === 'custom') { if (prefsPanel) { prefsPanel.hidden = !prefsPanel.hidden; } }
+			else if (act === 'save') { vdApplyConsent(!!(analyticsBox && analyticsBox.checked)); }
+		});
+
+		// Lien « Gérer les cookies » (footer) : ré-ouvre le bandeau et reflète le choix.
+		var reopeners = document.querySelectorAll('[data-consent-reopen]');
+		for (var i = 0; i < reopeners.length; i++) {
+			reopeners[i].hidden = false; // visible seulement quand un bandeau existe
+			reopeners[i].addEventListener('click', function (e) {
+				e.preventDefault();
+				if (analyticsBox) { analyticsBox.checked = ( vdGetCookie(CONSENT_COOKIE) === 'a' ); }
+				vdShowConsent();
+			});
+		}
+	}
 })();
