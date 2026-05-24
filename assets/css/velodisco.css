@@ -828,6 +828,28 @@ body {
 }
 .vd-frais__title { font-size: 12px; line-height: 15px; }
 
+/* Survol (et focus clavier) des titres TOUT FRAIS : la couleur fond vers un dégradé
+ * multicolore TRÈS FONCÉ (clin d'œil subtil aux couleurs de marque). Le dégradé est
+ * clippé sur le texte en permanence (invisible car couvert par la couleur pleine) ;
+ * au survol on rend la couleur transparente → le dégradé se révèle EN DOUCEUR grâce
+ * à la transition (plus élégant qu'un changement de couleur sec). */
+.vd-frais__title {
+	background-image: linear-gradient(90deg, #6e2812, #144a22, #0d4257, #654a0c);
+	-webkit-background-clip: text;
+	background-clip: text;
+	transition: color var(--vd-t-base) var(--vd-ease), -webkit-text-fill-color var(--vd-t-base) var(--vd-ease);
+}
+.vd-frais__title:hover,
+.vd-frais__title:focus-visible {
+	color: transparent;
+	-webkit-text-fill-color: transparent;
+}
+/* Mode sombre : un dégradé atténué mais CLAIR (un « très foncé » serait invisible sur
+ * fond noir) → effet subtil et lisible sur fond sombre. */
+[data-theme="dark"] .vd-frais__title {
+	background-image: linear-gradient(90deg, #d99a86, #9fc9ab, #9cc3d4, #d8c692);
+}
+
 /* ---- TENDANCES ---- */
 .vd-tcard { margin-bottom: clamp(1.75rem, 3vw, 2.5rem); }
 
