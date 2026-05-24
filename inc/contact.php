@@ -66,6 +66,17 @@ function velodisco_handle_contact_submission() {
 		return $state;
 	}
 
+	// 4 bis) Limitation de débit anti-flood : 5 envois max / 10 min par IP cliente.
+	// Le nonce d'un visiteur anonyme est partagé (même valeur pour tous) et le honeypot
+	// n'arrête pas un bot ciblé → sans ce garde-fou, le formulaire pourrait être utilisé
+	// pour inonder la boîte de l'admin (et faire blacklister l'IP d'envoi du serveur).
+	$rl_key   = 'vd_cf_' . substr( md5( velodisco_client_ip() . wp_salt() ), 0, 16 );
+	$rl_count = (int) get_transient( $rl_key );
+	if ( $rl_count >= 5 ) {
+		$state['errors'][] = 'Trop de messages envoyés. Merci de patienter quelques minutes avant de réessayer.';
+		return $state;
+	}
+
 	// 5) Envoi via wp_mail vers l'e-mail admin du site.
 	$to       = get_option( 'admin_email' );
 	$blogname = wp_specialchars_decode( get_option( 'blogname' ), ENT_QUOTES );
@@ -77,11 +88,20 @@ function velodisco_handle_contact_submission() {
 	$body .= "Sujet : " . ( '' !== $sujet ? $sujet : '(non précisé)' ) . "\n\n";
 	$body .= "Message :\n{$message}\n";
 
-	// On répond à l'expéditeur (Reply-To) sans usurper le From (préserve SPF/DKIM du domaine).
-	$headers = array(
-		'Reply-To: ' . $nom . ' <' . $email . '>',
+	// On répond à l'expéditeur (Reply-To) sans usurper le From (préserve SPF/DKIM du
+	// domaine). Le nom est nettoyé pour un en-tête e-mail : sanitize_text_field a déjà
+	// retiré les retours-ligne (pas d'injection CRLF), on enlève en plus tout caractère
+	// pouvant casser/détourner l'en-tête (<>"(),:;@[]\ et antislash).
+	$reply_name = trim( preg_replace( '/[<>"\(\),:;@\[\]\\\\]/', '', $nom ) );
+	$reply_to   = ( '' !== $reply_name ) ? $reply_name . ' <' . $email . '>' : $email;
+	$headers    = array(
+		'Reply-To: ' . $reply_to,
 		'Content-Type: text/plain; charset=UTF-8',
 	);
+
+	// On incrémente le compteur de débit AVANT l'envoi (même un envoi échoué compte,
+	// pour ne pas autoriser une boucle de réessais).
+	set_transient( $rl_key, $rl_count + 1, 10 * MINUTE_IN_SECONDS );
 
 	$ok = wp_mail( $to, $subject, $body, $headers );
 

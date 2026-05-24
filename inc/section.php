@@ -20,13 +20,13 @@ function velodisco_render_section( $attrs = array(), $content = '' ) {
 	if ( ! $term || empty( $term->term_id ) ) {
 		return '';
 	}
-	$cat_id = (int) $term->term_id;
-	$slug   = sanitize_html_class( $term->slug );
-	$name   = strtoupper( str_replace( '-', ' ', $term->name ) );
+	$slug = sanitize_html_class( $term->slug );
+	$name = strtoupper( str_replace( '-', ' ', $term->name ) );
 
-	// TOUT FRAIS : tous les récents du SITE (toutes catégories), pas seulement cette section.
+	// TOUT FRAIS : les récents du SITE entier (toutes catégories), pas seulement cette
+	// section. Plafonné à 50 (cf. home.php) pour borner requête + DOM.
 	$used  = array();
-	$frais = vd_query_ids( array( 'posts_per_page' => -1 ), $used );
+	$frais = vd_query_ids( array( 'posts_per_page' => 50 ), $used );
 
 	// TENDANCES : les plus vus du SITE entier (toutes catégories), complétés par des récents.
 	$tused = array();
@@ -47,7 +47,7 @@ function velodisco_render_section( $attrs = array(), $content = '' ) {
 	?>
 	<div class="vd-home vd-section">
 
-		<!-- Colonne gauche : TOUT FRAIS (récents de la catégorie) -->
+		<!-- Colonne gauche : TOUT FRAIS (récents du SITE entier, toutes catégories) -->
 		<aside class="vd-col vd-col--frais">
 			<h2 class="vd-sectitle">Tout frais</h2>
 			<ul class="vd-frais__list">
@@ -123,7 +123,7 @@ function velodisco_render_section( $attrs = array(), $content = '' ) {
 			<?php endif; ?>
 		</div>
 
-		<!-- Colonne droite : TENDANCES (plus vus de la catégorie) -->
+		<!-- Colonne droite : TENDANCES (plus vus du SITE entier, toutes catégories) -->
 		<aside class="vd-col vd-col--tend">
 			<h2 class="vd-sectitle">Tendances</h2>
 			<?php foreach ( $tend as $id ) : ?>
@@ -146,7 +146,7 @@ function velodisco_render_section( $attrs = array(), $content = '' ) {
 		<div class="vd-gf__head">
 			<h2 class="vd-sectitle vd-gradient-text">Grands Formats</h2>
 			<p class="vd-gf__sub">C'est parfois mieux quand c'est plus long.</p>
-			<a class="vd-gf__all vd-gradient-text" href="/category/grands-formats/">Voir tout →</a>
+			<a class="vd-gf__all vd-gradient-text" href="<?php echo esc_url( home_url( '/category/grands-formats/' ) ); ?>">Voir tout →</a>
 		</div>
 		<div class="vd-gf__grid">
 			<?php foreach ( $gf as $id ) : ?>

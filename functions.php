@@ -10,7 +10,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'VELODISCO_VERSION' ) ) {
-	define( 'VELODISCO_VERSION', '0.2.0' );
+	// Version lue dynamiquement dans l'en-tête de style.css (source unique de vérité)
+	// → ne se désynchronise plus. Sert uniquement de repli au cache-busting des assets,
+	// qui repose d'abord sur filemtime().
+	$vd_theme = wp_get_theme();
+	define( 'VELODISCO_VERSION', $vd_theme->exists() ? $vd_theme->get( 'Version' ) : '1.0.0' );
 }
 
 /**
@@ -139,7 +143,7 @@ function velodisco_colorize_post_terms( $block_content, $block ) {
 			} else {
 				$attrs = $m[1] . ' class="vd-term vd-term--' . $slug . '"';
 			}
-			return '<a' . $attrs . 'href="/category/' . $slug . '/"';
+			return '<a' . $attrs . 'href="' . esc_url( home_url( '/category/' . $slug . '/' ) ) . '"';
 		},
 		$block_content
 	);
@@ -177,15 +181,56 @@ add_filter( 'body_class', 'velodisco_body_category_class' );
  * pour ordonner les tendances.
  */
 function velodisco_count_view() {
-	if ( is_singular( 'post' ) && ! is_admin() ) {
-		$id = get_queried_object_id();
-		if ( $id ) {
-			$v = (int) get_post_meta( $id, 'vd_views', true );
-			update_post_meta( $id, 'vd_views', $v + 1 );
-		}
+	// On ne compte pas : back-office et utilisateurs connectés (previews, rédaction).
+	if ( ! is_singular( 'post' ) || is_admin() || is_user_logged_in() ) {
+		return;
 	}
+	$id = get_queried_object_id();
+	if ( ! $id ) {
+		return;
+	}
+	// Garde anti-amplification : au plus 1 écriture par article et par minute, quelle
+	// que soit la provenance. Sans cela, un acteur malveillant qui martèle l'URL d'un
+	// article avec un paramètre bidon (?x=123) contourne le cache Varnish et provoque
+	// une écriture BDD à CHAQUE requête. Ici les écritures sont bornées ; le compteur
+	// reste « best effort », ce qui suffit largement à ordonner les Tendances.
+	$lock = 'vd_vlock_' . $id;
+	if ( get_transient( $lock ) ) {
+		return;
+	}
+	set_transient( $lock, 1, MINUTE_IN_SECONDS );
+
+	$views = (int) get_post_meta( $id, 'vd_views', true );
+	update_post_meta( $id, 'vd_views', $views + 1 );
 }
 add_action( 'template_redirect', 'velodisco_count_view' );
+
+/**
+ * Meilleure estimation de l'IP cliente. Derrière Varnish/Nginx, REMOTE_ADDR peut être
+ * l'IP du proxy ; on lit alors le 1er maillon de X-Forwarded-For. Utilisé pour limiter
+ * le débit du formulaire de contact.
+ * NB : X-Forwarded-For est falsifiable → défense de premier niveau (stoppe le flood
+ * basique), à compléter par un CAPTCHA si le spam ciblé devient un problème.
+ *
+ * @return string IP valide, ou '0.0.0.0' en dernier recours.
+ */
+function velodisco_client_ip() {
+	$candidates = array();
+	if ( ! empty( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) {
+		$xff          = explode( ',', sanitize_text_field( wp_unslash( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) );
+		$candidates[] = trim( $xff[0] );
+	}
+	if ( ! empty( $_SERVER['REMOTE_ADDR'] ) ) {
+		$candidates[] = sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) );
+	}
+	foreach ( $candidates as $cand ) {
+		$valid = filter_var( $cand, FILTER_VALIDATE_IP );
+		if ( $valid ) {
+			return $valid;
+		}
+	}
+	return '0.0.0.0';
+}
 
 /**
  * Moteur de la page d'accueil (bloc dynamique velodisco/home).

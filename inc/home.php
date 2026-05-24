@@ -79,18 +79,24 @@ function vd_excerpt_html( $id, $words = 0 ) {
 /** Requête → IDs, en excluant ceux déjà utilisés (passés par référence). */
 function vd_query_ids( $args, &$used ) {
 	$defaults = array(
-		'post_type'           => 'post',
-		'post_status'         => 'publish',
-		'ignore_sticky_posts' => 1,
-		'no_found_rows'       => true,
-		'fields'              => 'ids',
+		'post_type'              => 'post',
+		'post_status'            => 'publish',
+		'ignore_sticky_posts'    => 1,
+		'no_found_rows'          => true,
+		// On NE force PAS 'fields' => 'ids' : en laissant WP_Query charger les posts,
+		// il amorce les caches post / termes / meta. Les helpers (get_the_title,
+		// get_the_category, get_permalink…) tapent alors dans ces caches au lieu de
+		// déclencher une requête SQL par article → on élimine un problème N+1 qui
+		// dégénérerait à mesure que le nombre d'articles augmente.
+		'update_post_term_cache' => true,
+		'update_post_meta_cache' => true,
 	);
 	$args = array_merge( $defaults, $args );
 	if ( ! empty( $used ) ) {
 		$args['post__not_in'] = $used;
 	}
-	$q   = new WP_Query( $args );
-	$ids = $q->posts;
+	$q    = new WP_Query( $args );
+	$ids  = wp_list_pluck( $q->posts, 'ID' );
 	$used = array_merge( $used, $ids );
 	return $ids;
 }
@@ -122,10 +128,11 @@ function velodisco_render_home() {
 		$tend = array_merge( $tend, vd_query_ids( array( 'posts_per_page' => 3 - count( $tend ) ), $used ) );
 	}
 
-	// TOUT FRAIS = TOUS les articles récents (indépendant : on ne retire pas ceux
-	// déjà affichés en À la une / Derniers / Tendances → liste complète comme au Figma).
+	// TOUT FRAIS = les articles récents (indépendant : on ne retire pas ceux déjà
+	// affichés ailleurs). Plafonné à 50 : sans borne, la requête et le DOM enflaient
+	// linéairement avec le nombre d'articles (le site est alimenté en automatique).
 	$usedfrais = array();
-	$frais     = vd_query_ids( array( 'posts_per_page' => -1, 'no_found_rows' => false ), $usedfrais );
+	$frais     = vd_query_ids( array( 'posts_per_page' => 50 ), $usedfrais );
 
 	// GRANDS FORMATS = catégorie dédiée (indépendant).
 	$usedgf = array();
@@ -203,7 +210,7 @@ function velodisco_render_home() {
 		<div class="vd-gf__head">
 			<h2 class="vd-sectitle vd-gradient-text">Grands Formats</h2>
 			<p class="vd-gf__sub">C'est parfois mieux quand c'est plus long.</p>
-			<a class="vd-gf__all vd-gradient-text" href="/category/grands-formats/">Voir tout →</a>
+			<a class="vd-gf__all vd-gradient-text" href="<?php echo esc_url( home_url( '/category/grands-formats/' ) ); ?>">Voir tout →</a>
 		</div>
 		<div class="vd-gf__grid">
 			<?php foreach ( $gf as $id ) : ?>

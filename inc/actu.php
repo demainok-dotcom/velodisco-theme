@@ -75,12 +75,25 @@ function velodisco_render_actu( $attrs = array(), $content = '' ) {
 				?>
 				<nav class="vd-actu__pagination" aria-label="Pagination des articles">
 					<?php
+					// Pagination FENÊTRÉE : on n'affiche que les 1res pages, les dernières
+					// et une fenêtre autour de la page courante, avec « … » pour combler.
+					// Sans cela, le DOM contiendrait un lien par page (illimité à terme).
+					$window     = 2;
+					$last_shown = 0;
 					for ( $i = 1; $i <= $total; $i++ ) :
+						$in_window = ( $i <= 1 + $window ) || ( $i > $total - $window ) || ( abs( $i - $paged ) <= $window );
+						if ( ! $in_window ) {
+							continue;
+						}
+						if ( $last_shown && $i > $last_shown + 1 ) :
+							?><span class="vd-page vd-page--gap" aria-hidden="true">…</span><?php
+						endif;
 						$url = ( 1 === $i ) ? $base : add_query_arg( 'ap', $i, $base );
 						$cls = 'vd-page' . ( $i === $paged ? ' is-active' : '' );
 						?>
 						<a class="<?php echo esc_attr( $cls ); ?>"<?php echo ( $i === $paged ) ? ' aria-current="page"' : ''; ?> href="<?php echo esc_url( $url ); ?>"><?php echo (int) $i; ?></a>
 						<?php
+						$last_shown = $i;
 					endfor;
 					if ( $paged < $total ) :
 						?>

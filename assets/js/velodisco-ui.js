@@ -177,7 +177,12 @@
 	function burgerOpen() { return burgerPanel && burgerPanel.classList.contains('is-open'); }
 	function scrollY() { return window.pageYOffset || document.documentElement.scrollTop || 0; }
 
-	function headerH() { return vdHeader ? vdHeader.offsetHeight : 56; }
+	// Hauteur du header MISE EN CACHE : lire offsetHeight à chaque événement scroll
+	// forcerait un reflow synchrone à répétition. On la mesure une fois, puis on la
+	// rafraîchit seulement au redimensionnement (c'est le seul moment où elle change).
+	var headerHeight = vdHeader ? vdHeader.offsetHeight : 56;
+	function refreshHeaderHeight() { if (vdHeader) { headerHeight = vdHeader.offsetHeight; } }
+	window.addEventListener('resize', refreshHeaderHeight, { passive: true });
 
 	/* Auto-hide à DEMI-VITESSE et FLUIDE.
 	 * - targetOffset = position « voulue » du header (0 visible → H caché), calculée
@@ -188,7 +193,7 @@
 	 * - Zone morte de 80px (~2 cm) de remontée avant que la réapparition commence. */
 	var REVEAL_DEADZONE = 80;
 	var SPEED = 0.5;             // le header bouge à la moitié de la vitesse du scroll
-	var targetOffset = 0;        // 0 = visible, headerH() = entièrement caché
+	var targetOffset = 0;        // 0 = visible, headerHeight = entièrement caché
 	var renderedOffset = 0;      // position affichée (glisse vers la cible)
 	var upAccum = 0;             // remontée cumulée (consomme la zone morte)
 	var lastY = scrollY();
@@ -214,7 +219,7 @@
 	function updateHeader() {
 		if (!vdHeader) { return; }
 		var y = scrollY();
-		var H = headerH();
+		var H = headerHeight;
 		// Desktop, menu burger ouvert, ou près du haut → cible = visible.
 		if (!isMobile() || burgerOpen() || y <= H) {
 			targetOffset = 0; upAccum = 0; lastY = y; startRender(); return;

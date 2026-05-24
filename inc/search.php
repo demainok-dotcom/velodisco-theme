@@ -15,7 +15,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 function velodisco_render_search( $attrs = array(), $content = '' ) {
-	$q = get_search_query();
+	// false = valeur brute ; on échappe nous-mêmes au point d'affichage (esc_attr /
+	// esc_html). Évite le double-encodage (sinon « R&D » s'afficherait « R&amp;D »).
+	$q = get_search_query( false );
 
 	global $wp_query;
 	$total_pages = (int) $wp_query->max_num_pages;
