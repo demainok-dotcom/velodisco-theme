@@ -851,7 +851,7 @@ body {
 }
 
 /* Indice de clic TRÈS subtil sur les grands titres d'articles : un léger zoom au
- * survol et au focus clavier (×1.02), ancré à gauche pour rester naturel.
+ * survol et au focus clavier (×1.01, à peine perceptible), ancré à gauche.
  * (TOUT FRAIS a déjà son dégradé comme signal, on ne l'alourdit pas.) */
 .vd-aune__title, .vd-card__title, .vd-tcard__title, .vd-gfcard__title {
 	transform-origin: left center;
@@ -861,7 +861,7 @@ body {
 .vd-card__title:hover,  .vd-card__title:focus-visible,
 .vd-tcard__title:hover, .vd-tcard__title:focus-visible,
 .vd-gfcard__title:hover, .vd-gfcard__title:focus-visible {
-	transform: scale(1.02);
+	transform: scale(1.01);
 }
 
 /* ---- TENDANCES ---- */
