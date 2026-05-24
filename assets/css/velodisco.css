@@ -987,6 +987,12 @@ body {
 .vd-actu .vd-card__date { font-size: 12px; line-height: 15px; opacity: 1; }
 .vd-actu .vd-card .vd-tag { display: inline-block; margin-top: clamp(14px, 1.6vw, 23px); }
 
+/* Même écart image→étiquette de catégorie sur les cartes des pages de SECTION
+ * (sinon « VÉLOS » colle à l'image, surtout en 1 colonne à largeur réduite).
+ * Placé AVANT le bloc @media ≤560 (mise en page mobile catégorie-au-dessus,
+ * margin:0) → la règle mobile reste prioritaire et n'est pas affectée. */
+.vd-section .vd-card .vd-tag { display: inline-block; margin-top: clamp(14px, 1.6vw, 23px); }
+
 /* Pagination : [1] 2 3 →  (1 actif = rond plein ; chiffres Inter Thin), à droite */
 .vd-actu__pagination {
 	display: flex;
