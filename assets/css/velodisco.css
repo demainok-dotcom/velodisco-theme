@@ -850,21 +850,18 @@ body {
 	background-image: linear-gradient(90deg, #d99a86, #9fc9ab, #9cc3d4, #d8c692);
 }
 
-/* Indice de clic TRÈS subtil sur les grands titres d'articles : un fin soulignement
- * (1px, légèrement décollé) qui apparaît en fondu au survol et au focus clavier.
+/* Indice de clic TRÈS subtil sur les grands titres d'articles : un léger zoom au
+ * survol et au focus clavier (×1.02), ancré à gauche pour rester naturel.
  * (TOUT FRAIS a déjà son dégradé comme signal, on ne l'alourdit pas.) */
 .vd-aune__title, .vd-card__title, .vd-tcard__title, .vd-gfcard__title {
-	text-decoration: underline;
-	text-decoration-thickness: 1px;
-	text-underline-offset: 0.18em;
-	text-decoration-color: transparent;
-	transition: text-decoration-color var(--vd-t-base) var(--vd-ease);
+	transform-origin: left center;
+	transition: transform var(--vd-t-base) var(--vd-ease);
 }
 .vd-aune__title:hover,  .vd-aune__title:focus-visible,
 .vd-card__title:hover,  .vd-card__title:focus-visible,
 .vd-tcard__title:hover, .vd-tcard__title:focus-visible,
 .vd-gfcard__title:hover, .vd-gfcard__title:focus-visible {
-	text-decoration-color: currentColor;
+	transform: scale(1.02);
 }
 
 /* ---- TENDANCES ---- */
