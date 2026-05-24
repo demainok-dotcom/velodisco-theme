@@ -232,6 +232,95 @@ function velodisco_client_ip() {
 	return '0.0.0.0';
 }
 
+/* ------------------------------------------------------------------------- *
+ * Anti-spam Cloudflare Turnstile — résolution des clés + réglages admin.
+ *
+ * Les clés peuvent venir de DEUX sources, par ordre de priorité :
+ *   1) constantes wp-config (VELODISCO_TURNSTILE_SITEKEY / _SECRET) — voie « pro » ;
+ *   2) options WordPress saisies dans Réglages → Général — voie simple, sans fichier.
+ * La clé secrète n'est jamais imprimée côté public ; seuls les admins la voient.
+ * ------------------------------------------------------------------------- */
+
+/** Clé de site (publique) Turnstile, ou '' si non configurée. */
+function velodisco_turnstile_sitekey() {
+	if ( defined( 'VELODISCO_TURNSTILE_SITEKEY' ) && VELODISCO_TURNSTILE_SITEKEY ) {
+		return (string) VELODISCO_TURNSTILE_SITEKEY;
+	}
+	return trim( (string) get_option( 'velodisco_turnstile_sitekey', '' ) );
+}
+
+/** Clé secrète (serveur) Turnstile, ou '' si non configurée. */
+function velodisco_turnstile_secret() {
+	if ( defined( 'VELODISCO_TURNSTILE_SECRET' ) && VELODISCO_TURNSTILE_SECRET ) {
+		return (string) VELODISCO_TURNSTILE_SECRET;
+	}
+	return trim( (string) get_option( 'velodisco_turnstile_secret', '' ) );
+}
+
+/**
+ * Enregistre 2 champs (clé site + clé secrète) dans Réglages → Général.
+ * Stockés en options, sanitisés ; visibles uniquement par un admin (manage_options).
+ */
+function velodisco_register_turnstile_settings() {
+	$opts = array(
+		'type'              => 'string',
+		'sanitize_callback' => 'sanitize_text_field',
+		'default'           => '',
+		'show_in_rest'      => false,
+	);
+	register_setting( 'general', 'velodisco_turnstile_sitekey', $opts );
+	register_setting( 'general', 'velodisco_turnstile_secret', $opts );
+
+	add_settings_section(
+		'velodisco_turnstile',
+		'Anti-spam Cloudflare Turnstile (formulaire de contact)',
+		'velodisco_turnstile_section_intro',
+		'general'
+	);
+	add_settings_field(
+		'velodisco_turnstile_sitekey',
+		'Turnstile — Clé de site',
+		'velodisco_turnstile_field_sitekey',
+		'general',
+		'velodisco_turnstile'
+	);
+	add_settings_field(
+		'velodisco_turnstile_secret',
+		'Turnstile — Clé secrète',
+		'velodisco_turnstile_field_secret',
+		'general',
+		'velodisco_turnstile'
+	);
+}
+add_action( 'admin_init', 'velodisco_register_turnstile_settings' );
+
+/** Texte d'intro de la section de réglages Turnstile. */
+function velodisco_turnstile_section_intro() {
+	echo '<p>Collez vos clés Cloudflare Turnstile (gratuit, sur dash.cloudflare.com → Turnstile) pour activer la protection anti-robot du formulaire de contact. Laissez les deux champs vides pour la désactiver. La protection ne s\'active que si les <strong>deux</strong> clés sont renseignées.</p>';
+}
+
+/** Champ « clé de site » (publique). */
+function velodisco_turnstile_field_sitekey() {
+	printf(
+		'<input type="text" class="regular-text" name="velodisco_turnstile_sitekey" value="%s" autocomplete="off" spellcheck="false" placeholder="0x4AAAAAAA...">',
+		esc_attr( get_option( 'velodisco_turnstile_sitekey', '' ) )
+	);
+	if ( defined( 'VELODISCO_TURNSTILE_SITEKEY' ) && VELODISCO_TURNSTILE_SITEKEY ) {
+		echo '<p class="description">Une constante <code>VELODISCO_TURNSTILE_SITEKEY</code> est définie dans wp-config.php et a la priorité sur ce champ.</p>';
+	}
+}
+
+/** Champ « clé secrète » (serveur). */
+function velodisco_turnstile_field_secret() {
+	printf(
+		'<input type="text" class="regular-text" name="velodisco_turnstile_secret" value="%s" autocomplete="off" spellcheck="false" placeholder="0x4AAAAAAA...">',
+		esc_attr( get_option( 'velodisco_turnstile_secret', '' ) )
+	);
+	if ( defined( 'VELODISCO_TURNSTILE_SECRET' ) && VELODISCO_TURNSTILE_SECRET ) {
+		echo '<p class="description">Une constante <code>VELODISCO_TURNSTILE_SECRET</code> est définie dans wp-config.php et a la priorité sur ce champ.</p>';
+	}
+}
+
 /**
  * Moteur de la page d'accueil (bloc dynamique velodisco/home).
  */

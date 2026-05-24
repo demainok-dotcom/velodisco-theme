@@ -17,13 +17,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Vérifie le jeton Cloudflare Turnstile (anti-robot) auprès de l'API de Cloudflare.
  *
- * Les clés vivent dans wp-config.php (JAMAIS dans le thème : le dépôt est public) :
- *   define( 'VELODISCO_TURNSTILE_SITEKEY', '...' );  // clé publique (widget)
- *   define( 'VELODISCO_TURNSTILE_SECRET',  '...' );  // clé secrète (serveur)
+ * Les clés sont résolues par velodisco_turnstile_sitekey()/secret() (functions.php) :
+ * d'abord les constantes wp-config, sinon les options saisies dans Réglages → Général.
+ * La clé secrète n'est jamais imprimée côté public.
  *
- * Dégradation gracieuse : si les DEUX clés ne sont pas définies, on n'exige rien
- * (le formulaire reste utilisable). On exige le jeton uniquement quand le widget
- * ET le secret sont configurés → pas de blocage en cas de configuration partielle.
+ * Dégradation gracieuse : si les DEUX clés ne sont pas renseignées, on n'exige rien
+ * (le formulaire reste utilisable). On exige le jeton uniquement quand le widget ET le
+ * secret sont configurés → pas de blocage en cas de configuration partielle.
  * En cas d'injoignabilité de Cloudflare (erreur réseau), on laisse passer (fail-open)
  * pour ne pas pénaliser un visiteur légitime — le nonce + honeypot + rate-limit restent.
  *
@@ -31,9 +31,9 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @return bool true si vérifié (ou non requis), false si la vérification échoue.
  */
 function velodisco_turnstile_ok( $token ) {
-	$has_secret  = defined( 'VELODISCO_TURNSTILE_SECRET' ) && VELODISCO_TURNSTILE_SECRET;
-	$has_sitekey = defined( 'VELODISCO_TURNSTILE_SITEKEY' ) && VELODISCO_TURNSTILE_SITEKEY;
-	if ( ! $has_secret || ! $has_sitekey ) {
+	$secret  = velodisco_turnstile_secret();
+	$sitekey = velodisco_turnstile_sitekey();
+	if ( '' === $secret || '' === $sitekey ) {
 		return true; // Turnstile non (entièrement) configuré → non exigé.
 	}
 	if ( '' === $token ) {
@@ -45,7 +45,7 @@ function velodisco_turnstile_ok( $token ) {
 		array(
 			'timeout' => 5,
 			'body'    => array(
-				'secret'   => VELODISCO_TURNSTILE_SECRET,
+				'secret'   => $secret,
 				'response' => $token,
 				'remoteip' => velodisco_client_ip(),
 			),
@@ -239,11 +239,15 @@ function velodisco_render_contact( $attrs = array(), $content = '' ) {
 				<input type="text" id="vd-website" name="vd_website" tabindex="-1" autocomplete="off">
 			</div>
 
-			<?php // CAPTCHA Cloudflare Turnstile : affiché uniquement si la clé publique
-			// est configurée dans wp-config.php (sinon le formulaire reste tel quel). ?>
-			<?php if ( defined( 'VELODISCO_TURNSTILE_SITEKEY' ) && VELODISCO_TURNSTILE_SITEKEY ) : ?>
+			<?php
+			// CAPTCHA Cloudflare Turnstile : affiché uniquement si une clé de site est
+			// configurée (constante wp-config OU réglage Admin → Général). Sinon, le
+			// formulaire reste tel quel.
+			$vd_ts_sitekey = velodisco_turnstile_sitekey();
+			if ( '' !== $vd_ts_sitekey ) :
+				?>
 				<div class="vd-field vd-turnstile">
-					<div class="cf-turnstile" data-sitekey="<?php echo esc_attr( VELODISCO_TURNSTILE_SITEKEY ); ?>" data-theme="auto"></div>
+					<div class="cf-turnstile" data-sitekey="<?php echo esc_attr( $vd_ts_sitekey ); ?>" data-theme="auto"></div>
 				</div>
 				<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 			<?php endif; ?>
