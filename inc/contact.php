@@ -15,6 +15,52 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
+ * Vérifie le jeton Cloudflare Turnstile (anti-robot) auprès de l'API de Cloudflare.
+ *
+ * Les clés vivent dans wp-config.php (JAMAIS dans le thème : le dépôt est public) :
+ *   define( 'VELODISCO_TURNSTILE_SITEKEY', '...' );  // clé publique (widget)
+ *   define( 'VELODISCO_TURNSTILE_SECRET',  '...' );  // clé secrète (serveur)
+ *
+ * Dégradation gracieuse : si les DEUX clés ne sont pas définies, on n'exige rien
+ * (le formulaire reste utilisable). On exige le jeton uniquement quand le widget
+ * ET le secret sont configurés → pas de blocage en cas de configuration partielle.
+ * En cas d'injoignabilité de Cloudflare (erreur réseau), on laisse passer (fail-open)
+ * pour ne pas pénaliser un visiteur légitime — le nonce + honeypot + rate-limit restent.
+ *
+ * @param string $token Jeton « cf-turnstile-response » envoyé par le widget.
+ * @return bool true si vérifié (ou non requis), false si la vérification échoue.
+ */
+function velodisco_turnstile_ok( $token ) {
+	$has_secret  = defined( 'VELODISCO_TURNSTILE_SECRET' ) && VELODISCO_TURNSTILE_SECRET;
+	$has_sitekey = defined( 'VELODISCO_TURNSTILE_SITEKEY' ) && VELODISCO_TURNSTILE_SITEKEY;
+	if ( ! $has_secret || ! $has_sitekey ) {
+		return true; // Turnstile non (entièrement) configuré → non exigé.
+	}
+	if ( '' === $token ) {
+		return false; // Widget actif mais aucun jeton → robot probable.
+	}
+
+	$resp = wp_remote_post(
+		'https://challenges.cloudflare.com/turnstile/v0/siteverify',
+		array(
+			'timeout' => 5,
+			'body'    => array(
+				'secret'   => VELODISCO_TURNSTILE_SECRET,
+				'response' => $token,
+				'remoteip' => velodisco_client_ip(),
+			),
+		)
+	);
+
+	if ( is_wp_error( $resp ) ) {
+		return true; // Cloudflare injoignable → fail-open (ne pas bloquer le légitime).
+	}
+
+	$data = json_decode( wp_remote_retrieve_body( $resp ), true );
+	return ! empty( $data['success'] );
+}
+
+/**
  * Traite la soumission du formulaire de contact.
  *
  * @return array{sent:bool, errors:array, values:array} État après traitement.
@@ -74,6 +120,14 @@ function velodisco_handle_contact_submission() {
 	$rl_count = (int) get_transient( $rl_key );
 	if ( $rl_count >= 5 ) {
 		$state['errors'][] = 'Trop de messages envoyés. Merci de patienter quelques minutes avant de réessayer.';
+		return $state;
+	}
+
+	// 4 ter) CAPTCHA Cloudflare Turnstile (si configuré dans wp-config). Placé après
+	// les contrôles locaux pour ne solliciter Cloudflare que sur une soumission valide.
+	$cf_token = isset( $_POST['cf-turnstile-response'] ) ? sanitize_text_field( wp_unslash( $_POST['cf-turnstile-response'] ) ) : '';
+	if ( ! velodisco_turnstile_ok( $cf_token ) ) {
+		$state['errors'][] = 'La vérification anti-robot a échoué. Merci de cocher la case puis de renvoyer le formulaire.';
 		return $state;
 	}
 
@@ -184,6 +238,15 @@ function velodisco_render_contact( $attrs = array(), $content = '' ) {
 				<label for="vd-website">Ne pas remplir</label>
 				<input type="text" id="vd-website" name="vd_website" tabindex="-1" autocomplete="off">
 			</div>
+
+			<?php // CAPTCHA Cloudflare Turnstile : affiché uniquement si la clé publique
+			// est configurée dans wp-config.php (sinon le formulaire reste tel quel). ?>
+			<?php if ( defined( 'VELODISCO_TURNSTILE_SITEKEY' ) && VELODISCO_TURNSTILE_SITEKEY ) : ?>
+				<div class="vd-field vd-turnstile">
+					<div class="cf-turnstile" data-sitekey="<?php echo esc_attr( VELODISCO_TURNSTILE_SITEKEY ); ?>" data-theme="auto"></div>
+				</div>
+				<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+			<?php endif; ?>
 
 			<input type="hidden" name="vd_contact_nonce" value="<?php echo esc_attr( $nonce ); ?>">
 			<button class="vd-contact__btn" type="submit" name="vd_contact_submit" value="1">Envoyer</button>
