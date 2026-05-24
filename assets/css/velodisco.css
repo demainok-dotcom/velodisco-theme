@@ -834,7 +834,7 @@ body {
  * au survol on rend la couleur transparente → le dégradé se révèle EN DOUCEUR grâce
  * à la transition (plus élégant qu'un changement de couleur sec). */
 .vd-frais__title {
-	background-image: linear-gradient(90deg, #6e2812, #144a22, #0d4257, #654a0c);
+	background-image: linear-gradient(90deg, #b8401a, #1a8030, #0f7ba0, #b07e0a);
 	-webkit-background-clip: text;
 	background-clip: text;
 	transition: color var(--vd-t-base) var(--vd-ease), -webkit-text-fill-color var(--vd-t-base) var(--vd-ease);
