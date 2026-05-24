@@ -7,6 +7,16 @@
 
 	<!-- wp:post-content {"layout":{"type":"default"}} /-->
 
+	<!-- wp:html -->
+	<!-- Lien de gestion du consentement cookies : rouvre le bandeau (géré par le JS).
+	     Placé ici (page Mentions légales, accessible depuis le footer de tout le site)
+	     plutôt que dans le footer global, pour ne pas surcharger ce dernier. Masqué
+	     tant que le JS n'a pas confirmé qu'un bandeau existe (= GA4 configuré). -->
+	<p class="vd-legal__cookies-row">
+		<button type="button" class="vd-legal__cookies" data-consent-reopen hidden>Gérer les cookies</button>
+	</p>
+	<!-- /wp:html -->
+
 </main>
 <!-- /wp:group -->
 

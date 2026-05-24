@@ -1357,12 +1357,18 @@ body {
 /* Lien « Gérer les cookies » (footer) : masqué tant que le JS n'a pas confirmé
  * qu'un bandeau existe (= GA4 configuré). */
 [data-consent-reopen][hidden] { display: none; }
-.vd-footer__cookies {
-	display: inline-block; margin-top: 14px;
+
+/* Lien « Gérer les cookies » en bas de la page Mentions légales (rouvre le bandeau).
+ * Bouton stylé comme un lien discret de la prose légale. */
+.vd-legal__cookies-row { margin-top: clamp(1.5rem, 3vw, 2.25rem); }
+.vd-legal__cookies {
 	font-family: var(--wp--preset--font-family--inter, "Inter", sans-serif);
-	font-size: 12px; opacity: 0.7; text-decoration: underline; text-underline-offset: 2px;
-	color: inherit; background: none; border: 0; cursor: pointer;
+	font-size: 14px; line-height: 1.6;
+	color: var(--wp--preset--color--contrast);
+	background: none; border: 0; padding: 0; cursor: pointer;
+	text-decoration: underline; text-underline-offset: 2px;
 }
+.vd-legal__cookies:hover { opacity: 0.7; }
 
 @media (max-width: 560px) {
 	.vd-consent__inner { flex-direction: column; align-items: stretch; gap: 16px; }
