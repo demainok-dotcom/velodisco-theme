@@ -276,8 +276,12 @@ body {
 	 * → saut « presque en bas » puis « plein écran »). 100lvh = hauteur « large » (chrome
 	 * rétracté) → couvre tout dès l'ouverture, sans redimensionnement. */
 	top: 0; left: 0; right: 0;
-	height: 100vh;   /* repli */
-	height: 100lvh;
+	height: 100vh;                   /* repli navigateurs anciens (≈ hauteur max sur iOS) */
+	/* lvh = hauteur « large » = barre d'outils RÉTRACTÉE = hauteur MAX, indépendante de
+	 * l'état courant. Donc même si on ouvre le menu en haut de page (barre déployée),
+	 * l'overlay fait déjà la hauteur max → il couvre jusqu'au vrai bas, et quand la barre
+	 * se rétracte rien ne bouge (plus de saut). +100px = marge tampon anti-décalage. */
+	height: calc(100lvh + 100px);
 	z-index: 200;
 	background: var(--wp--preset--color--base);
 	color: var(--wp--preset--color--contrast);
