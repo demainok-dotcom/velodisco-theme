@@ -109,16 +109,26 @@ body {
 /* 3. HEADER ---------------------------------------------------------------- */
 .vd-header {
 	position: sticky;
-	top: 0;
+	/* top tient compte de la barre d'admin WP (0 pour les visiteurs, 46px connecté). */
+	top: var(--wp-admin--admin-bar--height, 0px);
 	z-index: 100;
 	background-color: var(--wp--preset--color--base);
 	border-bottom: 1px solid var(--wp--preset--color--separator);
 	min-height: var(--vd-header-h);
 	transition: background-color var(--vd-t-base) var(--vd-ease),
 		border-color var(--vd-t-base) var(--vd-ease);
-	/* Pas de transition sur transform : l'auto-hide mobile est lissé par une boucle
+	/* Pas de transition sur transform : l'auto-hide est lissé par une boucle
 	 * requestAnimationFrame côté JS (glissement continu vers la cible à demi-vitesse). */
 }
+
+/* CAUSE RACINE du sticky cassé (desktop ET mobile) : WordPress enveloppe le header
+ * dans <header class="wp-block-template-part"> qui ne fait QUE la hauteur du header.
+ * Or sticky ne peut « coller » que dans les limites de son parent → ce wrapper trop
+ * court le libère dès qu'on défile. display:contents efface la boîte du wrapper →
+ * .vd-header colle alors par rapport à .wp-site-blocks (toute la page).
+ * (Diagnostiqué en direct : sans ça rect.top tombait à -554 au scroll ; avec, 0.)
+ * Appliqué globalement pour que l'auto-hide fonctionne aussi sur desktop. */
+header.wp-block-template-part { display: contents; }
 
 .vd-header__inner {
 	max-width: 1440px;
@@ -1702,18 +1712,10 @@ body.vd-cat--grands-formats { background-image: linear-gradient(180deg, rgba(242
 	 * des popovers, donc tout reste aligné. */
 	:root { --vd-header-h: 56px; }
 
-	/* CAUSE RACINE du sticky cassé : WordPress enveloppe le header dans
-	 * <header class="wp-block-template-part"> qui ne fait QUE la hauteur du header.
-	 * Or sticky ne peut « coller » que dans les limites de son parent → ce wrapper
-	 * trop court le libère dès qu'on défile. display:contents efface la boîte du
-	 * wrapper → .vd-header colle alors par rapport à .wp-site-blocks (toute la page).
-	 * (Diagnostiqué en direct : sans ça rect.top tombait à -554 au scroll ; avec, 0.) */
-	header.wp-block-template-part { display: contents; }
-
-	/* top tient compte de la barre d'admin WP (0 pour les visiteurs, 46px connecté). */
-	.vd-header { top: var(--wp-admin--admin-bar--height, 0px); }
-
-	/* Auto-hide lié au défilement : le transform translateY est posé en inline par
+	/* NB : le fix sticky (header.wp-block-template-part { display:contents }) et le
+	 * calage sous la barre d'admin (.vd-header { top: ... }) sont désormais GLOBAUX
+	 * (voir section 3) pour que l'auto-hide fonctionne aussi sur desktop.
+	 * Auto-hide lié au défilement : le transform translateY est posé en inline par
 	 * le JS (suivi direct de la vitesse de scroll, zone morte d'~1 cm à la remontée). */
 }
 

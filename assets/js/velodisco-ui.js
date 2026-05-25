@@ -168,12 +168,11 @@
 	});
 
 	/* ------------------------------------------------------------------ */
-	/* Header mobile : masquer au scroll vers le bas, réafficher vers le haut */
+	/* Header : masquer au scroll vers le bas, réafficher vers le haut      */
+	/* (mêmes réglages sur desktop ET mobile)                               */
 	/* ------------------------------------------------------------------ */
 	var vdHeader = document.querySelector('.vd-header');
-	var mqMobile = window.matchMedia ? window.matchMedia('(max-width: 1080px)') : null;
 
-	function isMobile() { return mqMobile ? mqMobile.matches : false; }
 	function burgerOpen() { return burgerPanel && burgerPanel.classList.contains('is-open'); }
 	function scrollY() { return window.pageYOffset || document.documentElement.scrollTop || 0; }
 
@@ -220,8 +219,8 @@
 		if (!vdHeader) { return; }
 		var y = scrollY();
 		var H = headerHeight;
-		// Desktop, menu burger ouvert, ou près du haut → cible = visible.
-		if (!isMobile() || burgerOpen() || y <= H) {
+		// Menu burger ouvert, ou près du haut → cible = visible.
+		if (burgerOpen() || y <= H) {
 			targetOffset = 0; upAccum = 0; lastY = y; startRender(); return;
 		}
 		var delta = y - lastY;
@@ -240,13 +239,6 @@
 	}
 	// updateHeader est léger (maj de la cible) ; le lissage se fait dans renderLoop.
 	window.addEventListener('scroll', updateHeader, { passive: true });
-
-	// Si on repasse en desktop (rotation/redimensionnement), header toujours visible.
-	if (mqMobile) {
-		var onMq = function () { if (!mqMobile.matches) { resetHeader(); } };
-		if (mqMobile.addEventListener) { mqMobile.addEventListener('change', onMq); }
-		else if (mqMobile.addListener) { mqMobile.addListener(onMq); }
-	}
 
 	/* ------------------------------------------------------------------ */
 	/* Consentement cookies + chargement conditionnel de Google Analytics  */
