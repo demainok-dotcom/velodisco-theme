@@ -1502,23 +1502,16 @@ body.vd-cat--societe     { --vd-cat-color: var(--wp--preset--color--societe); }
 
 /* Images de l'article (hero + toutes les images du corps) : coins CARRÉS + tracé 1px
  * de la couleur de catégorie (dégradé pour Grands Formats). */
-.vd-single__hero,
-.vd-single__body .wp-block-image { position: relative; line-height: 0; }
+.vd-single__hero { position: relative; line-height: 0; }
 .vd-single__hero img,
-.vd-single__body .wp-block-image img { border-radius: 0; display: block; vertical-align: bottom; box-sizing: border-box; }
-/* Les photos du corps remplissent toute la largeur du contenu (cohérence + le cadre/tracé
- * colle pile à la photo). Une photo un peu plus petite est légèrement agrandie. */
-.vd-single__body .wp-block-image { width: 100%; }
+.vd-single__body .wp-block-image img { border-radius: 0; display: block; vertical-align: bottom; }
 .vd-single__body .wp-block-image img { width: 100%; height: auto; }
 
-/* Le pseudo ::after existe pour le hero ET les images du corps (réutilisé en mobile
- * comme simple ligne du haut). En desktop, seul le hero s'en sert pour dessiner le cadre. */
-.vd-single__hero::after,
-.vd-single__body .wp-block-image::after {
+/* HERO : pas de légende → tracé cadre 1px via ::after en inset:0 (= box de l'image). */
+.vd-single__hero::after {
 	content: ""; position: absolute; inset: 0; pointer-events: none;
+	box-shadow: inset 0 0 0 1px var(--vd-cat-color, transparent);
 }
-/* HERO : tracé cadre 1px (l'image de Une n'a pas de légende → inset:0 = box de l'image). */
-.vd-single__hero::after { box-shadow: inset 0 0 0 1px var(--vd-cat-color, transparent); }
 /* Grands Formats : tracé 1px en DÉGRADÉ (technique du masque) */
 body.vd-cat--grands-formats .vd-single__hero::after {
 	box-shadow: none;
@@ -1528,22 +1521,28 @@ body.vd-cat--grands-formats .vd-single__hero::after {
 	-webkit-mask-composite: xor; mask-composite: exclude;
 }
 
-/* IMAGES DU CORPS : le tracé est porté par l'IMG (outline), PAS par la figure.
- * Raison : une <figure> WordPress avec légende contient la <figcaption> à l'intérieur →
- * un ::after en inset:0 sur la figure englobait aussi la légende (cadre ~10px trop bas,
- * ligne du bas en travers du texte « Photo : … »). outline épouse pile la box de l'image
- * et ignore la légende, qui se place alors proprement dessous, hors cadre.
- * (Diagnostiqué en direct : figure 460px vs image 450px sur un article Société.) */
-.vd-single__body .wp-block-image img {
-	outline: 1px solid var(--vd-cat-color, transparent);
-	outline-offset: -1px;
+/* IMAGES DU CORPS : une <figure> WordPress place la <figcaption> À L'INTÉRIEUR. Pour que le
+ * tracé épouse SEULEMENT la photo (et pas la légende), on passe la figure en GRILLE : image
+ * en cellule (1,1), légende en cellule (2,1), et le ::after (le tracé) placé dans la MÊME
+ * cellule que l'image → il couvre exactement la box de l'image, avec OU sans légende.
+ * Plus robuste/cohérent navigateur que border-image (qui laissait un liseré pâle à gauche).
+ * Diagnostiqué en direct : un ::after en inset:0 sur la figure englobait la légende
+ * (~10px de trop, ligne du bas en travers du texte « Photo : … »). */
+.vd-single__body .wp-block-image {
+	display: grid; grid-template-columns: 100%; width: 100%; line-height: 0;
 }
-/* Grands Formats : bordure 1px en DÉGRADÉ via border-image (outline ne gère pas les
- * dégradés). box-sizing:border-box (posé plus haut) évite tout débordement de largeur. */
-body.vd-cat--grands-formats .vd-single__body .wp-block-image img {
-	outline: 0;
-	border: 1px solid transparent;
-	border-image: var(--wp--preset--gradient--grands-formats) 1;
+.vd-single__body .wp-block-image img { grid-area: 1 / 1; }
+.vd-single__body .wp-block-image > figcaption { grid-area: 2 / 1; }
+.vd-single__body .wp-block-image::after {
+	content: ""; grid-area: 1 / 1; pointer-events: none;
+	box-shadow: inset 0 0 0 1px var(--vd-cat-color, transparent);
+}
+body.vd-cat--grands-formats .vd-single__body .wp-block-image::after {
+	box-shadow: none;
+	padding: 1px;
+	background: var(--wp--preset--gradient--grands-formats);
+	-webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+	-webkit-mask-composite: xor; mask-composite: exclude;
 }
 
 /* Légende d'image : line-height remise (sinon héritée à 0 → texte écrasé), placée juste
@@ -1676,7 +1675,8 @@ body.vd-cat--grands-formats { background-image: linear-gradient(180deg, rgba(242
 		box-shadow: none !important;
 		-webkit-mask: none !important; mask: none !important;
 		padding: 0 !important;
-		inset: 0 0 auto 0;          /* collé en haut, pleine largeur */
+		inset: 0 0 auto 0;          /* hero (absolu) : ligne collée en haut, pleine largeur */
+		align-self: start;          /* corps (grille) : ligne en haut de la cellule image */
 		height: 1px;
 		background: var(--vd-cat-color, transparent);
 	}
@@ -1684,9 +1684,6 @@ body.vd-cat--grands-formats { background-image: linear-gradient(180deg, rgba(242
 	body.vd-cat--grands-formats .vd-single__body .wp-block-image::after {
 		background: var(--wp--preset--gradient--grands-formats);
 	}
-	/* En mobile, le tracé du corps = la ligne du haut (::after ci-dessus), pas un cadre :
-	   on neutralise donc l'outline / border-image desktop posés sur l'IMG. */
-	.vd-single__body .wp-block-image img { outline: 0; border: 0; }
 
 	/* Corps : paragraphes/listes 14px, line-height 160%. */
 	.vd-single__body p,
