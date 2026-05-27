@@ -1646,22 +1646,24 @@ body.vd-cat--grands-formats .vd-single__body .wp-block-separator {
 	border-radius: inherit;
 	background: var(--vd-fill);
 	transform: translateX(-101%);
-	transition: transform 1.75s cubic-bezier(.4, 0, .2, 1);
+	transition: transform 1.5s cubic-bezier(.4, 0, .2, 1);
 	z-index: -1;
 }
 .vd-single__retour:hover::after,
 .vd-single__retour:focus-visible::after {
 	transform: translateX(0);
 }
-/* Vélo qui traverse (injecté par JS, src aléatoire parmi 10). */
+/* Vélo qui traverse (injecté par JS, src aléatoire parmi 10). Hauteur 100% : la silhouette
+ * du vélo tient entièrement dans la hauteur du bouton (au lieu de déborder en haut/bas, ce
+ * qui faisait voir une bande horizontale plutôt que la forme complète du vélo). */
 .vd-single__retour .vd-bike {
 	position: absolute;
 	top: 50%;
 	left: 0;
-	height: 160%;
+	height: 100%;
 	width: auto;
 	transform: translate(-130%, -50%);
-	transition: transform 1.75s cubic-bezier(.4, 0, .2, 1), opacity 0.3s ease;
+	transition: transform 1.5s cubic-bezier(.4, 0, .2, 1), opacity 0.3s ease;
 	pointer-events: none;
 	opacity: 0;
 	z-index: 0;
@@ -1682,8 +1684,8 @@ body.vd-cat--grands-formats .vd-single__body .wp-block-separator {
 	-webkit-background-clip: text; background-clip: text;
 	-webkit-text-fill-color: transparent; color: transparent;
 	transition:
-		-webkit-text-fill-color 0.5s ease 0.85s,
-		color 0.5s ease 0.85s;
+		-webkit-text-fill-color 0.45s ease 0.75s,
+		color 0.45s ease 0.75s;
 }
 .vd-single__retour:hover .vd-bike-label,
 .vd-single__retour:focus-visible .vd-bike-label {
@@ -1829,4 +1831,3 @@ body.vd-cat--grands-formats { background-image: linear-gradient(180deg, rgba(242
 	.vd-header__nav--right .vd-nav__link,
 	.vd-header__nav--right .vd-iconbtn[data-popover-target="vd-search-pop"] { display: none; }
 }
-
