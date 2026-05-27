@@ -724,50 +724,6 @@ button.vd-footer__dots {
 @media (prefers-reduced-motion: reduce) {
 	.vd-footer__fx { transition: opacity 0.18s ease; transform: translate(-50%, -50%); }
 	.vd-footer__dots .vd-footer__fx-img { animation: none !important; }
-	.vd-footer__wave { display: none !important; }
-}
-
-/* ---- Main qui salue (mainpanneau) : sort de derrière les pastilles à l'arrivée au footer.
- * Reste cachée par défaut (transform translateY masque + opacity 0). Quand .is-waving est
- * ajouté par le JS (IntersectionObserver), joue une animation qui :
- *   1) fait sortir la main du dessous des pastilles (translateY négatif)
- *   2) la fait osciller (rotation ±15°)
- *   3) la fait redescendre et disparaître
- * z-index 1 : derrière le bouton-pastilles (qui est z-index 2 implicite via stacking) →
- * la base de la main reste cachée derrière les pastilles pendant l'animation. */
-.vd-footer__wave {
-	position: absolute;
-	right: 8px;
-	bottom: 38px; /* base de la main collée derrière le haut des pastilles */
-	width: 38px;
-	height: auto;
-	display: block;
-	z-index: 1;
-	transform: translateY(60px) rotate(0);
-	transform-origin: 50% 100%;
-	opacity: 0;
-	pointer-events: none;
-}
-.vd-footer__dots { z-index: 2; }
-@keyframes vd-wave {
-	0%   { transform: translateY(60px) rotate(0);   opacity: 0; }
-	15%  { transform: translateY(0)    rotate(0);   opacity: 1; }
-	25%  { transform: translateY(0)    rotate(-18deg); }
-	38%  { transform: translateY(0)    rotate(15deg); }
-	51%  { transform: translateY(0)    rotate(-14deg); }
-	64%  { transform: translateY(0)    rotate(12deg); }
-	77%  { transform: translateY(0)    rotate(-8deg); }
-	86%  { transform: translateY(0)    rotate(0);   opacity: 1; }
-	100% { transform: translateY(60px) rotate(0);   opacity: 0; }
-}
-.vd-footer__wave.is-waving {
-	animation: vd-wave 3.6s cubic-bezier(.4, 0, .2, 1) forwards;
-}
-/* Footer mobile : main plus petite, alignée sur les pastilles 8px. */
-.vd-footer__m-gradient .vd-footer__wave {
-	width: 28px;
-	right: 8px;
-	bottom: 22px;
 }
 
 @media (max-width: 900px) {
