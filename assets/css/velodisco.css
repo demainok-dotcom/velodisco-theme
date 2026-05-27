@@ -230,14 +230,14 @@ header.wp-block-template-part { display: contents; }
 .vd-nav__link--vetements { color: var(--wp--preset--color--vetements); }
 .vd-nav__link--societe { color: var(--wp--preset--color--societe); }
 
-/* Soulignement animé au survol */
+/* Soulignement animé au survol (1px, demande Victor 2026-05-27) */
 .vd-nav__link::after {
 	content: "";
 	position: absolute;
 	left: 0;
 	right: 0;
 	bottom: 0;
-	height: 2px;
+	height: 1px;
 	background: currentColor;
 	transform: scaleX(0);
 	transform-origin: left center;
