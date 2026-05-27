@@ -590,28 +590,27 @@ button.vd-footer__dots {
 }
 .vd-footer__dots:focus-visible { outline: 2px solid #fff; outline-offset: 4px; border-radius: 4px; }
 .vd-footer__dots.is-fx > span:not(.vd-footer__fx) { opacity: 0; }
-/* Icône FX = wrapper span (gère placement + pop scale) + img enfant (anime selon le type).
- * Toutes les icônes sont normalisées à 256x256 avec contenu centré (Python/PIL) → même
+/* Icône FX = wrapper span (gère centrage + pop scale) + img enfant (anime selon le type).
+ * Toutes les icônes sont normalisées à 256x256 avec contenu centré (94% du canvas) → même
  * taille visuelle quel que soit l'aspect ratio source.
  *
- * À 112x112, l'icône ne peut plus être centrée sur les pastilles sans déborder hors du
- * footer (gradient strip = 147px de haut). On l'ANCRE par son coin bas-droite à celui des
- * pastilles → elle grossit vers le haut-gauche, dans l'espace disponible du gradient strip. */
+ * Container 56x56 centré sur les pastilles : visuellement la même taille que le logo
+ * « 6 points » (52x34). Les icônes carrées remplissent le bouton, les rectangulaires
+ * sont contraintes par le plus long côté. */
 .vd-footer__fx {
 	position: absolute;
-	right: 0;
-	bottom: 0;
-	width: 112px;
-	height: 112px;
-	transform: scale(0.4);
-	transform-origin: 100% 100%;
+	top: 50%;
+	left: 50%;
+	width: 56px;
+	height: 56px;
+	transform: translate(-50%, -50%) scale(0.4);
 	opacity: 0;
 	pointer-events: none;
 	transition: opacity 0.18s ease, transform 0.3s cubic-bezier(.34, 1.56, .64, 1);
 }
 .vd-footer__dots.is-fx .vd-footer__fx {
 	opacity: 1;
-	transform: scale(1);
+	transform: translate(-50%, -50%) scale(1);
 }
 .vd-footer__fx-img {
 	display: block;
@@ -619,10 +618,10 @@ button.vd-footer__dots {
 	height: 100%;
 	object-fit: contain;
 }
-/* Footer mobile : pastilles 8px et icône plus modeste (le strip mobile ne fait que 44px). */
+/* Footer mobile : icône proportionnelle aux pastilles 8px. */
 .vd-footer__dots--sm .vd-footer__fx {
-	width: 72px;
-	height: 72px;
+	width: 36px;
+	height: 36px;
 }
 
 /* ----- Animations propres à chaque icône (démarrent après le pop, delay 0.3s) ----- */
@@ -723,8 +722,52 @@ button.vd-footer__dots {
 
 /* Accessibilité : pas de pop animé ni d'animation perso ; le son joue quand même. */
 @media (prefers-reduced-motion: reduce) {
-	.vd-footer__fx { transition: opacity 0.18s ease; transform: scale(1); }
+	.vd-footer__fx { transition: opacity 0.18s ease; transform: translate(-50%, -50%); }
 	.vd-footer__dots .vd-footer__fx-img { animation: none !important; }
+	.vd-footer__wave { display: none !important; }
+}
+
+/* ---- Main qui salue (mainpanneau) : sort de derrière les pastilles à l'arrivée au footer.
+ * Reste cachée par défaut (transform translateY masque + opacity 0). Quand .is-waving est
+ * ajouté par le JS (IntersectionObserver), joue une animation qui :
+ *   1) fait sortir la main du dessous des pastilles (translateY négatif)
+ *   2) la fait osciller (rotation ±15°)
+ *   3) la fait redescendre et disparaître
+ * z-index 1 : derrière le bouton-pastilles (qui est z-index 2 implicite via stacking) →
+ * la base de la main reste cachée derrière les pastilles pendant l'animation. */
+.vd-footer__wave {
+	position: absolute;
+	right: 8px;
+	bottom: 38px; /* base de la main collée derrière le haut des pastilles */
+	width: 38px;
+	height: auto;
+	display: block;
+	z-index: 1;
+	transform: translateY(60px) rotate(0);
+	transform-origin: 50% 100%;
+	opacity: 0;
+	pointer-events: none;
+}
+.vd-footer__dots { z-index: 2; }
+@keyframes vd-wave {
+	0%   { transform: translateY(60px) rotate(0);   opacity: 0; }
+	15%  { transform: translateY(0)    rotate(0);   opacity: 1; }
+	25%  { transform: translateY(0)    rotate(-18deg); }
+	38%  { transform: translateY(0)    rotate(15deg); }
+	51%  { transform: translateY(0)    rotate(-14deg); }
+	64%  { transform: translateY(0)    rotate(12deg); }
+	77%  { transform: translateY(0)    rotate(-8deg); }
+	86%  { transform: translateY(0)    rotate(0);   opacity: 1; }
+	100% { transform: translateY(60px) rotate(0);   opacity: 0; }
+}
+.vd-footer__wave.is-waving {
+	animation: vd-wave 3.6s cubic-bezier(.4, 0, .2, 1) forwards;
+}
+/* Footer mobile : main plus petite, alignée sur les pastilles 8px. */
+.vd-footer__m-gradient .vd-footer__wave {
+	width: 28px;
+	right: 8px;
+	bottom: 22px;
 }
 
 @media (max-width: 900px) {

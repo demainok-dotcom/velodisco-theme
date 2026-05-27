@@ -336,6 +336,50 @@
 
 			btn.addEventListener('click', function () { fxPlay(btn); });
 		});
+
+		/* ------------------------------------------------------------------ */
+		/* Main qui salue (mainpanneau) : sort de derrière les pastilles      */
+		/* quand l'utilisateur arrive en bas de page. Trigger : IntersectionObserver */
+		/* sur le footer, déclenche UNE SEULE FOIS par chargement.            */
+		/* ------------------------------------------------------------------ */
+		var waveImgs = document.querySelectorAll('.vd-footer__wave');
+		if (waveImgs.length) {
+			// Résout la src à partir de data-src (fxBase + filename).
+			waveImgs.forEach(function (img) {
+				var name = img.getAttribute('data-src');
+				if (name && !img.src) {
+					img.src = fxBase + name;
+					img.removeAttribute('data-src');
+				}
+			});
+
+			var waved = false;
+			var footer = document.querySelector('.vd-footer');
+			if (footer && 'IntersectionObserver' in window) {
+				var io = new IntersectionObserver(function (entries) {
+					if (waved) return;
+					entries.forEach(function (e) {
+						// Le footer est "tout en bas" → on attend qu'il soit largement visible.
+						if (e.isIntersecting && e.intersectionRatio >= 0.6) {
+							waved = true;
+							// Délai léger pour que le footer ait fini d'apparaître.
+							setTimeout(function () {
+								waveImgs.forEach(function (img) {
+									img.classList.add('is-waving');
+									// Nettoie la classe après l'animation pour pouvoir la rejouer
+									// si on ajoute un re-trigger plus tard.
+									img.addEventListener('animationend', function () {
+										img.classList.remove('is-waving');
+									}, { once: true });
+								});
+							}, 300);
+							io.disconnect();
+						}
+					});
+				}, { threshold: [0.6, 0.8, 1.0] });
+				io.observe(footer);
+			}
+		}
 	}
 
 	/* ------------------------------------------------------------------ */
