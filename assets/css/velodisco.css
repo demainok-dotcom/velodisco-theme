@@ -567,7 +567,9 @@ header.wp-block-template-part { display: contents; }
 	grid-template-columns: repeat(3, 16px);
 	gap: 2px;
 }
-.vd-footer__dots span {
+/* Pastilles : ENFANTS DIRECTS uniquement, et :not(.vd-footer__fx) pour ne pas
+ * écraser la taille du wrapper d'icône (qui est aussi un <span> enfant). */
+.vd-footer__dots > span:not(.vd-footer__fx) {
 	display: block;
 	width: 16px;
 	height: 16px;
@@ -587,7 +589,7 @@ button.vd-footer__dots {
 	cursor: pointer;
 }
 .vd-footer__dots:focus-visible { outline: 2px solid #fff; outline-offset: 4px; border-radius: 4px; }
-.vd-footer__dots.is-fx span { opacity: 0; }
+.vd-footer__dots.is-fx > span:not(.vd-footer__fx) { opacity: 0; }
 /* Icône FX = wrapper span (gère placement + pop scale) + img enfant (anime selon le type).
  * Toutes les icônes sont normalisées à 256x256 avec contenu centré (Python/PIL) → même
  * taille visuelle quel que soit l'aspect ratio source.
