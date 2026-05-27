@@ -178,9 +178,18 @@ header.wp-block-template-part { display: contents; }
 }
 .vd-wm { grid-area: 1 / 1; } /* les deux couches dans la MÊME cellule → superposition parfaite */
 .vd-wm--ink { color: var(--wp--preset--color--contrast); }
+/* Couche couleur : visible au chargement (animation intro 1→0 sur 2s), invisible au repos,
+ * RÉAPPARAÎT au survol du logo (clin d'œil disco). On retire `forwards` pour que la valeur
+ * de repos (opacity:0) reprenne après l'intro et que le :hover puisse l'override en douceur. */
 .vd-wm--disco {
 	pointer-events: none;
-	animation: vd-logo-fade 2s linear forwards;
+	opacity: 0;
+	animation: vd-logo-fade 2s linear;
+	transition: opacity 0.35s ease;
+}
+.vd-header__logo:hover .vd-wm--disco,
+.vd-header__logo:focus-visible .vd-wm--disco {
+	opacity: 1;
 }
 
 /* Pastilles disco (6 ronds 8.45px, grille 3×2) — masquées en desktop, apparaissent
