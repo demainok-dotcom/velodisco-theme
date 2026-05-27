@@ -588,23 +588,28 @@ button.vd-footer__dots {
 }
 .vd-footer__dots:focus-visible { outline: 2px solid #fff; outline-offset: 4px; border-radius: 4px; }
 .vd-footer__dots.is-fx span { opacity: 0; }
-/* Icône FX = wrapper span (gère centrage + pop scale) + img enfant (anime selon le type).
+/* Icône FX = wrapper span (gère placement + pop scale) + img enfant (anime selon le type).
  * Toutes les icônes sont normalisées à 256x256 avec contenu centré (Python/PIL) → même
- * taille visuelle quel que soit l'aspect ratio source. */
+ * taille visuelle quel que soit l'aspect ratio source.
+ *
+ * À 112x112, l'icône ne peut plus être centrée sur les pastilles sans déborder hors du
+ * footer (gradient strip = 147px de haut). On l'ANCRE par son coin bas-droite à celui des
+ * pastilles → elle grossit vers le haut-gauche, dans l'espace disponible du gradient strip. */
 .vd-footer__fx {
 	position: absolute;
-	top: 50%;
-	left: 50%;
-	width: 56px;
-	height: 56px;
-	transform: translate(-50%, -50%) scale(0.4);
+	right: 0;
+	bottom: 0;
+	width: 112px;
+	height: 112px;
+	transform: scale(0.4);
+	transform-origin: 100% 100%;
 	opacity: 0;
 	pointer-events: none;
 	transition: opacity 0.18s ease, transform 0.3s cubic-bezier(.34, 1.56, .64, 1);
 }
 .vd-footer__dots.is-fx .vd-footer__fx {
 	opacity: 1;
-	transform: translate(-50%, -50%) scale(1);
+	transform: scale(1);
 }
 .vd-footer__fx-img {
 	display: block;
@@ -612,10 +617,10 @@ button.vd-footer__dots {
 	height: 100%;
 	object-fit: contain;
 }
-/* Footer mobile : pastilles 8px et icône plus petite à proportion. */
+/* Footer mobile : pastilles 8px et icône plus modeste (le strip mobile ne fait que 44px). */
 .vd-footer__dots--sm .vd-footer__fx {
-	width: 36px;
-	height: 36px;
+	width: 72px;
+	height: 72px;
 }
 
 /* ----- Animations propres à chaque icône (démarrent après le pop, delay 0.3s) ----- */
@@ -716,7 +721,7 @@ button.vd-footer__dots {
 
 /* Accessibilité : pas de pop animé ni d'animation perso ; le son joue quand même. */
 @media (prefers-reduced-motion: reduce) {
-	.vd-footer__fx { transition: opacity 0.18s ease; transform: translate(-50%, -50%); }
+	.vd-footer__fx { transition: opacity 0.18s ease; transform: scale(1); }
 	.vd-footer__dots .vd-footer__fx-img { animation: none !important; }
 }
 
