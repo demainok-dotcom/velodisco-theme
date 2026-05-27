@@ -1620,16 +1620,11 @@ body.vd-cat--grands-formats .vd-single__body .wp-block-separator {
 	font-family: var(--wp--preset--font-family--inter, "Inter", sans-serif);
 	font-weight: 600; font-size: 12px; line-height: 15px;
 	text-transform: uppercase; text-decoration: none;
-	background: var(--wp--preset--gradient--grands-formats);
-	-webkit-background-clip: text; background-clip: text;
-	-webkit-text-fill-color: transparent; color: transparent;
+	color: transparent;
 	overflow: hidden;
 	isolation: isolate;
 	--vd-fill: #000;            /* couleur du remplissage en thème clair */
 	--vd-on-fill: #fff;         /* couleur du texte par-dessus le remplissage */
-	transition:
-		-webkit-text-fill-color 0.2s ease 0.3s,
-		color 0.2s ease 0.3s;
 }
 [data-theme="dark"] .vd-single__retour {
 	--vd-fill: #fff;
@@ -1651,7 +1646,7 @@ body.vd-cat--grands-formats .vd-single__body .wp-block-separator {
 	border-radius: inherit;
 	background: var(--vd-fill);
 	transform: translateX(-101%);
-	transition: transform 0.7s cubic-bezier(.4, 0, .2, 1);
+	transition: transform 1.75s cubic-bezier(.4, 0, .2, 1);
 	z-index: -1;
 }
 .vd-single__retour:hover::after,
@@ -1666,7 +1661,7 @@ body.vd-cat--grands-formats .vd-single__body .wp-block-separator {
 	height: 160%;
 	width: auto;
 	transform: translate(-130%, -50%);
-	transition: transform 0.7s cubic-bezier(.4, 0, .2, 1), opacity 0.15s ease;
+	transition: transform 1.75s cubic-bezier(.4, 0, .2, 1), opacity 0.3s ease;
 	pointer-events: none;
 	opacity: 0;
 	z-index: 0;
@@ -1676,13 +1671,22 @@ body.vd-cat--grands-formats .vd-single__body .wp-block-separator {
 	transform: translate(180%, -50%);
 	opacity: 1;
 }
-/* Le mot « Retour » passe au-dessus du vélo. */
+/* Le mot « Retour » passe au-dessus du vélo. Le dégradé en mode texte (background-clip)
+ * doit être appliqué DIRECTEMENT sur le span (pas hérité du parent) sinon le texte
+ * passe en color:transparent sans dégradé visible. Au survol on remplace le dégradé
+ * par une couleur unie lisible sur le fond (blanc en clair, noir en sombre). */
 .vd-single__retour .vd-bike-label {
 	position: relative;
 	z-index: 1;
+	background: var(--wp--preset--gradient--grands-formats);
+	-webkit-background-clip: text; background-clip: text;
+	-webkit-text-fill-color: transparent; color: transparent;
+	transition:
+		-webkit-text-fill-color 0.5s ease 0.85s,
+		color 0.5s ease 0.85s;
 }
-.vd-single__retour:hover,
-.vd-single__retour:focus-visible {
+.vd-single__retour:hover .vd-bike-label,
+.vd-single__retour:focus-visible .vd-bike-label {
 	background: none;
 	-webkit-text-fill-color: var(--vd-on-fill);
 	color: var(--vd-on-fill);
@@ -1691,7 +1695,7 @@ body.vd-cat--grands-formats .vd-single__body .wp-block-separator {
 @media (prefers-reduced-motion: reduce) {
 	.vd-single__retour .vd-bike { display: none; }
 	.vd-single__retour::after,
-	.vd-single__retour { transition: none; }
+	.vd-single__retour .vd-bike-label { transition: none; }
 }
 
 /* ---- Fonds dégradés subtils par catégorie (relevé Figma, Victor gère/ajuste) ---- */
@@ -1825,3 +1829,4 @@ body.vd-cat--grands-formats { background-image: linear-gradient(180deg, rgba(242
 	.vd-header__nav--right .vd-nav__link,
 	.vd-header__nav--right .vd-iconbtn[data-popover-target="vd-search-pop"] { display: none; }
 }
+
