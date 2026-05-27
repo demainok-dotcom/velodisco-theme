@@ -572,6 +572,46 @@ header.wp-block-template-part { display: contents; }
 	width: 16px;
 	height: 16px;
 	border-radius: 50%;
+	transition: opacity 0.18s ease;
+}
+
+/* Pastilles cliquables (surprise sonore) : reset du <button>, curseur main. Au clic, le JS
+ * ajoute .is-fx → les 6 pastilles s'effacent et une icône (sonnette, klaxon, etc.) « pop »
+ * à leur place, le temps que le son joue. Revient à l'état normal automatiquement. */
+button.vd-footer__dots {
+	border: 0;
+	background: transparent;
+	padding: 0;
+	font: inherit;
+	color: inherit;
+	cursor: pointer;
+}
+.vd-footer__dots:focus-visible { outline: 2px solid #fff; outline-offset: 4px; border-radius: 4px; }
+.vd-footer__dots.is-fx span { opacity: 0; }
+.vd-footer__fx {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	width: 56px;
+	height: 56px;
+	object-fit: contain;
+	transform: translate(-50%, -50%) scale(0.4);
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 0.18s ease, transform 0.3s cubic-bezier(.34, 1.56, .64, 1);
+}
+.vd-footer__dots.is-fx .vd-footer__fx {
+	opacity: 1;
+	transform: translate(-50%, -50%) scale(1);
+}
+/* Footer mobile : pastilles 8px et icône plus petite à proportion. */
+.vd-footer__dots--sm .vd-footer__fx {
+	width: 36px;
+	height: 36px;
+}
+/* Accessibilité : pas de pop animé pour ceux qui le demandent (le son joue quand même). */
+@media (prefers-reduced-motion: reduce) {
+	.vd-footer__fx { transition: opacity 0.18s ease; transform: translate(-50%, -50%); }
 }
 
 @media (max-width: 900px) {

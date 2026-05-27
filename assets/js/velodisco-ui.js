@@ -216,6 +216,95 @@
 	}
 
 	/* ------------------------------------------------------------------ */
+	/* Pastilles footer (surprise sonore) : au clic, on tire une paire    */
+	/* son+icône au hasard. L'icône remplace les pastilles le temps que   */
+	/* le son joue, puis le visuel revient.                                */
+	/* ------------------------------------------------------------------ */
+	var fxBase = (window.VeloDiscoUI && window.VeloDiscoUI.footerFxUrl) || '';
+	if (fxBase) {
+		var fxPairs = ['sonnette', 'klaxon', 'rouearriere', 'velib'];
+		if (fxBase.charAt(fxBase.length - 1) !== '/') { fxBase += '/'; }
+
+		var fxPreloaded = {};      // cache d'objets Audio (clé = slug)
+		var fxActiveAudio = null;  // l'Audio en cours (pour interruption)
+
+		function fxPreloadAll() {
+			fxPairs.forEach(function (slug) {
+				if (!fxPreloaded[slug]) {
+					var a = new Audio(fxBase + slug + '.mp3');
+					a.preload = 'auto';
+					fxPreloaded[slug] = a;
+				}
+			});
+		}
+
+		function fxPickSlug() {
+			return fxPairs[Math.floor(Math.random() * fxPairs.length)];
+		}
+
+		function fxPlay(btn) {
+			var slug = fxPickSlug();
+			// Interrompt le son précédent (clic rapide) sans attendre la fin.
+			if (fxActiveAudio) {
+				fxActiveAudio.pause();
+				fxActiveAudio.currentTime = 0;
+			}
+			var img = btn.querySelector('.vd-footer__fx');
+			img.src = fxBase + slug + '.png';
+			btn.classList.add('is-fx');
+
+			var audio = fxPreloaded[slug];
+			if (!audio) {
+				audio = new Audio(fxBase + slug + '.mp3');
+				fxPreloaded[slug] = audio;
+			}
+			audio.currentTime = 0;
+			fxActiveAudio = audio;
+
+			function done() {
+				if (fxActiveAudio === audio) {
+					btn.classList.remove('is-fx');
+					fxActiveAudio = null;
+				}
+				audio.removeEventListener('ended', done);
+			}
+			audio.addEventListener('ended', done);
+			var p = audio.play();
+			if (p && p.catch) {
+				p.catch(function () {
+					// Lecture refusée (politique navigateur, son indisponible) : on
+					// laisse l'icône visible 1.5s puis on revient à l'état normal.
+					setTimeout(done, 1500);
+				});
+			}
+		}
+
+		document.querySelectorAll('button.vd-footer__dots').forEach(function (btn) {
+			// Évite double-init.
+			if (btn.dataset.fxInit) return;
+			btn.dataset.fxInit = '1';
+
+			// Injecte l'élément image qui sera utilisé pour le swap visuel.
+			if (!btn.querySelector('.vd-footer__fx')) {
+				var img = document.createElement('img');
+				img.className = 'vd-footer__fx';
+				img.alt = '';
+				img.setAttribute('aria-hidden', 'true');
+				img.decoding = 'async';
+				btn.appendChild(img);
+			}
+
+			// Précharge les 4 MP3 au premier hover/focus (lazy : pas au chargement
+			// initial pour ne pas alourdir la page, mais avant le clic pour que la
+			// lecture démarre instantanément).
+			btn.addEventListener('mouseenter', fxPreloadAll, { once: true });
+			btn.addEventListener('focus', fxPreloadAll, { once: true });
+
+			btn.addEventListener('click', function () { fxPlay(btn); });
+		});
+	}
+
+	/* ------------------------------------------------------------------ */
 	/* Header : masquer au scroll vers le bas, réafficher vers le haut      */
 	/* (mêmes réglages sur desktop ET mobile)                               */
 	/* ------------------------------------------------------------------ */
