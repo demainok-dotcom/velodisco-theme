@@ -1606,7 +1606,11 @@ body.vd-cat--grands-formats .vd-single__body .wp-block-separator {
 }
 .vd-single__body .en-bref p { margin: 0; }
 
-/* Bouton RETOUR : pill à bord dégradé + texte dégradé, fond transparent (à droite) */
+/* Bouton RETOUR : pill à bord dégradé + texte dégradé, fond transparent (à droite).
+ * Au survol : un vélo (aléatoire parmi 10) traverse le bouton de gauche à droite et le
+ * « peint » au passage (noir en thème clair, blanc en thème sombre). L'élément <img>
+ * est injecté par JS (assets/js/velodisco-ui.js) ; le mot « Retour » est ré-encapsulé
+ * dans un <span class="vd-bike-label"> par le même JS pour passer au-dessus du vélo. */
 .vd-single__retour {
 	position: relative;
 	display: inline-flex;
@@ -1619,6 +1623,17 @@ body.vd-cat--grands-formats .vd-single__body .wp-block-separator {
 	background: var(--wp--preset--gradient--grands-formats);
 	-webkit-background-clip: text; background-clip: text;
 	-webkit-text-fill-color: transparent; color: transparent;
+	overflow: hidden;
+	isolation: isolate;
+	--vd-fill: #000;            /* couleur du remplissage en thème clair */
+	--vd-on-fill: #fff;         /* couleur du texte par-dessus le remplissage */
+	transition:
+		-webkit-text-fill-color 0.2s ease 0.3s,
+		color 0.2s ease 0.3s;
+}
+[data-theme="dark"] .vd-single__retour {
+	--vd-fill: #fff;
+	--vd-on-fill: #000;
 }
 .vd-single__retour::before {
 	content: ""; position: absolute; inset: 0;
@@ -1626,6 +1641,57 @@ body.vd-cat--grands-formats .vd-single__body .wp-block-separator {
 	background: var(--wp--preset--gradient--grands-formats);
 	-webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
 	-webkit-mask-composite: xor; mask-composite: exclude;
+	pointer-events: none;
+}
+/* Couche de remplissage : glisse de gauche à droite (derrière le texte et le vélo). */
+.vd-single__retour::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	border-radius: inherit;
+	background: var(--vd-fill);
+	transform: translateX(-101%);
+	transition: transform 0.7s cubic-bezier(.4, 0, .2, 1);
+	z-index: -1;
+}
+.vd-single__retour:hover::after,
+.vd-single__retour:focus-visible::after {
+	transform: translateX(0);
+}
+/* Vélo qui traverse (injecté par JS, src aléatoire parmi 10). */
+.vd-single__retour .vd-bike {
+	position: absolute;
+	top: 50%;
+	left: 0;
+	height: 160%;
+	width: auto;
+	transform: translate(-130%, -50%);
+	transition: transform 0.7s cubic-bezier(.4, 0, .2, 1), opacity 0.15s ease;
+	pointer-events: none;
+	opacity: 0;
+	z-index: 0;
+}
+.vd-single__retour:hover .vd-bike,
+.vd-single__retour:focus-visible .vd-bike {
+	transform: translate(180%, -50%);
+	opacity: 1;
+}
+/* Le mot « Retour » passe au-dessus du vélo. */
+.vd-single__retour .vd-bike-label {
+	position: relative;
+	z-index: 1;
+}
+.vd-single__retour:hover,
+.vd-single__retour:focus-visible {
+	background: none;
+	-webkit-text-fill-color: var(--vd-on-fill);
+	color: var(--vd-on-fill);
+}
+/* Accessibilité : pas d'animation pour les utilisateurs qui le demandent. */
+@media (prefers-reduced-motion: reduce) {
+	.vd-single__retour .vd-bike { display: none; }
+	.vd-single__retour::after,
+	.vd-single__retour { transition: none; }
 }
 
 /* ---- Fonds dégradés subtils par catégorie (relevé Figma, Victor gère/ajuste) ---- */

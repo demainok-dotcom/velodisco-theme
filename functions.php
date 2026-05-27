@@ -62,6 +62,10 @@ function velodisco_assets() {
 		file_exists( $dir . $ui ) ? filemtime( $dir . $ui ) : VELODISCO_VERSION,
 		true
 	);
+	// Variables runtime du JS d'interface : URL des PNG de vélos (animation du bouton RETOUR).
+	wp_localize_script( 'velodisco-ui', 'VeloDiscoUI', array(
+		'bikesUrl' => $uri . '/assets/img/bikes/',
+	) );
 
 	// Animations au défilement (reveal progressif, respecte prefers-reduced-motion).
 	$reveal = '/assets/js/reveal.js';

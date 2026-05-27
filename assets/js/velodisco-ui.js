@@ -168,6 +168,54 @@
 	});
 
 	/* ------------------------------------------------------------------ */
+	/* Bouton RETOUR : animation vélo. À chaque survol on tire un vélo    */
+	/* au hasard parmi 10. Le PNG est injecté en absolu dans le bouton,   */
+	/* l'animation est portée par le CSS (.vd-bike + .vd-single__retour). */
+	/* ------------------------------------------------------------------ */
+	var bikeBase = (window.VeloDiscoUI && window.VeloDiscoUI.bikesUrl) || '';
+	if (bikeBase) {
+		var bikeCount = 10;
+		// Préfixe normalisé (s'assure d'un / final).
+		if (bikeBase.charAt(bikeBase.length - 1) !== '/') { bikeBase += '/'; }
+
+		function pickBikeSrc() {
+			var n = Math.floor(Math.random() * bikeCount) + 1;
+			var pad = n < 10 ? '0' + n : '' + n;
+			return bikeBase + 'velo-' + pad + '.png';
+		}
+
+		var returnBtns = document.querySelectorAll('.vd-single__retour');
+		Array.prototype.forEach.call(returnBtns, function (btn) {
+			// Évite double-init (HMR / re-render).
+			if (btn.querySelector('.vd-bike')) return;
+
+			// Encapsule le texte courant dans un <span> pour pouvoir le superposer
+			// au vélo via z-index (cf. .vd-bike-label dans velodisco.css).
+			var label = document.createElement('span');
+			label.className = 'vd-bike-label';
+			while (btn.firstChild) { label.appendChild(btn.firstChild); }
+			btn.appendChild(label);
+
+			// Vélo : décoratif (alt vide + aria-hidden), première src au montage.
+			var img = document.createElement('img');
+			img.className = 'vd-bike';
+			img.alt = '';
+			img.setAttribute('aria-hidden', 'true');
+			img.decoding = 'async';
+			img.loading = 'lazy';
+			img.src = pickBikeSrc();
+			btn.appendChild(img);
+
+			// Re-tire un vélo aléatoire APRÈS chaque survol/focus, pour que la
+			// prochaine traversée montre un autre vélo. (On ne change pas la src
+			// pendant l'animation pour ne pas voir le vélo se transformer en plein vol.)
+			function reroll() { img.src = pickBikeSrc(); }
+			btn.addEventListener('mouseleave', reroll);
+			btn.addEventListener('blur', reroll, true);
+		});
+	}
+
+	/* ------------------------------------------------------------------ */
 	/* Header : masquer au scroll vers le bas, réafficher vers le haut      */
 	/* (mêmes réglages sur desktop ET mobile)                               */
 	/* ------------------------------------------------------------------ */
