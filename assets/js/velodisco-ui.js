@@ -217,16 +217,40 @@
 
 	/* ------------------------------------------------------------------ */
 	/* Pastilles footer (surprise sonore) : au clic, on tire une paire    */
-	/* son+icône au hasard. L'icône remplace les pastilles le temps que   */
-	/* le son joue, puis le visuel revient.                                */
+	/* son+icône au hasard. L'icône remplace les pastilles avec un pop,   */
+	/* joue une animation propre à son sujet (roue qui tourne, klaxon     */
+	/* qui shake, pompe qui pompe…) en synchro avec le son, puis revient. */
 	/* ------------------------------------------------------------------ */
 	var fxBase = (window.VeloDiscoUI && window.VeloDiscoUI.footerFxUrl) || '';
 	if (fxBase) {
-		var fxPairs = ['sonnette', 'klaxon', 'rouearriere', 'velib'];
 		if (fxBase.charAt(fxBase.length - 1) !== '/') { fxBase += '/'; }
 
-		var fxPreloaded = {};      // cache d'objets Audio (clé = slug)
-		var fxActiveAudio = null;  // l'Audio en cours (pour interruption)
+		// Slug → classe d'animation CSS (cf. velodisco.css, section "Animations FX").
+		// Slug seul = pas d'animation perso (juste le pop scale).
+		var fxAnims = {
+			sonnette:    'is-fx-ring',
+			klaxon:      'is-fx-shake',
+			rouearriere: 'is-fx-spin',
+			velib:       'is-fx-wobble',
+			batterie:    'is-fx-pulse',
+			cassette:    'is-fx-spin',
+			chain:       'is-fx-wobble',
+			course:      'is-fx-run',
+			crevaison:   'is-fx-deflate',
+			garmin:      'is-fx-pulse',
+			jump:        'is-fx-jump',
+			phare:       'is-fx-flash',
+			pompe:       'is-fx-pump'
+		};
+		var fxPairs = Object.keys(fxAnims);
+		var fxAllAnimClasses = []; // pour nettoyage rapide entre 2 clics
+		fxPairs.forEach(function (s) {
+			var c = fxAnims[s];
+			if (c && fxAllAnimClasses.indexOf(c) === -1) fxAllAnimClasses.push(c);
+		});
+
+		var fxPreloaded = {};      // cache Audio (clé = slug)
+		var fxActiveAudio = null;  // Audio en cours (pour interruption)
 
 		function fxPreloadAll() {
 			fxPairs.forEach(function (slug) {
@@ -242,6 +266,10 @@
 			return fxPairs[Math.floor(Math.random() * fxPairs.length)];
 		}
 
+		function fxClearAnimClasses(btn) {
+			fxAllAnimClasses.forEach(function (c) { btn.classList.remove(c); });
+		}
+
 		function fxPlay(btn) {
 			var slug = fxPickSlug();
 			// Interrompt le son précédent (clic rapide) sans attendre la fin.
@@ -249,9 +277,12 @@
 				fxActiveAudio.pause();
 				fxActiveAudio.currentTime = 0;
 			}
-			var img = btn.querySelector('.vd-footer__fx');
+			fxClearAnimClasses(btn); // au cas où un clic précédent serait encore actif
+
+			var img = btn.querySelector('.vd-footer__fx-img');
 			img.src = fxBase + slug + '.png';
 			btn.classList.add('is-fx');
+			if (fxAnims[slug]) btn.classList.add(fxAnims[slug]);
 
 			var audio = fxPreloaded[slug];
 			if (!audio) {
@@ -264,6 +295,7 @@
 			function done() {
 				if (fxActiveAudio === audio) {
 					btn.classList.remove('is-fx');
+					fxClearAnimClasses(btn);
 					fxActiveAudio = null;
 				}
 				audio.removeEventListener('ended', done);
@@ -272,31 +304,33 @@
 			var p = audio.play();
 			if (p && p.catch) {
 				p.catch(function () {
-					// Lecture refusée (politique navigateur, son indisponible) : on
-					// laisse l'icône visible 1.5s puis on revient à l'état normal.
+					// Lecture refusée (politique navigateur) : on laisse l'icône
+					// 1.5s puis revient à l'état normal.
 					setTimeout(done, 1500);
 				});
 			}
 		}
 
 		document.querySelectorAll('button.vd-footer__dots').forEach(function (btn) {
-			// Évite double-init.
 			if (btn.dataset.fxInit) return;
 			btn.dataset.fxInit = '1';
 
-			// Injecte l'élément image qui sera utilisé pour le swap visuel.
+			// Injecte le wrapper d'icône s'il n'existe pas (span contenant l'img).
+			// Le span est positionné en absolu et gère le "pop" ; l'img enfant
+			// reçoit l'animation propre au type d'icône.
 			if (!btn.querySelector('.vd-footer__fx')) {
+				var wrap = document.createElement('span');
+				wrap.className = 'vd-footer__fx';
+				wrap.setAttribute('aria-hidden', 'true');
 				var img = document.createElement('img');
-				img.className = 'vd-footer__fx';
+				img.className = 'vd-footer__fx-img';
 				img.alt = '';
-				img.setAttribute('aria-hidden', 'true');
 				img.decoding = 'async';
-				btn.appendChild(img);
+				wrap.appendChild(img);
+				btn.appendChild(wrap);
 			}
 
-			// Précharge les 4 MP3 au premier hover/focus (lazy : pas au chargement
-			// initial pour ne pas alourdir la page, mais avant le clic pour que la
-			// lecture démarre instantanément).
+			// Précharge les MP3 au premier hover/focus (lazy : pas au chargement).
 			btn.addEventListener('mouseenter', fxPreloadAll, { once: true });
 			btn.addEventListener('focus', fxPreloadAll, { once: true });
 
