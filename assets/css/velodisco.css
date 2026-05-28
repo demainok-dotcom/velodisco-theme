@@ -575,7 +575,10 @@ header.wp-block-template-part { display: contents; }
 	background-size: contain;
 	background-repeat: no-repeat;
 	background-position: center;
+	/* Sync avec l'animation du brand : disparaît en même temps que VELODISCO pendant l'astuce. */
+	transition: opacity 2s ease;
 }
+.vd-footer__brand.is-hint + .vd-footer__mark { opacity: 0; }
 .vd-footer__sub {
 	margin: 0;
 	font-size: 12px;
