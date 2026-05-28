@@ -440,16 +440,17 @@
 			wrap.style.left = (direction === 'ltr' ? leftRel : leftRel + width - BIKE_W) + 'px';
 			host.appendChild(wrap);
 
-			// Active la "petite route" sur le séparateur (clip-path animé en sync).
+			// Active la "petite route" sur le séparateur (mask animé en sync).
 			sep.classList.add('is-bike-passing');
 			if (direction === 'rtl') sep.classList.add('is-bike-rtl');
 
-			// L'animation (translateX + opacity) est portée par le keyframe CSS, pas besoin
-			// de transition ici. On nettoie juste le DOM après la fin (+ marge de sécurité).
+			// Anim CSS = 4s desktop, 2s mobile (cf. media query). On aligne le cleanup
+			// JS sur cette durée pour libérer le clic plus vite sur mobile.
+			var animMs = (window.matchMedia && window.matchMedia('(max-width: 600px)').matches) ? 2000 : 4000;
 			setTimeout(function () {
 				if (wrap.parentNode) wrap.remove();
 				sep.classList.remove('is-bike-passing', 'is-bike-rtl');
-			}, 4200);
+			}, animMs + 200);
 		}
 
 		var body = document.querySelector('.vd-single__body');
@@ -464,7 +465,8 @@
 				if (sep.dataset.bikeBusy === '1') return; // vélo déjà en route
 				sep.dataset.bikeBusy = '1';
 				spawnLineBike(sep, body);
-				setTimeout(function () { sep.dataset.bikeBusy = ''; }, 4200);
+				var busyMs = (window.matchMedia && window.matchMedia('(max-width: 600px)').matches) ? 2200 : 4200;
+				setTimeout(function () { sep.dataset.bikeBusy = ''; }, busyMs);
 			});
 		});
 	})();

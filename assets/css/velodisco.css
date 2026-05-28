@@ -1855,17 +1855,18 @@ body.vd-cat--grands-formats .vd-single__body .wp-block-separator {
 	background: var(--wp--preset--gradient--grands-formats);
 }
 
-/* « Petite route » qui se révèle sous le vélo : asphalte gris foncé + pointillés blancs
- * au centre. Le JS ajoute .is-bike-passing (+ .is-bike-rtl) sur le séparateur en même
- * temps qu'il spawn le vélo. Le clip-path s'ouvre progressivement dans le sens de la
- * traversée, sync avec l'animation du vélo (4 s linear). Fade in/out aux 8 % de bord. */
+/* « Petite route » qui suit le vélo : asphalte gris foncé + pointillés blancs au centre.
+ * Le JS ajoute .is-bike-passing (+ .is-bike-rtl) sur le séparateur en même temps qu'il
+ * spawn le vélo. Le rendu de la route est masqué via un GRADIENT MASK en forme de
+ * « fenêtre » centrée sur la position du vélo. La fenêtre a un fade in côté avant et
+ * un fade out côté arrière → la route apparaît en fondu devant le vélo et disparaît
+ * en fondu derrière, en sync avec son déplacement (4 s linear). */
 .vd-single__body .wp-block-separator::after {
 	content: "";
 	position: absolute;
 	inset: 0;
 	pointer-events: none;
 	opacity: 0;
-	clip-path: inset(0 100% 0 0);
 	background-color: #333;
 	background-image: repeating-linear-gradient(
 		to right,
@@ -1877,27 +1878,49 @@ body.vd-cat--grands-formats .vd-single__body .wp-block-separator {
 	background-size: 100% 1.5px;
 	background-position: center;
 	background-repeat: no-repeat;
+	/* Fenêtre mask : noir au centre (50%) avec fades de 6% de chaque côté. Mask 2x plus
+	 * large que l'élément → la fenêtre se promène en animant mask-position. */
+	-webkit-mask-image: linear-gradient(to right,
+		transparent 0%, transparent 44%,
+		black 48%, black 52%,
+		transparent 56%, transparent 100%);
+	        mask-image: linear-gradient(to right,
+		transparent 0%, transparent 44%,
+		black 48%, black 52%,
+		transparent 56%, transparent 100%);
+	-webkit-mask-size: 200% 100%;
+	        mask-size: 200% 100%;
+	-webkit-mask-repeat: no-repeat;
+	        mask-repeat: no-repeat;
 }
 .vd-single__body .wp-block-separator.is-bike-passing::after {
-	animation: vd-road-ltr 4s linear forwards;
+	animation: vd-road-window-ltr 4s linear forwards;
 }
 .vd-single__body .wp-block-separator.is-bike-passing.is-bike-rtl::after {
-	animation: vd-road-rtl 4s linear forwards;
+	animation: vd-road-window-rtl 4s linear forwards;
 }
-@keyframes vd-road-ltr {
-	0%   { clip-path: inset(0 100% 0 0); opacity: 0; }
+/* mask-position 100% = fenêtre à gauche de l'élément ; 0% = fenêtre à droite.
+ * Pour LTR (vélo L→R), animer 100% → 0%. Pour RTL, l'inverse. */
+@keyframes vd-road-window-ltr {
+	0%   { -webkit-mask-position: 100% 0; mask-position: 100% 0; opacity: 0; }
 	8%   { opacity: 1; }
-	92%  { clip-path: inset(0 0 0 0);     opacity: 1; }
-	100% { clip-path: inset(0 0 0 0);     opacity: 0; }
+	92%  { opacity: 1; }
+	100% { -webkit-mask-position: 0% 0;   mask-position: 0% 0;   opacity: 0; }
 }
-@keyframes vd-road-rtl {
-	0%   { clip-path: inset(0 0 0 100%); opacity: 0; }
+@keyframes vd-road-window-rtl {
+	0%   { -webkit-mask-position: 0% 0;   mask-position: 0% 0;   opacity: 0; }
 	8%   { opacity: 1; }
-	92%  { clip-path: inset(0 0 0 0);     opacity: 1; }
-	100% { clip-path: inset(0 0 0 0);     opacity: 0; }
+	92%  { opacity: 1; }
+	100% { -webkit-mask-position: 100% 0; mask-position: 100% 0; opacity: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
 	.vd-single__body .wp-block-separator::after { display: none; }
+}
+/* Mobile (≤600 px) : vélo 2x plus rapide. Override sur les 4 animations concernées. */
+@media (max-width: 600px) {
+	.vd-line-bike--ltr,
+	.vd-line-bike--rtl { animation-duration: 2s; }
+	.vd-single__body .wp-block-separator.is-bike-passing::after { animation-duration: 2s; }
 }
 
 /* Vélo qui traverse la barre séparateur. Le contexte de positionnement est le body de
@@ -1915,8 +1938,8 @@ body.vd-cat--grands-formats .vd-single__body .wp-block-separator {
 	pointer-events: none;
 	z-index: 5;
 	opacity: 0; /* point de départ : invisible, l'animation fade in */
-	/* --bike-lift : décalage vertical au-dessus de la ligne (≈ 5 mm = 20 px). */
-	--bike-lift: 20px;
+	/* --bike-lift : décalage vertical au-dessus de la ligne (≈ 1/4 cm = 10 px). */
+	--bike-lift: 10px;
 	transform: translateY(calc(-100% - var(--bike-lift)));
 	will-change: transform, opacity;
 }
