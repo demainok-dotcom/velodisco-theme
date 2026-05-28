@@ -228,7 +228,6 @@
 		// Slug → classe d'animation CSS (cf. velodisco.css, section "Animations FX").
 		// Slug seul = pas d'animation perso (juste le pop scale).
 		var fxAnims = {
-			sonnette:    'is-fx-ring',
 			klaxon:      'is-fx-shake',
 			rouearriere: 'is-fx-spin',
 			velib:       'is-fx-wobble',
