@@ -431,19 +431,17 @@
 			wrap.appendChild(lines);
 			wrap.appendChild(img);
 
+			// Le vélo doit rester DANS la barre. Distance parcourue = barre - vélo.
+			// LTR : pos initiale = bord gauche de la barre, fin = barre - vélo (translateX positif).
+			// RTL : pos initiale = barre - vélo (bord droit), fin = bord gauche (translateX négatif).
+			var distance = Math.max(0, width - BIKE_W);
+			wrap.style.setProperty('--travel', distance + 'px');
 			wrap.style.top = topRel + 'px';
-			wrap.style.left = (direction === 'ltr' ? leftRel - BIKE_W : leftRel + width) + 'px';
+			wrap.style.left = (direction === 'ltr' ? leftRel : leftRel + width - BIKE_W) + 'px';
 			host.appendChild(wrap);
 
-			// Force reflow puis lance l'animation (transition transform). translateY(-100%)
-			// est conservé via la déclaration CSS de base (le JS ne ré-applique que translateX).
-			void wrap.offsetWidth;
-			wrap.style.transition = 'transform 4s linear';
-			var distance = width + BIKE_W * 2;
-			wrap.style.transform = direction === 'ltr'
-				? 'translateY(-100%) translateX(' + distance + 'px)'
-				: 'translateY(-100%) translateX(-' + distance + 'px)';
-
+			// L'animation (translateX + opacity) est portée par le keyframe CSS, pas besoin
+			// de transition ici. On nettoie juste le DOM après la fin (+ marge de sécurité).
 			setTimeout(function () { if (wrap.parentNode) wrap.remove(); }, 4200);
 		}
 

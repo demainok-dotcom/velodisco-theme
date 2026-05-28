@@ -1857,9 +1857,10 @@ body.vd-cat--grands-formats .vd-single__body .wp-block-separator {
 /* Vélo qui traverse la barre séparateur. Le contexte de positionnement est le body de
  * l'article (rendu position: relative). Le JS spawn un .vd-line-bike absolu, position
  * top = haut de la barre, transform translateY(-100%) → le bas du wrapper (= les roues
- * du vélo) est posé pile sur la ligne. Anime translateX en 4s linear.
- * Effet vitesse = 3 petits traits qui naissent au niveau du vélo et glissent en
- * arrière en boucle (façon BD), gérés en CSS keyframes. */
+ * du vélo) est posé pile sur la ligne. L'animation (translateX + opacity fade in/out)
+ * est gérée par CSS keyframes, avec --travel défini en inline par le JS.
+ * Le vélo apparaît au bord d'entrée de la barre, traverse, disparaît au bord opposé,
+ * sans jamais sortir des limites de la ligne. */
 .vd-single__body { position: relative; }
 .vd-line-bike {
 	position: absolute;
@@ -1867,8 +1868,23 @@ body.vd-cat--grands-formats .vd-single__body .wp-block-separator {
 	height: 25px;
 	pointer-events: none;
 	z-index: 5;
+	opacity: 0; /* point de départ : invisible, l'animation fade in */
 	transform: translateY(-100%); /* anchor : bas du wrapper sur le CSS top → vélo SUR la ligne */
-	will-change: transform;
+	will-change: transform, opacity;
+}
+.vd-line-bike--ltr { animation: vd-line-bike-ltr 4s linear forwards; }
+.vd-line-bike--rtl { animation: vd-line-bike-rtl 4s linear forwards; }
+@keyframes vd-line-bike-ltr {
+	0%   { opacity: 0; transform: translateY(-100%) translateX(0); }
+	8%   { opacity: 1; }
+	92%  { opacity: 1; }
+	100% { opacity: 0; transform: translateY(-100%) translateX(var(--travel, 0px)); }
+}
+@keyframes vd-line-bike-rtl {
+	0%   { opacity: 0; transform: translateY(-100%) translateX(0); }
+	8%   { opacity: 1; }
+	92%  { opacity: 1; }
+	100% { opacity: 0; transform: translateY(-100%) translateX(calc(-1 * var(--travel, 0px))); }
 }
 .vd-line-bike__img {
 	display: block;
