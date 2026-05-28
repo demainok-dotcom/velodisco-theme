@@ -522,7 +522,7 @@ header.wp-block-template-part { display: contents; }
  * Auto-revert après 4 secondes (gestion JS). */
 .vd-footer__brand-text {
 	display: inline-block;
-	transition: opacity 0.35s ease;
+	transition: opacity 0.7s ease;
 }
 .vd-footer__brand-hint {
 	position: absolute;
@@ -533,7 +533,7 @@ header.wp-block-template-part { display: contents; }
 	align-items: center;
 	gap: 14px;
 	opacity: 0;
-	transition: opacity 0.35s ease;
+	transition: opacity 0.7s ease;
 	pointer-events: none;
 }
 .vd-footer__brand.is-hint .vd-footer__brand-text { opacity: 0; }
@@ -836,7 +836,9 @@ button.vd-footer__dots {
 	background: var(--wp--preset--gradient--grands-formats);
 }
 .vd-footer__dots--sm { right: 12px; bottom: 13px; grid-template-columns: repeat(3, 8px); gap: 2px; }
-.vd-footer__dots--sm span { width: 8px; height: 8px; }
+/* Spécificité (0,2,1) pour battre `.vd-footer__dots > span:not(.vd-footer__fx)` qui
+ * forçait 16px partout (bug mobile constaté 2026-05-27). */
+.vd-footer__dots--sm > span:not(.vd-footer__fx) { width: 8px; height: 8px; }
 
 
 /* 7. CARTES & IMAGES (tracé catégorie) ------------------------------------- */
