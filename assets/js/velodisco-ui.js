@@ -243,6 +243,19 @@
 			pompe:       'is-fx-pump'
 		};
 		var fxPairs = Object.keys(fxAnims);
+
+		// Palette identitaire VeloDisco (couleurs des 5 catégories du site).
+		// L'icône prend l'une de ces couleurs au hasard à chaque clic.
+		var fxColors = [
+			'#DB3F0C', // Vélos (rouge-orangé)
+			'#1B8F29', // Accessoires (vert)
+			'#D69600', // Composants (doré)
+			'#0091C2', // Vêtements (bleu)
+			'#7D5EDA'  // Société (violet — version lisible sur fond sombre)
+		];
+		function fxPickColor() {
+			return fxColors[Math.floor(Math.random() * fxColors.length)];
+		}
 		var fxAllAnimClasses = []; // pour nettoyage rapide entre 2 clics
 		fxPairs.forEach(function (s) {
 			var c = fxAnims[s];
@@ -272,6 +285,7 @@
 
 		function fxPlay(btn) {
 			var slug = fxPickSlug();
+			var color = fxPickColor();
 			// Interrompt le son précédent (clic rapide) sans attendre la fin.
 			if (fxActiveAudio) {
 				fxActiveAudio.pause();
@@ -279,8 +293,11 @@
 			}
 			fxClearAnimClasses(btn); // au cas où un clic précédent serait encore actif
 
+			// Le PNG sert de POCHOIR (mask-image) et la couleur de fond donne la teinte.
+			// Variables CSS posées en inline pour cibler ce bouton précisément.
 			var img = btn.querySelector('.vd-footer__fx-img');
-			img.src = fxBase + slug + '.png';
+			img.style.setProperty('--vd-fx-mask', "url('" + fxBase + slug + ".png')");
+			img.style.setProperty('--vd-fx-color', color);
 			btn.classList.add('is-fx');
 			if (fxAnims[slug]) btn.classList.add(fxAnims[slug]);
 
@@ -315,17 +332,15 @@
 			if (btn.dataset.fxInit) return;
 			btn.dataset.fxInit = '1';
 
-			// Injecte le wrapper d'icône s'il n'existe pas (span contenant l'img).
-			// Le span est positionné en absolu et gère le "pop" ; l'img enfant
-			// reçoit l'animation propre au type d'icône.
+			// Injecte le wrapper d'icône s'il n'existe pas (span contenant un span).
+			// Le span parent est positionné en absolu et gère le « pop » ; le span enfant
+			// est une SILHOUETTE colorée du PNG (mask-image + background-color, posés par le JS).
 			if (!btn.querySelector('.vd-footer__fx')) {
 				var wrap = document.createElement('span');
 				wrap.className = 'vd-footer__fx';
 				wrap.setAttribute('aria-hidden', 'true');
-				var img = document.createElement('img');
+				var img = document.createElement('span');
 				img.className = 'vd-footer__fx-img';
-				img.alt = '';
-				img.decoding = 'async';
 				wrap.appendChild(img);
 				btn.appendChild(wrap);
 			}

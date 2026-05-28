@@ -568,13 +568,16 @@ header.wp-block-template-part { display: contents; }
 	gap: 2px;
 }
 /* Pastilles : ENFANTS DIRECTS uniquement, et :not(.vd-footer__fx) pour ne pas
- * écraser la taille du wrapper d'icône (qui est aussi un <span> enfant). */
+ * écraser la taille du wrapper d'icône (qui est aussi un <span> enfant).
+ * Au clic, les pastilles grossissent (scale 1.5) et s'estompent en cross-fade avec
+ * l'icône qui émerge du centre → effet « transformation ». */
 .vd-footer__dots > span:not(.vd-footer__fx) {
 	display: block;
 	width: 16px;
 	height: 16px;
 	border-radius: 50%;
-	transition: opacity 0.18s ease;
+	transform: scale(1);
+	transition: transform 0.35s cubic-bezier(.4, 0, .2, 1), opacity 0.3s ease;
 }
 
 /* Pastilles cliquables (surprise sonore) : reset du <button>, curseur main. Au clic, le JS
@@ -589,24 +592,29 @@ button.vd-footer__dots {
 	cursor: pointer;
 }
 .vd-footer__dots:focus-visible { outline: 2px solid #fff; outline-offset: 4px; border-radius: 4px; }
-.vd-footer__dots.is-fx > span:not(.vd-footer__fx) { opacity: 0; }
-/* Icône FX = wrapper span (gère centrage + pop scale) + img enfant (anime selon le type).
+.vd-footer__dots.is-fx > span:not(.vd-footer__fx) {
+	transform: scale(1.5);
+	opacity: 0;
+}
+/* Icône FX = wrapper span (gère centrage + pop scale) + span enfant qui est une SILHOUETTE
+ * colorée du PNG (mask-image + background-color). La couleur vient d'une variable CSS
+ * --vd-fx-color set par le JS au clic, parmi les 5 couleurs identitaires du site.
+ *
  * Toutes les icônes sont normalisées à 256x256 avec contenu centré (94% du canvas) → même
  * taille visuelle quel que soit l'aspect ratio source.
  *
- * Container 56x56 centré sur les pastilles : visuellement la même taille que le logo
- * « 6 points » (52x34). Les icônes carrées remplissent le bouton, les rectangulaires
- * sont contraintes par le plus long côté. */
+ * Crossfade avec les pastilles : timing aligné pour que l'icône émerge pile quand les
+ * pastilles s'estompent → impression de transformation. */
 .vd-footer__fx {
 	position: absolute;
 	top: 50%;
 	left: 50%;
 	width: 56px;
 	height: 56px;
-	transform: translate(-50%, -50%) scale(0.4);
+	transform: translate(-50%, -50%) scale(0.3);
 	opacity: 0;
 	pointer-events: none;
-	transition: opacity 0.18s ease, transform 0.3s cubic-bezier(.34, 1.56, .64, 1);
+	transition: opacity 0.3s ease, transform 0.45s cubic-bezier(.34, 1.56, .64, 1);
 }
 .vd-footer__dots.is-fx .vd-footer__fx {
 	opacity: 1;
@@ -616,7 +624,15 @@ button.vd-footer__dots {
 	display: block;
 	width: 100%;
 	height: 100%;
-	object-fit: contain;
+	background-color: var(--vd-fx-color, #F5F5F0);
+	-webkit-mask-image: var(--vd-fx-mask);
+	        mask-image: var(--vd-fx-mask);
+	-webkit-mask-size: contain;
+	        mask-size: contain;
+	-webkit-mask-repeat: no-repeat;
+	        mask-repeat: no-repeat;
+	-webkit-mask-position: center;
+	        mask-position: center;
 }
 /* Footer mobile : icône proportionnelle aux pastilles 8px. */
 .vd-footer__dots--sm .vd-footer__fx {
@@ -724,6 +740,10 @@ button.vd-footer__dots {
 @media (prefers-reduced-motion: reduce) {
 	.vd-footer__fx { transition: opacity 0.18s ease; transform: translate(-50%, -50%); }
 	.vd-footer__dots .vd-footer__fx-img { animation: none !important; }
+	.vd-footer__dots > span:not(.vd-footer__fx) {
+		transform: none !important;
+		transition: opacity 0.15s ease !important;
+	}
 }
 
 @media (max-width: 900px) {
