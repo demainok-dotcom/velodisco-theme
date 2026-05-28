@@ -241,7 +241,7 @@
 			crevaison:   'is-fx-deflate',
 			disco:       'is-fx-spin',
 			garmin:      'is-fx-pulse',
-			jump:        'is-fx-jump',
+			jumpp:       'is-fx-jump',
 			klaxon:      'is-fx-shake',
 			panneau:     'is-fx-shake',
 			phare:       'is-fx-flash',

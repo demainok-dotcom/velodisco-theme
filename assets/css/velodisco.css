@@ -515,15 +515,6 @@ header.wp-block-template-part { display: contents; }
 	text-decoration: none;
 	white-space: nowrap;
 }
-/* Lettres de VELODISCO : tracé coloré 4px autour de chaque lettre (couleurs du wordmark
- * du header). `paint-order: stroke fill` dessine le tracé AVANT le remplissage blanc → le
- * blanc reste visible au centre, seule la moitié extérieure du tracé apparaît (2px visibles).
- * « .COM » n'est pas dans un <span> → pas de couleur, reste blanc plein. */
-.vd-footer__brand > span {
-	-webkit-text-stroke: 4px var(--c, transparent);
-	        text-stroke: 4px var(--c, transparent);
-	paint-order: stroke fill;
-}
 /* Mark © à droite du wordmark : image exacte exportée du Figma (nœud « Copyright ») */
 .vd-footer__mark {
 	flex: 0 0 auto;
