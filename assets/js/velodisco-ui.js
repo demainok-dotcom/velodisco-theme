@@ -392,7 +392,7 @@
 		if (bikeBase.charAt(bikeBase.length - 1) !== '/') bikeBase += '/';
 		var BIKE_COUNT = 10;
 		var BIKE_W = 35; // px (doit matcher .vd-line-bike width)
-		var RIGHT_ZONE = 40; // zone cliquable à droite
+		var RIGHT_ZONE = 20; // zone cliquable à droite (en px)
 
 		function pad2(n) { return n < 10 ? '0' + n : '' + n; }
 		function pickBikeSrc() {
