@@ -440,9 +440,16 @@
 			wrap.style.left = (direction === 'ltr' ? leftRel : leftRel + width - BIKE_W) + 'px';
 			host.appendChild(wrap);
 
+			// Active la "petite route" sur le séparateur (clip-path animé en sync).
+			sep.classList.add('is-bike-passing');
+			if (direction === 'rtl') sep.classList.add('is-bike-rtl');
+
 			// L'animation (translateX + opacity) est portée par le keyframe CSS, pas besoin
 			// de transition ici. On nettoie juste le DOM après la fin (+ marge de sécurité).
-			setTimeout(function () { if (wrap.parentNode) wrap.remove(); }, 4200);
+			setTimeout(function () {
+				if (wrap.parentNode) wrap.remove();
+				sep.classList.remove('is-bike-passing', 'is-bike-rtl');
+			}, 4200);
 		}
 
 		var body = document.querySelector('.vd-single__body');

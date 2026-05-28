@@ -1849,9 +1849,55 @@ body.vd-cat--grands-formats .vd-single__body .wp-block-image::after {
 	margin: 1.5rem 0;
 	opacity: 1;
 	background: var(--vd-cat-color, var(--wp--preset--color--separator));
+	position: relative;
 }
 body.vd-cat--grands-formats .vd-single__body .wp-block-separator {
 	background: var(--wp--preset--gradient--grands-formats);
+}
+
+/* « Petite route » qui se révèle sous le vélo : asphalte gris foncé + pointillés blancs
+ * au centre. Le JS ajoute .is-bike-passing (+ .is-bike-rtl) sur le séparateur en même
+ * temps qu'il spawn le vélo. Le clip-path s'ouvre progressivement dans le sens de la
+ * traversée, sync avec l'animation du vélo (4 s linear). Fade in/out aux 8 % de bord. */
+.vd-single__body .wp-block-separator::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+	opacity: 0;
+	clip-path: inset(0 100% 0 0);
+	background-color: #333;
+	background-image: repeating-linear-gradient(
+		to right,
+		rgba(255, 255, 255, 0.95) 0,
+		rgba(255, 255, 255, 0.95) 14px,
+		transparent 14px,
+		transparent 28px
+	);
+	background-size: 100% 1.5px;
+	background-position: center;
+	background-repeat: no-repeat;
+}
+.vd-single__body .wp-block-separator.is-bike-passing::after {
+	animation: vd-road-ltr 4s linear forwards;
+}
+.vd-single__body .wp-block-separator.is-bike-passing.is-bike-rtl::after {
+	animation: vd-road-rtl 4s linear forwards;
+}
+@keyframes vd-road-ltr {
+	0%   { clip-path: inset(0 100% 0 0); opacity: 0; }
+	8%   { opacity: 1; }
+	92%  { clip-path: inset(0 0 0 0);     opacity: 1; }
+	100% { clip-path: inset(0 0 0 0);     opacity: 0; }
+}
+@keyframes vd-road-rtl {
+	0%   { clip-path: inset(0 0 0 100%); opacity: 0; }
+	8%   { opacity: 1; }
+	92%  { clip-path: inset(0 0 0 0);     opacity: 1; }
+	100% { clip-path: inset(0 0 0 0);     opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+	.vd-single__body .wp-block-separator::after { display: none; }
 }
 
 /* Vélo qui traverse la barre séparateur. Le contexte de positionnement est le body de
