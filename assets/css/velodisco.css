@@ -1875,6 +1875,7 @@ body.vd-cat--grands-formats .vd-single__body .wp-block-separator {
 	width: 100%;
 	height: 100%;
 	object-fit: contain;
+	object-position: center bottom; /* roues calees au bord bas du wrapper */
 }
 .vd-line-bike--rtl .vd-line-bike__img { transform: scaleX(-1); }
 
@@ -1897,13 +1898,21 @@ body.vd-cat--grands-formats .vd-single__body .wp-block-separator {
 	position: absolute;
 	height: 1.5px;
 	border-radius: 1px;
-	background: linear-gradient(to left, rgba(255,255,255,0.95), rgba(255,255,255,0));
+	/* Couleur des traits : noir en thème clair, blanche en thème sombre.
+	 * --sl-color sert de base, les variantes ltr/rtl tirent un gradient depuis cette couleur. */
+	--sl-color: rgba(0,0,0,0.95);
+}
+[data-theme="dark"] .vd-line-bike__sl {
+	--sl-color: rgba(255,255,255,0.95);
+}
+.vd-line-bike--ltr .vd-line-bike__sl {
+	right: 0;
+	background: linear-gradient(to left, var(--sl-color), transparent);
 }
 .vd-line-bike--rtl .vd-line-bike__sl {
-	background: linear-gradient(to right, rgba(255,255,255,0.95), rgba(255,255,255,0));
+	left: 0;
+	background: linear-gradient(to right, var(--sl-color), transparent);
 }
-.vd-line-bike--ltr .vd-line-bike__sl { right: 0; }
-.vd-line-bike--rtl .vd-line-bike__sl { left: 0; }
 
 .vd-line-bike__sl:nth-child(1) { top: 22%; width: 70%; animation-delay: 0s; }
 .vd-line-bike__sl:nth-child(2) { top: 50%; width: 95%; animation-delay: 0.13s; }
