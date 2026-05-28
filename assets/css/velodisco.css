@@ -477,9 +477,16 @@ header.wp-block-template-part { display: contents; }
 	color: #F5F5F0;
 	text-decoration: none;
 	opacity: 0.9;
-	transition: opacity var(--vd-t-fast) var(--vd-ease);
+	transition: opacity var(--vd-t-fast) var(--vd-ease), color 2s ease;
 }
 .vd-footer__nav a:hover { opacity: 1; }
+/* Hover sur une section d'article : la couleur fond doucement vers la couleur identitaire
+ * de la catégorie (2s). Sélecteurs sur href pour éviter de toucher au HTML. */
+.vd-footer__nav a[href*="/category/velos/"]:hover       { color: #DB3F0C; }
+.vd-footer__nav a[href*="/category/accessoires/"]:hover { color: #1B8F29; }
+.vd-footer__nav a[href*="/category/composants/"]:hover  { color: #D69600; }
+.vd-footer__nav a[href*="/category/vetements/"]:hover   { color: #0091C2; }
+.vd-footer__nav a[href*="/category/societe/"]:hover     { color: #785FD3; }
 
 /* Bloc principal : identité (gauche, 341/1440 = 23.7%) + bande dégradée (droite) */
 .vd-footer__main {
@@ -539,10 +546,11 @@ header.wp-block-template-part { display: contents; }
 .vd-footer__brand.is-hint .vd-footer__brand-text { opacity: 0; }
 .vd-footer__brand.is-hint .vd-footer__brand-hint { opacity: 1; }
 .vd-fbh__mouse {
-	width: 20px;
-	height: 30px;
+	width: 24px;
+	height: 36px;
 	color: #FFFFFF;
 	flex: 0 0 auto;
+	shape-rendering: geometricPrecision;
 }
 .vd-fbh__plus {
 	color: #FFFFFF;
