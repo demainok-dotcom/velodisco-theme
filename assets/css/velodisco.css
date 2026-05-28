@@ -1915,22 +1915,24 @@ body.vd-cat--grands-formats .vd-single__body .wp-block-separator {
 	pointer-events: none;
 	z-index: 5;
 	opacity: 0; /* point de départ : invisible, l'animation fade in */
-	transform: translateY(-100%); /* anchor : bas du wrapper sur le CSS top → vélo SUR la ligne */
+	/* --bike-lift : décalage vertical au-dessus de la ligne (≈ 5 mm = 20 px). */
+	--bike-lift: 20px;
+	transform: translateY(calc(-100% - var(--bike-lift)));
 	will-change: transform, opacity;
 }
 .vd-line-bike--ltr { animation: vd-line-bike-ltr 4s linear forwards; }
 .vd-line-bike--rtl { animation: vd-line-bike-rtl 4s linear forwards; }
 @keyframes vd-line-bike-ltr {
-	0%   { opacity: 0; transform: translateY(-100%) translateX(0); }
+	0%   { opacity: 0; transform: translateY(calc(-100% - var(--bike-lift))) translateX(0); }
 	8%   { opacity: 1; }
 	92%  { opacity: 1; }
-	100% { opacity: 0; transform: translateY(-100%) translateX(var(--travel, 0px)); }
+	100% { opacity: 0; transform: translateY(calc(-100% - var(--bike-lift))) translateX(var(--travel, 0px)); }
 }
 @keyframes vd-line-bike-rtl {
-	0%   { opacity: 0; transform: translateY(-100%) translateX(0); }
+	0%   { opacity: 0; transform: translateY(calc(-100% - var(--bike-lift))) translateX(0); }
 	8%   { opacity: 1; }
 	92%  { opacity: 1; }
-	100% { opacity: 0; transform: translateY(-100%) translateX(calc(-1 * var(--travel, 0px))); }
+	100% { opacity: 0; transform: translateY(calc(-100% - var(--bike-lift))) translateX(calc(-1 * var(--travel, 0px))); }
 }
 .vd-line-bike__img {
 	display: block;
