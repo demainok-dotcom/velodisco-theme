@@ -634,6 +634,17 @@ button.vd-footer__dots {
 	-webkit-mask-position: center;
 	        mask-position: center;
 }
+/* Mode « original » : on garde les couleurs du PNG (pas de pochoir). Utilisé pour les
+ * icônes dont le détail couleur compte (ex. roue arrière avec pneu + jante distincts). */
+.vd-footer__fx-img.is-original {
+	background-color: transparent;
+	background-image: var(--vd-fx-bg);
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: center;
+	-webkit-mask-image: none;
+	        mask-image: none;
+}
 /* Footer mobile : icône proportionnelle aux pastilles 8px. */
 .vd-footer__dots--sm .vd-footer__fx {
 	width: 36px;

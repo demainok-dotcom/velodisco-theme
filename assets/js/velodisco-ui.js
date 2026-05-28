@@ -244,18 +244,22 @@
 		};
 		var fxPairs = Object.keys(fxAnims);
 
-		// Palette identitaire VeloDisco (couleurs des 5 catégories du site).
-		// L'icône prend l'une de ces couleurs au hasard à chaque clic.
+		// Palette identitaire VeloDisco. L'icône prend l'une de ces couleurs au hasard
+		// à chaque clic. Volontairement SANS le doré (#D69600 — Composants) : il fait
+		// jaunâtre sur fond dégradé, peu lisible. Demande Victor 2026-05-27.
 		var fxColors = [
 			'#DB3F0C', // Vélos (rouge-orangé)
 			'#1B8F29', // Accessoires (vert)
-			'#D69600', // Composants (doré)
 			'#0091C2', // Vêtements (bleu)
 			'#7D5EDA'  // Société (violet — version lisible sur fond sombre)
 		];
 		function fxPickColor() {
 			return fxColors[Math.floor(Math.random() * fxColors.length)];
 		}
+
+		// Icônes à NE PAS coloriser (gardées avec leurs couleurs d'origine du PNG).
+		// rouearriere = jante + pneu détaillés que le pochoir aplatirait.
+		var fxPreserveOriginal = ['rouearriere'];
 		var fxAllAnimClasses = []; // pour nettoyage rapide entre 2 clics
 		fxPairs.forEach(function (s) {
 			var c = fxAnims[s];
@@ -285,7 +289,6 @@
 
 		function fxPlay(btn) {
 			var slug = fxPickSlug();
-			var color = fxPickColor();
 			// Interrompt le son précédent (clic rapide) sans attendre la fin.
 			if (fxActiveAudio) {
 				fxActiveAudio.pause();
@@ -293,11 +296,21 @@
 			}
 			fxClearAnimClasses(btn); // au cas où un clic précédent serait encore actif
 
-			// Le PNG sert de POCHOIR (mask-image) et la couleur de fond donne la teinte.
-			// Variables CSS posées en inline pour cibler ce bouton précisément.
 			var img = btn.querySelector('.vd-footer__fx-img');
-			img.style.setProperty('--vd-fx-mask', "url('" + fxBase + slug + ".png')");
-			img.style.setProperty('--vd-fx-color', color);
+			var url = "url('" + fxBase + slug + ".png')";
+			if (fxPreserveOriginal.indexOf(slug) !== -1) {
+				// Mode « original » : background-image avec les couleurs du PNG d'origine.
+				img.classList.add('is-original');
+				img.style.setProperty('--vd-fx-bg', url);
+				img.style.removeProperty('--vd-fx-mask');
+				img.style.removeProperty('--vd-fx-color');
+			} else {
+				// Mode « pochoir » : PNG en mask-image, teinte aléatoire en background-color.
+				img.classList.remove('is-original');
+				img.style.setProperty('--vd-fx-mask', url);
+				img.style.setProperty('--vd-fx-color', fxPickColor());
+				img.style.removeProperty('--vd-fx-bg');
+			}
 			btn.classList.add('is-fx');
 			if (fxAnims[slug]) btn.classList.add(fxAnims[slug]);
 
