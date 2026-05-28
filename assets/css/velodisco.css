@@ -1855,17 +1855,19 @@ body.vd-cat--grands-formats .vd-single__body .wp-block-separator {
 }
 
 /* Vélo qui traverse la barre séparateur. Le contexte de positionnement est le body de
- * l'article (rendu position: relative). Le JS spawn un .vd-line-bike absolu, calcule sa
- * position top à partir du centre vertical du séparateur cliqué, et anime translateX
- * en 4s linear. Effet vitesse = blur léger sur l'img + streak gradient à l'arrière. */
+ * l'article (rendu position: relative). Le JS spawn un .vd-line-bike absolu, position
+ * top = haut de la barre, transform translateY(-100%) → le bas du wrapper (= les roues
+ * du vélo) est posé pile sur la ligne. Anime translateX en 4s linear.
+ * Effet vitesse = 3 petits traits qui naissent au niveau du vélo et glissent en
+ * arrière en boucle (façon BD), gérés en CSS keyframes. */
 .vd-single__body { position: relative; }
 .vd-line-bike {
 	position: absolute;
-	width: 70px;
-	height: 50px;
+	width: 35px;
+	height: 25px;
 	pointer-events: none;
 	z-index: 5;
-	transform: translateY(-50%);
+	transform: translateY(-100%); /* anchor : bas du wrapper sur le CSS top → vélo SUR la ligne */
 	will-change: transform;
 }
 .vd-line-bike__img {
@@ -1873,26 +1875,57 @@ body.vd-cat--grands-formats .vd-single__body .wp-block-separator {
 	width: 100%;
 	height: 100%;
 	object-fit: contain;
-	filter: blur(0.6px);
 }
 .vd-line-bike--rtl .vd-line-bike__img { transform: scaleX(-1); }
-.vd-line-bike__streak {
+
+/* Container des traits de vitesse, à côté du vélo (à gauche en LTR, à droite en RTL) */
+.vd-line-bike__lines {
 	position: absolute;
-	top: 50%;
-	height: 5px;
-	width: 100px;
-	transform: translateY(-50%);
+	top: 0;
+	height: 100%;
+	width: 38px;
 	pointer-events: none;
-	border-radius: 2.5px;
+	overflow: hidden;
 }
-.vd-line-bike--ltr .vd-line-bike__streak {
-	right: 100%;
-	background: linear-gradient(to left, rgba(255,255,255,0.85), rgba(255,255,255,0));
+.vd-line-bike--ltr .vd-line-bike__lines { right: 100%; }
+.vd-line-bike--rtl .vd-line-bike__lines { left: 100%; }
+
+/* Chaque trait : fin (1.5px), arrondi, gradient → animation qui le fait glisser
+ * en arrière (loin du vélo) puis disparaître, en boucle. 3 traits avec délais
+ * décalés → effet de stream continu. */
+.vd-line-bike__sl {
+	position: absolute;
+	height: 1.5px;
+	border-radius: 1px;
+	background: linear-gradient(to left, rgba(255,255,255,0.95), rgba(255,255,255,0));
 }
-.vd-line-bike--rtl .vd-line-bike__streak {
-	left: 100%;
-	background: linear-gradient(to right, rgba(255,255,255,0.85), rgba(255,255,255,0));
+.vd-line-bike--rtl .vd-line-bike__sl {
+	background: linear-gradient(to right, rgba(255,255,255,0.95), rgba(255,255,255,0));
 }
+.vd-line-bike--ltr .vd-line-bike__sl { right: 0; }
+.vd-line-bike--rtl .vd-line-bike__sl { left: 0; }
+
+.vd-line-bike__sl:nth-child(1) { top: 22%; width: 70%; animation-delay: 0s; }
+.vd-line-bike__sl:nth-child(2) { top: 50%; width: 95%; animation-delay: 0.13s; }
+.vd-line-bike__sl:nth-child(3) { top: 78%; width: 60%; animation-delay: 0.26s; }
+
+.vd-line-bike--ltr .vd-line-bike__sl {
+	animation: vd-line-bike-sl-ltr 0.45s linear infinite;
+}
+.vd-line-bike--rtl .vd-line-bike__sl {
+	animation: vd-line-bike-sl-rtl 0.45s linear infinite;
+}
+@keyframes vd-line-bike-sl-ltr {
+	0%   { opacity: 0;   transform: translateX(0); }
+	25%  { opacity: 1; }
+	100% { opacity: 0;   transform: translateX(-26px); }
+}
+@keyframes vd-line-bike-sl-rtl {
+	0%   { opacity: 0;   transform: translateX(0); }
+	25%  { opacity: 1; }
+	100% { opacity: 0;   transform: translateX(26px); }
+}
+
 /* Accessibilité : pas d'animation pour les utilisateurs qui le demandent. */
 @media (prefers-reduced-motion: reduce) {
 	.vd-line-bike { display: none !important; }

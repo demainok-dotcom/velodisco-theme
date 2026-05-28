@@ -391,7 +391,7 @@
 		if (!bikeBase) return;
 		if (bikeBase.charAt(bikeBase.length - 1) !== '/') bikeBase += '/';
 		var BIKE_COUNT = 10;
-		var BIKE_W = 70; // px (doit matcher .vd-line-bike width)
+		var BIKE_W = 35; // px (doit matcher .vd-line-bike width)
 		var RIGHT_ZONE = 40; // zone cliquable à droite
 
 		function pad2(n) { return n < 10 ? '0' + n : '' + n; }
@@ -402,7 +402,9 @@
 		function spawnLineBike(sep, host) {
 			var sepRect = sep.getBoundingClientRect();
 			var hostRect = host.getBoundingClientRect();
-			var topRel = sepRect.top - hostRect.top + sepRect.height / 2;
+			// top = haut de la barre dans le repère du host ; CSS translateY(-100%) sur le
+			// wrapper aligne ensuite le bas du vélo PILE sur la ligne.
+			var topRel = sepRect.top - hostRect.top;
 			var leftRel = sepRect.left - hostRect.left;
 			var width = sepRect.width;
 			var direction = Math.random() < 0.5 ? 'ltr' : 'rtl';
@@ -411,29 +413,36 @@
 			wrap.className = 'vd-line-bike vd-line-bike--' + direction;
 			wrap.setAttribute('aria-hidden', 'true');
 
+			// 3 traits de vitesse dans un container, derrière le vélo
+			var lines = document.createElement('span');
+			lines.className = 'vd-line-bike__lines';
+			for (var i = 0; i < 3; i++) {
+				var sl = document.createElement('span');
+				sl.className = 'vd-line-bike__sl';
+				lines.appendChild(sl);
+			}
+
 			var img = document.createElement('img');
 			img.className = 'vd-line-bike__img';
 			img.alt = '';
 			img.decoding = 'async';
 			img.src = pickBikeSrc();
 
-			var streak = document.createElement('span');
-			streak.className = 'vd-line-bike__streak';
-
-			wrap.appendChild(streak);
+			wrap.appendChild(lines);
 			wrap.appendChild(img);
 
 			wrap.style.top = topRel + 'px';
 			wrap.style.left = (direction === 'ltr' ? leftRel - BIKE_W : leftRel + width) + 'px';
 			host.appendChild(wrap);
 
-			// Force reflow puis lance l'animation (transition transform).
+			// Force reflow puis lance l'animation (transition transform). translateY(-100%)
+			// est conservé via la déclaration CSS de base (le JS ne ré-applique que translateX).
 			void wrap.offsetWidth;
 			wrap.style.transition = 'transform 4s linear';
 			var distance = width + BIKE_W * 2;
 			wrap.style.transform = direction === 'ltr'
-				? 'translateY(-50%) translateX(' + distance + 'px)'
-				: 'translateY(-50%) translateX(-' + distance + 'px)';
+				? 'translateY(-100%) translateX(' + distance + 'px)'
+				: 'translateY(-100%) translateX(-' + distance + 'px)';
 
 			setTimeout(function () { if (wrap.parentNode) wrap.remove(); }, 4200);
 		}
