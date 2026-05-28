@@ -1839,7 +1839,8 @@ body.vd-cat--grands-formats .vd-single__body .wp-block-image::after {
 }
 
 /* Barre dégradée : un bloc « Séparateur » stylé en barre pleine largeur du contenu.
- * Couleur de section (dégradé pour Grands Formats). À placer dans l'article (ex : sous « En bref »). */
+ * Couleur de section (dégradé pour Grands Formats). À placer dans l'article (ex : sous « En bref »).
+ * Au clic dans les 40px à droite, le JS fait traverser un vélo (1 parmi 10) → cf. .vd-line-bike. */
 .vd-single__body .wp-block-separator {
 	border: 0;
 	height: 6px;
@@ -1851,6 +1852,50 @@ body.vd-cat--grands-formats .vd-single__body .wp-block-image::after {
 }
 body.vd-cat--grands-formats .vd-single__body .wp-block-separator {
 	background: var(--wp--preset--gradient--grands-formats);
+}
+
+/* Vélo qui traverse la barre séparateur. Le contexte de positionnement est le body de
+ * l'article (rendu position: relative). Le JS spawn un .vd-line-bike absolu, calcule sa
+ * position top à partir du centre vertical du séparateur cliqué, et anime translateX
+ * en 4s linear. Effet vitesse = blur léger sur l'img + streak gradient à l'arrière. */
+.vd-single__body { position: relative; }
+.vd-line-bike {
+	position: absolute;
+	width: 70px;
+	height: 50px;
+	pointer-events: none;
+	z-index: 5;
+	transform: translateY(-50%);
+	will-change: transform;
+}
+.vd-line-bike__img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
+	filter: blur(0.6px);
+}
+.vd-line-bike--rtl .vd-line-bike__img { transform: scaleX(-1); }
+.vd-line-bike__streak {
+	position: absolute;
+	top: 50%;
+	height: 5px;
+	width: 100px;
+	transform: translateY(-50%);
+	pointer-events: none;
+	border-radius: 2.5px;
+}
+.vd-line-bike--ltr .vd-line-bike__streak {
+	right: 100%;
+	background: linear-gradient(to left, rgba(255,255,255,0.85), rgba(255,255,255,0));
+}
+.vd-line-bike--rtl .vd-line-bike__streak {
+	left: 100%;
+	background: linear-gradient(to right, rgba(255,255,255,0.85), rgba(255,255,255,0));
+}
+/* Accessibilité : pas d'animation pour les utilisateurs qui le demandent. */
+@media (prefers-reduced-motion: reduce) {
+	.vd-line-bike { display: none !important; }
 }
 
 /* Bloc « En bref » : aligné à gauche, pleine largeur du contenu (on neutralise la

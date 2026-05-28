@@ -380,6 +380,82 @@
 	}
 
 	/* ------------------------------------------------------------------ */
+	/* Vélo qui traverse la barre séparateur (article).                    */
+	/* Au clic dans les 40 derniers pixels à droite du séparateur, on      */
+	/* spawn un PNG vélo (au hasard parmi 10, ceux du bouton RETOUR) qui  */
+	/* traverse toute la largeur en 4 s, direction aléatoire L→R ou R→L.   */
+	/* Effet vitesse = blur + streak gradient blanc derrière le vélo.     */
+	/* ------------------------------------------------------------------ */
+	(function () {
+		var bikeBase = (window.VeloDiscoUI && window.VeloDiscoUI.bikesUrl) || '';
+		if (!bikeBase) return;
+		if (bikeBase.charAt(bikeBase.length - 1) !== '/') bikeBase += '/';
+		var BIKE_COUNT = 10;
+		var BIKE_W = 70; // px (doit matcher .vd-line-bike width)
+		var RIGHT_ZONE = 40; // zone cliquable à droite
+
+		function pad2(n) { return n < 10 ? '0' + n : '' + n; }
+		function pickBikeSrc() {
+			return bikeBase + 'velo-' + pad2(Math.floor(Math.random() * BIKE_COUNT) + 1) + '.png';
+		}
+
+		function spawnLineBike(sep, host) {
+			var sepRect = sep.getBoundingClientRect();
+			var hostRect = host.getBoundingClientRect();
+			var topRel = sepRect.top - hostRect.top + sepRect.height / 2;
+			var leftRel = sepRect.left - hostRect.left;
+			var width = sepRect.width;
+			var direction = Math.random() < 0.5 ? 'ltr' : 'rtl';
+
+			var wrap = document.createElement('span');
+			wrap.className = 'vd-line-bike vd-line-bike--' + direction;
+			wrap.setAttribute('aria-hidden', 'true');
+
+			var img = document.createElement('img');
+			img.className = 'vd-line-bike__img';
+			img.alt = '';
+			img.decoding = 'async';
+			img.src = pickBikeSrc();
+
+			var streak = document.createElement('span');
+			streak.className = 'vd-line-bike__streak';
+
+			wrap.appendChild(streak);
+			wrap.appendChild(img);
+
+			wrap.style.top = topRel + 'px';
+			wrap.style.left = (direction === 'ltr' ? leftRel - BIKE_W : leftRel + width) + 'px';
+			host.appendChild(wrap);
+
+			// Force reflow puis lance l'animation (transition transform).
+			void wrap.offsetWidth;
+			wrap.style.transition = 'transform 4s linear';
+			var distance = width + BIKE_W * 2;
+			wrap.style.transform = direction === 'ltr'
+				? 'translateY(-50%) translateX(' + distance + 'px)'
+				: 'translateY(-50%) translateX(-' + distance + 'px)';
+
+			setTimeout(function () { if (wrap.parentNode) wrap.remove(); }, 4200);
+		}
+
+		var body = document.querySelector('.vd-single__body');
+		if (!body) return;
+		var seps = body.querySelectorAll('.wp-block-separator');
+		Array.prototype.forEach.call(seps, function (sep) {
+			if (sep.dataset.bikeInit) return;
+			sep.dataset.bikeInit = '1';
+			sep.addEventListener('click', function (e) {
+				var rect = sep.getBoundingClientRect();
+				if (rect.right - e.clientX > RIGHT_ZONE) return; // pas dans la zone droite
+				if (sep.dataset.bikeBusy === '1') return; // vélo déjà en route
+				sep.dataset.bikeBusy = '1';
+				spawnLineBike(sep, body);
+				setTimeout(function () { sep.dataset.bikeBusy = ''; }, 4200);
+			});
+		});
+	})();
+
+	/* ------------------------------------------------------------------ */
 	/* Brand footer : au clic, on remplace "VELODISCO.COM" par une astuce  */
 	/* visuelle (souris + ⬢⬢⬢) qui invite à cliquer sur les pastilles.    */
 	/* 1er clic : empêche la navigation, affiche l'astuce 4s.              */
