@@ -237,7 +237,6 @@
 			course:      'is-fx-run',
 			crevaison:   'is-fx-deflate',
 			garmin:      'is-fx-pulse',
-			jump:        'is-fx-jump',
 			phare:       'is-fx-flash',
 			pompe:       'is-fx-pump'
 		};
