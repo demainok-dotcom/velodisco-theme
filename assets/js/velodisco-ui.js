@@ -226,19 +226,30 @@
 		if (fxBase.charAt(fxBase.length - 1) !== '/') { fxBase += '/'; }
 
 		// Slug → classe d'animation CSS (cf. velodisco.css, section "Animations FX").
-		// Slug seul = pas d'animation perso (juste le pop scale).
+		// '' = pas d'animation perso (juste le pop d'apparition).
 		var fxAnims = {
-			klaxon:      'is-fx-shake',
-			rouearriere: 'is-fx-spin',
-			velib:       'is-fx-wobble',
+			// Numéros : icônes déjà colorées, juste le pop visuel (pas d'anim spécifique)
+			'1': '', '2': '', '3': '', '4': '', '5': '',
+			'6': '', '7': '', '8': '', '9': '', '10': '',
+			// Icônes thématiques
+			arceau:      'is-fx-wobble',
 			batterie:    'is-fx-pulse',
+			casque:      'is-fx-wobble',
 			cassette:    'is-fx-spin',
 			chain:       'is-fx-wobble',
 			course:      'is-fx-run',
 			crevaison:   'is-fx-deflate',
+			disco:       'is-fx-spin',
 			garmin:      'is-fx-pulse',
+			jump:        'is-fx-jump',
+			klaxon:      'is-fx-shake',
+			panneau:     'is-fx-shake',
 			phare:       'is-fx-flash',
-			pompe:       'is-fx-pump'
+			pompe:       'is-fx-pump',
+			rouearriere: 'is-fx-spin',
+			sonnnette:   'is-fx-ring',
+			velib:       'is-fx-wobble',
+			veste:       'is-fx-wobble'
 		};
 		var fxPairs = Object.keys(fxAnims);
 
@@ -256,8 +267,12 @@
 		}
 
 		// Icônes à NE PAS coloriser (gardées avec leurs couleurs d'origine du PNG).
-		// rouearriere = jante + pneu détaillés que le pochoir aplatirait.
-		var fxPreserveOriginal = ['rouearriere'];
+		// - rouearriere : jante + pneu détaillés que le pochoir aplatirait.
+		// - Numéros 1-10 : déjà colorisées dans le PNG source, ne pas les écraser.
+		var fxPreserveOriginal = [
+			'rouearriere',
+			'1', '2', '3', '4', '5', '6', '7', '8', '9', '10'
+		];
 		var fxAllAnimClasses = []; // pour nettoyage rapide entre 2 clics
 		fxPairs.forEach(function (s) {
 			var c = fxAnims[s];
@@ -277,8 +292,14 @@
 			});
 		}
 
+		// ⚠️ TEMPORAIRE (mode test) : on cycle séquentiellement dans l'ordre du tableau
+		// pour pouvoir tester toutes les paires une par une. Pour repasser en aléatoire,
+		// décommenter la ligne random et commenter le cycling ci-dessous.
+		var fxIdx = -1;
 		function fxPickSlug() {
-			return fxPairs[Math.floor(Math.random() * fxPairs.length)];
+			fxIdx = (fxIdx + 1) % fxPairs.length;
+			return fxPairs[fxIdx];
+			// return fxPairs[Math.floor(Math.random() * fxPairs.length)];
 		}
 
 		function fxClearAnimClasses(btn) {
