@@ -292,14 +292,8 @@
 			});
 		}
 
-		// ⚠️ TEMPORAIRE (mode test) : on cycle séquentiellement dans l'ordre du tableau
-		// pour pouvoir tester toutes les paires une par une. Pour repasser en aléatoire,
-		// décommenter la ligne random et commenter le cycling ci-dessous.
-		var fxIdx = -1;
 		function fxPickSlug() {
-			fxIdx = (fxIdx + 1) % fxPairs.length;
-			return fxPairs[fxIdx];
-			// return fxPairs[Math.floor(Math.random() * fxPairs.length)];
+			return fxPairs[Math.floor(Math.random() * fxPairs.length)];
 		}
 
 		function fxClearAnimClasses(btn) {
@@ -384,6 +378,30 @@
 			btn.addEventListener('click', function () { fxPlay(btn); });
 		});
 	}
+
+	/* ------------------------------------------------------------------ */
+	/* Brand footer : au clic, on remplace "VELODISCO.COM" par une astuce  */
+	/* visuelle (souris + ⬢⬢⬢) qui invite à cliquer sur les pastilles.    */
+	/* 1er clic : empêche la navigation, affiche l'astuce 4s.              */
+	/* 2e clic pendant l'astuce : laisse naviguer normalement vers /.       */
+	/* ------------------------------------------------------------------ */
+	document.querySelectorAll('.vd-footer__brand').forEach(function (brand) {
+		if (brand.dataset.hintInit) return;
+		brand.dataset.hintInit = '1';
+		var timer = null;
+		brand.addEventListener('click', function (e) {
+			// Si l'astuce est déjà affichée, on laisse le clic naviguer.
+			if (brand.classList.contains('is-hint')) {
+				return;
+			}
+			e.preventDefault();
+			brand.classList.add('is-hint');
+			clearTimeout(timer);
+			timer = setTimeout(function () {
+				brand.classList.remove('is-hint');
+			}, 4000);
+		});
+	});
 
 	/* ------------------------------------------------------------------ */
 	/* Header : masquer au scroll vers le bas, réafficher vers le haut      */

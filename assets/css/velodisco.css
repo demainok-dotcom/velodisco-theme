@@ -514,6 +514,53 @@ header.wp-block-template-part { display: contents; }
 	line-height: 1;
 	text-decoration: none;
 	white-space: nowrap;
+	position: relative;       /* container du swap text ↔ hint */
+	display: inline-block;
+}
+/* Astuce au clic : la marque s'efface et révèle une icône "souris + ⬢⬢⬢" qui invite
+ * à cliquer sur les 6 pastilles du gradient strip pour découvrir la surprise sonore.
+ * Auto-revert après 4 secondes (gestion JS). */
+.vd-footer__brand-text {
+	display: inline-block;
+	transition: opacity 0.35s ease;
+}
+.vd-footer__brand-hint {
+	position: absolute;
+	left: 0;
+	top: 0;
+	height: 100%;
+	display: inline-flex;
+	align-items: center;
+	gap: 14px;
+	opacity: 0;
+	transition: opacity 0.35s ease;
+	pointer-events: none;
+}
+.vd-footer__brand.is-hint .vd-footer__brand-text { opacity: 0; }
+.vd-footer__brand.is-hint .vd-footer__brand-hint { opacity: 1; }
+.vd-fbh__mouse {
+	width: 20px;
+	height: 30px;
+	color: #FFFFFF;
+	flex: 0 0 auto;
+}
+.vd-fbh__plus {
+	color: #FFFFFF;
+	font-size: 28px;
+	font-weight: 300;
+	line-height: 1;
+}
+.vd-fbh__dots {
+	display: grid;
+	grid-template-columns: repeat(3, 12px);
+	gap: 2px;
+	flex: 0 0 auto;
+}
+.vd-fbh__dots span {
+	display: block;
+	width: 12px;
+	height: 12px;
+	border-radius: 50%;
 }
 /* Mark © à droite du wordmark : image exacte exportée du Figma (nœud « Copyright ») */
 .vd-footer__mark {
