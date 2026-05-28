@@ -522,7 +522,7 @@ header.wp-block-template-part { display: contents; }
  * Auto-revert après 4 secondes (gestion JS). */
 .vd-footer__brand-text {
 	display: inline-block;
-	transition: opacity 0.7s ease;
+	transition: opacity 2s ease;
 }
 .vd-footer__brand-hint {
 	position: absolute;
@@ -533,7 +533,7 @@ header.wp-block-template-part { display: contents; }
 	align-items: center;
 	gap: 14px;
 	opacity: 0;
-	transition: opacity 0.7s ease;
+	transition: opacity 2s ease;
 	pointer-events: none;
 }
 .vd-footer__brand.is-hint .vd-footer__brand-text { opacity: 0; }

@@ -397,9 +397,11 @@
 			e.preventDefault();
 			brand.classList.add('is-hint');
 			clearTimeout(timer);
+			// 5s avant retour : laisse 3s à pleine visibilité au milieu (CSS transition 2s
+			// fade in + 3s visible + 2s fade out = 7s de cycle total, effet « mystérieux »).
 			timer = setTimeout(function () {
 				brand.classList.remove('is-hint');
-			}, 4000);
+			}, 5000);
 		});
 	});
 
