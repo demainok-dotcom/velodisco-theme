@@ -2501,20 +2501,33 @@ body[class*="vd-cat--grands-formats"] { background-image: linear-gradient(180deg
  * que toutes les cartes aient la même hauteur, peu importe la
  * proportion d'origine de la photo uploadée.
  * ================================================================ */
+/* La colonne image est flex stretch — figure + image prennent toute la hauteur
+ * disponible, ce qui les aligne exactement sur le cardmeta voisin. Le radius
+ * (12px) matche celui de .vd-gf01__cardmeta. */
+.wp-block-columns:has(.vd-gf01__cardmeta) > .wp-block-column:has(.wp-block-image) {
+	display: flex;
+}
 .wp-block-columns:has(.vd-gf01__cardmeta) .wp-block-image,
 .wp-block-columns:has(.vd-gf01__cardmeta) .wp-block-image figure {
 	margin: 0;
+	height: 100%;
+	width: 100%;
 }
 .wp-block-columns:has(.vd-gf01__cardmeta) .wp-block-image img {
-	aspect-ratio: 1 / 1;
 	width: 100%;
-	height: auto;
+	height: 100%;
 	object-fit: cover;
-	border-radius: 4px;
+	border-radius: 12px;
 	border: 1px solid rgba(255, 255, 255, 0.10);
 	background: rgba(255, 255, 255, 0.03);
 	box-sizing: border-box;
 	display: block;
+}
+/* Retire le tracé arc-en-ciel SPÉCIFIQUEMENT sur ces 4 photos (les autres
+ * images du GF gardent leur tracé). Spécificité haute pour battre la règle
+ * body[class*="vd-cat--grands-formats"] .vd-single__body .wp-block-image::after. */
+body[class*="vd-cat--grands-formats"] .vd-single__body .wp-block-columns:has(.vd-gf01__cardmeta) .wp-block-image::after {
+	display: none;
 }
 @media (prefers-color-scheme: light) {
 	.wp-block-columns:has(.vd-gf01__cardmeta) .wp-block-image img {
