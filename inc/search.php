@@ -27,6 +27,7 @@ function velodisco_render_search( $attrs = array(), $content = '' ) {
 
 	ob_start();
 	?>
+	<h1 class="vd-sr-only">Résultats de recherche pour « <?php echo esc_html( $q ); ?> » sur VeloDisco</h1>
 	<section class="vd-actu vd-search">
 
 		<form class="vd-search__form" role="search" method="get" action="<?php echo esc_url( home_url( '/' ) ); ?>">

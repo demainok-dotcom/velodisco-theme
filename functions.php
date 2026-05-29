@@ -132,6 +132,54 @@ function velodisco_no_flash_script() {
 }
 add_action( 'wp_head', 'velodisco_no_flash_script', 1 );
 
+/* ============================================================================
+ * CACHE — Helpers pour mettre en cache le rendu HTML des blocs dynamiques.
+ *
+ * Avant : home + section faisaient 5-9 WP_Query par requête côté serveur,
+ * sans cache. Sur cache miss Varnish (utilisateur connecté, nouveau visiteur,
+ * etc.), 50-150ms par hit. Maintenant : 1er hit hydrate un transient, les
+ * suivants servent le HTML directement.
+ *
+ * Invalidation : tout `save_post` / `deleted_post` / `transition_post_status`
+ * vide TOUS les caches du thème (pas besoin de finesse).
+ *
+ * Bypass : utilisateurs connectés (admins) voient toujours du frais.
+ * ========================================================================== */
+
+define( 'VD_CACHE_PREFIX', 'vd_render_' );
+define( 'VD_CACHE_TTL',    5 * MINUTE_IN_SECONDS );
+
+function vd_render_cached( $key, $producer ) {
+	if ( is_user_logged_in() ) {
+		return call_user_func( $producer );
+	}
+	$full_key = VD_CACHE_PREFIX . $key;
+	$cached   = get_transient( $full_key );
+	if ( false !== $cached ) {
+		return $cached;
+	}
+	$html = call_user_func( $producer );
+	set_transient( $full_key, $html, VD_CACHE_TTL );
+	return $html;
+}
+
+/** Invalide tous les caches de rendu du thème (appelé sur save/delete post). */
+function vd_render_cache_flush() {
+	global $wpdb;
+	// efface tous les transients qui commencent par VD_CACHE_PREFIX
+	$like = $wpdb->esc_like( '_transient_' . VD_CACHE_PREFIX ) . '%';
+	$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->options} WHERE option_name LIKE %s", $like ) );
+	$like = $wpdb->esc_like( '_transient_timeout_' . VD_CACHE_PREFIX ) . '%';
+	$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->options} WHERE option_name LIKE %s", $like ) );
+	// invalide aussi le cache d'objets en mémoire des term-ids GF (cf. helper plus bas)
+	wp_cache_delete( 'vd_termids_grands-formats', 'velodisco' );
+}
+add_action( 'save_post',              'vd_render_cache_flush' );
+add_action( 'deleted_post',           'vd_render_cache_flush' );
+add_action( 'transition_post_status', 'vd_render_cache_flush' );
+add_action( 'edited_term',            'vd_render_cache_flush' );
+add_action( 'created_term',           'vd_render_cache_flush' );
+
 /**
  * Résout TOUS les term_ids dont le slug commence par un base_slug donné.
  *

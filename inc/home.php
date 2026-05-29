@@ -104,6 +104,9 @@ function vd_query_ids( $args, &$used ) {
 /* ----- Rendu du bloc Home ----------------------------------------------- */
 
 function velodisco_render_home() {
+	return vd_render_cached( 'home', 'velodisco_render_home_inner' );
+}
+function velodisco_render_home_inner() {
 	$used = array();
 
 	// À LA UNE = article épinglé (sinon le plus récent).
@@ -149,6 +152,7 @@ function velodisco_render_home() {
 
 	ob_start();
 	?>
+	<h1 class="vd-sr-only"><?php echo esc_html( get_bloginfo( 'name' ) . ' — ' . get_bloginfo( 'description' ) ); ?></h1>
 	<div class="vd-home">
 
 		<!-- Colonne gauche : TOUT FRAIS -->

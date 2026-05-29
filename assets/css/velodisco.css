@@ -972,6 +972,18 @@ button.vd-footer__dots {
  * dans chaque template (`style="padding-top:...;padding-bottom:..."`), ce qui
  * empêchait tout override CSS. Migré ici pour pouvoir ajuster sans toucher
  * aux templates. */
+/* Utilitaire d'accessibilité : visuellement masqué mais lu par les lecteurs
+ * d'écran et indexable. Utilisé pour les <h1> de Home/Actu/Recherche/Section/
+ * 404 — pages dont le titre visible est porté par la zone de contenu mais
+ * dont la sémantique (SEO + a11y) requiert un H1 unique par page. */
+.vd-sr-only {
+	position: absolute !important;
+	width: 1px; height: 1px;
+	padding: 0; margin: -1px;
+	overflow: hidden; clip: rect(0,0,0,0);
+	white-space: nowrap; border: 0;
+}
+
 .vd-main--home { max-width: none; padding-inline: 0; margin-top: 0; padding-top: 0; padding-bottom: 0; }
 .vd-main--actu,
 .vd-main--section,
@@ -2342,11 +2354,11 @@ body[class*="vd-cat--grands-formats"] { background-image: linear-gradient(180deg
 body[class*="vd-cat--grands-formats"] .vd-single__body .wp-block-columns:has(.vd-gf01__cardmeta) .wp-block-image::after {
 	display: none;
 }
-@media (prefers-color-scheme: light) {
-	.wp-block-columns:has(.vd-gf01__cardmeta) .wp-block-image img {
-		border-color: rgba(0, 0, 0, 0.12);
-		background: rgba(0, 0, 0, 0.03);
-	}
+/* Le site contrôle son thème via [data-theme] (toggle JS, anti-flash). On suit
+ * ce contrat plutôt que prefers-color-scheme (qui suit l'OS, pas le toggle). */
+:root:not([data-theme="dark"]) .wp-block-columns:has(.vd-gf01__cardmeta) .wp-block-image img {
+	border-color: rgba(0, 0, 0, 0.12);
+	background: rgba(0, 0, 0, 0.03);
 }
 /* Mobile : approche radicale après plusieurs essais ratés à matcher photo↔cardmeta.
  * Les 4 photos se comportent EXACTEMENT comme des images classiques du GF
@@ -2435,9 +2447,7 @@ body[class*="vd-cat--grands-formats"] .vd-single__body .wp-block-columns:has(.vd
 .vd-image-todo dd { margin: 0 0 0.2rem 0; }
 .vd-image-todo a { color: inherit; text-decoration: underline; }
 .vd-image-todo code { font-size: 0.85em; padding: 0.1em 0.35em; background: rgba(0,0,0,0.1); border-radius: 3px; }
-@media (prefers-color-scheme: light) {
-	.vd-image-todo code { background: rgba(0,0,0,0.06); }
-}
+:root:not([data-theme="dark"]) .vd-image-todo code { background: rgba(0,0,0,0.06); }
 .vd-image-todo__action {
 	margin-top: 0.7rem;
 	padding-top: 0.6rem;

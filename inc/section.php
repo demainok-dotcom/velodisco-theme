@@ -20,6 +20,13 @@ function velodisco_render_section( $attrs = array(), $content = '' ) {
 	if ( ! $term || empty( $term->term_id ) ) {
 		return '';
 	}
+	$paged = max( 1, (int) get_query_var( 'paged' ) );
+	$key   = 'section_' . $term->term_id . '_p' . $paged;
+	return vd_render_cached( $key, function () use ( $term ) {
+		return velodisco_render_section_inner( $term );
+	} );
+}
+function velodisco_render_section_inner( $term ) {
 	$slug = sanitize_html_class( $term->slug );
 	$name = strtoupper( str_replace( '-', ' ', $term->name ) );
 
@@ -53,6 +60,7 @@ function velodisco_render_section( $attrs = array(), $content = '' ) {
 
 	ob_start();
 	?>
+	<h1 class="vd-sr-only"><?php echo esc_html( ucfirst( strtolower( $term->name ) ) ); ?> — Actualités vélo sur VeloDisco</h1>
 	<div class="vd-home vd-section">
 
 		<!-- Colonne gauche : TOUT FRAIS (récents du SITE entier, toutes catégories) -->

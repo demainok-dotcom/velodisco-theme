@@ -22,8 +22,13 @@ if ( ! defined( 'ABSPATH' ) ) {
  * on gère donc une requête secondaire avec notre propre variable.
  */
 function velodisco_render_actu( $attrs = array(), $content = '' ) {
-	$per   = 15; // 3 colonnes × 5 rangées (cf. Figma « Page Actu - Ordi »).
 	$paged = isset( $_GET['ap'] ) ? max( 1, (int) $_GET['ap'] ) : 1;
+	return vd_render_cached( 'actu_p' . $paged, function () use ( $paged ) {
+		return velodisco_render_actu_inner( $paged );
+	} );
+}
+function velodisco_render_actu_inner( $paged ) {
+	$per = 15; // 3 colonnes × 5 rangées (cf. Figma « Page Actu - Ordi »).
 
 	$q = new WP_Query( array(
 		'post_type'           => 'post',
@@ -37,6 +42,7 @@ function velodisco_render_actu( $attrs = array(), $content = '' ) {
 
 	ob_start();
 	?>
+	<h1 class="vd-sr-only">Actu — Tout frais sur VeloDisco</h1>
 	<section class="vd-actu">
 
 		<div class="vd-actu__head">
