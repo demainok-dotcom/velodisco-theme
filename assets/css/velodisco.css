@@ -1192,6 +1192,19 @@ button.vd-footer__dots {
 	-webkit-background-clip: text; background-clip: text;
 	-webkit-text-fill-color: transparent; color: transparent;
 }
+
+/* Single article GF — la pastille `.vd-gf01__badge` au-dessus du chapeau
+ * Override de l'AUTONOME inline (padding 0.55rem = 8.8px + line-height 21.2px
+ * sur font 12.5 → ajoutait ~13px d'air visuel au-dessus du texte).
+ * Quand Victor met une image juste au-dessus de la pastille, ce creux devient
+ * gênant. On supprime le padding-top et on cale le line-height sur la hauteur
+ * de la capsule pour que la pastille reste de la même taille tout en touchant
+ * pile l'élément du dessus. */
+body[class*="vd-cat--grands-formats"] .vd-gf01__badge {
+	padding-top: 0;
+	padding-bottom: 0;
+	line-height: 30px;
+}
 /* Home GF card — espacements verticaux INTERNES uniformes (13px partout, valeur
  * de référence visée par Victor : gap tag↔titre v1.11.1). Les autres cartes
  * du site gardent leurs marges propres. */
