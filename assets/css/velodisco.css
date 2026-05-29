@@ -2725,7 +2725,7 @@ body[class*="vd-cat--grands-formats"] .vd-single__body > p em { font-style: ital
 	height: 3px;
 	background: linear-gradient(90deg, #DB3F0C 0%, #1B8F29 25%, #D69600 50%, #0091C2 75%, #7D5EDA 100%);
 	border-radius: 1px;
-	z-index: 2;
+	z-index: 1;
 }
 /* Chaque jalon : colonne verticale centrée
  * Ordre visuel : 1) année 2) point (sur la ligne) 3) titre 4) texte */
@@ -2764,9 +2764,8 @@ body[class*="vd-cat--grands-formats"] .vd-single__body > p em { font-style: ital
 	align-items: center;
 	justify-content: center;
 }
-/* Point — placé entre l'année et le titre, derrière la ligne dégradée
- * (z-index: 1 < 2 du ::before de .vd-gf01__htimeline) — pas de box-shadow
- * pour ne pas masquer la ligne. */
+/* Point — placé entre l'année et le titre, AU-DESSUS de la ligne dégradée
+ * (z-index: 2 > 1 du ::before de .vd-gf01__htimeline). */
 .vd-gf01__htl-item::before {
 	content: "";
 	display: block;
@@ -2776,7 +2775,7 @@ body[class*="vd-cat--grands-formats"] .vd-single__body > p em { font-style: ital
 	background: var(--c, #888);
 	margin: 0.7rem 0 1rem;
 	position: relative;
-	z-index: 1;
+	z-index: 2;
 	flex-shrink: 0;
 }
 .vd-gf01__htl-item--major::before {
