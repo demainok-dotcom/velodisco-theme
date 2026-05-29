@@ -2535,6 +2535,26 @@ body[class*="vd-cat--grands-formats"] .vd-single__body .wp-block-columns:has(.vd
 		background: rgba(0, 0, 0, 0.03);
 	}
 }
+/* Mobile : les colonnes se déstackent, la photo doit prendre TOUTE la largeur
+ * (comme le cardmeta voisin juste en dessous). On annule le flex-basis 180px
+ * inline de Gutenberg + on relâche la hauteur (plus de stretch vertical à matcher
+ * puisque les colonnes ne sont plus côte à côte). */
+@media (max-width: 720px) {
+	.wp-block-columns:has(.vd-gf01__cardmeta) > .wp-block-column {
+		flex-basis: 100% !important;
+		max-width: 100%;
+	}
+	.wp-block-columns:has(.vd-gf01__cardmeta) > .wp-block-column:has(.wp-block-image) {
+		display: block;
+	}
+	.wp-block-columns:has(.vd-gf01__cardmeta) .wp-block-image,
+	.wp-block-columns:has(.vd-gf01__cardmeta) .wp-block-image figure {
+		height: auto;
+	}
+	.wp-block-columns:has(.vd-gf01__cardmeta) .wp-block-image img {
+		height: auto;
+	}
+}
 
 
 /* ================================================================
@@ -2861,10 +2881,14 @@ body[class*="vd-cat--grands-formats"] .vd-single__body > p em { font-style: ital
 		font-size: 1.3rem;
 		margin: 0 0 0.3rem 0;
 	}
+	/* Point centré pile sur la ligne verticale (largeur 3px, left:0 du container).
+	 * Calcul : on veut centre point = centre ligne = 1.5px du container.
+	 * Item commence à 2rem (padding-left), point absolu relatif à l'item, dot 14px.
+	 * → left point = 1.5px (centre ligne) − 7px (demi-dot) − 2rem (offset item) = calc(-2rem - 5.5px). */
 	.vd-gf01__htl-item::before {
 		position: absolute;
-		top: 7px;
-		left: -2.55rem;
+		top: 0.45rem;
+		left: calc(-2rem - 5.5px);
 		margin: 0;
 	}
 	.vd-gf01__htl-title { font-size: 1rem; margin-bottom: 0.3rem; }
