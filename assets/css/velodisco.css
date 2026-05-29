@@ -2679,3 +2679,162 @@ body.category-grands-formats .vd-single__body > p em { font-style: italic; opaci
 .vd-gf01__cardmeta--green .vd-gf01__card-icon { background: #1B8F29; }
 .vd-gf01__cardmeta--blue { border-top-color: #0091C2; }
 .vd-gf01__cardmeta--blue .vd-gf01__card-icon { background: #0091C2; }
+
+
+/* ================================================================
+ * GRANDS FORMATS — Timeline HORIZONTALE scroll-progressive (v1.7.2)
+ * Refonte du 2026-05-29 : la timeline verticale est remplacée par
+ * une frise horizontale signature de la première version, dont les
+ * 9 jalons apparaissent gauche → droite au fur et à mesure que le
+ * lecteur scrolle dans la zone du wrapper sticky.
+ *
+ * Architecture :
+ * .vd-gf01__hframe         → wrapper de 2200px de haut (durée du scroll)
+ * .vd-gf01__hframe-sticky  → sticky en haut du viewport
+ * .vd-gf01__htimeline      → flexbox horizontal des 9 jalons
+ * .vd-gf01__htl-item       → 1 jalon (année + titre + texte)
+ * ================================================================ */
+
+.vd-gf01__hframe {
+	position: relative;
+	height: 220vh; /* hauteur du scroll pour révéler les 9 jalons */
+	margin: 4rem 0;
+}
+.vd-gf01__hframe-sticky {
+	position: sticky;
+	top: 12vh;
+	height: 76vh;
+	display: flex;
+	align-items: center;
+}
+.vd-gf01__htimeline {
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-start;
+	gap: 0.5rem;
+	position: relative;
+	padding: 7rem 0 1rem;
+}
+/* La ligne horizontale dégradée */
+.vd-gf01__htimeline::before {
+	content: "";
+	position: absolute;
+	top: 7.5rem;
+	left: 0;
+	right: 0;
+	height: 3px;
+	background: linear-gradient(90deg, #DB3F0C 0%, #1B8F29 25%, #D69600 50%, #0091C2 75%, #7D5EDA 100%);
+	border-radius: 1px;
+}
+/* Chaque jalon */
+.vd-gf01__htl-item {
+	flex: 1 1 0;
+	min-width: 0;
+	position: relative;
+	padding: 0 0.3rem;
+	text-align: center;
+	opacity: 0;
+	transform: translateY(8px);
+	transition: opacity 0.45s ease, transform 0.45s ease;
+}
+.vd-gf01__htl-item.is-visible {
+	opacity: 1;
+	transform: translateY(0);
+}
+/* Point sur la ligne */
+.vd-gf01__htl-item::before {
+	content: "";
+	position: absolute;
+	top: calc(-7.5rem + 7.5rem - 7px);
+	left: 50%;
+	transform: translateX(-50%);
+	width: 14px;
+	height: 14px;
+	border-radius: 50%;
+	background: var(--c, #888);
+	box-shadow: 0 0 0 3px #000;
+	z-index: 2;
+}
+@media (prefers-color-scheme: light) {
+	.vd-gf01__htl-item::before { box-shadow: 0 0 0 3px #fff; }
+}
+.vd-gf01__htl-item--major::before {
+	width: 20px;
+	height: 20px;
+}
+/* Couleurs par position */
+.vd-gf01__htl-item--c1 { --c: #DB3F0C; }
+.vd-gf01__htl-item--c2 { --c: #1B8F29; }
+.vd-gf01__htl-item--c3 { --c: #1B8F29; }
+.vd-gf01__htl-item--c4 { --c: #0091C2; }
+.vd-gf01__htl-item--c5 { --c: #7D5EDA; }
+.vd-gf01__htl-item--c6 { --c: #DB3F0C; }
+.vd-gf01__htl-item--c7 { --c: #7D5EDA; }
+.vd-gf01__htl-item--c8 { --c: #0091C2; }
+.vd-gf01__htl-item--c9 { --c: #7D5EDA; }
+
+.vd-gf01__htl-year {
+	font-size: 1.05rem;
+	font-weight: 700;
+	color: var(--c, inherit);
+	line-height: 1.1;
+	letter-spacing: -0.01em;
+	margin: 0 0 0.4rem 0;
+}
+.vd-gf01__htl-title {
+	font-weight: 600;
+	font-size: 0.82rem;
+	line-height: 1.25;
+	margin: 0 0 0.4rem 0;
+}
+.vd-gf01__htl-text {
+	font-size: 0.74rem;
+	line-height: 1.4;
+	opacity: 0.78;
+	margin: 0;
+}
+
+/* Avant que le JS ne tourne (ou s'il échoue), tous les jalons sont visibles */
+.vd-gf01__hframe:not(.is-anim-ready) .vd-gf01__htl-item {
+	opacity: 1;
+	transform: none;
+}
+
+/* Réduction de mouvement respectée */
+@media (prefers-reduced-motion: reduce) {
+	.vd-gf01__htl-item { opacity: 1 !important; transform: none !important; transition: none !important; }
+}
+
+/* Mobile : on déroule la timeline verticalement */
+@media (max-width: 720px) {
+	.vd-gf01__hframe { height: auto; margin: 3rem 0; }
+	.vd-gf01__hframe-sticky { position: static; top: auto; height: auto; }
+	.vd-gf01__htimeline {
+		flex-direction: column;
+		align-items: stretch;
+		padding: 1rem 0 1rem 2rem;
+		gap: 1.5rem;
+	}
+	.vd-gf01__htimeline::before {
+		top: 0;
+		bottom: 0;
+		left: 0;
+		right: auto;
+		height: auto;
+		width: 3px;
+		background: linear-gradient(180deg, #DB3F0C 0%, #1B8F29 25%, #D69600 50%, #0091C2 75%, #7D5EDA 100%);
+	}
+	.vd-gf01__htl-item {
+		text-align: left;
+		padding: 0;
+	}
+	.vd-gf01__htl-item::before {
+		top: 6px;
+		left: -2.55rem;
+		transform: none;
+	}
+	.vd-gf01__htl-year { font-size: 1.2rem; }
+	.vd-gf01__htl-title { font-size: 1rem; }
+	.vd-gf01__htl-text { font-size: 0.9rem; }
+}
