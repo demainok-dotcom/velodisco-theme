@@ -111,7 +111,10 @@
 	}
 
 	function initSyncHeights() {
-		if (!document.querySelector('.vd-gf01__cardmeta')) return;
+		var cardmetas = document.querySelectorAll('.vd-gf01__cardmeta');
+		if (!cardmetas.length) return;
+
+		// Triggers classiques (au cas où ResizeObserver indisponible)
 		var ticking = false;
 		function onResize() {
 			if (ticking) return;
@@ -124,11 +127,21 @@
 		syncCardImageHeights();
 		window.addEventListener('load', syncCardImageHeights);
 		window.addEventListener('resize', onResize, { passive: true });
-		// La hauteur du cardmeta change quand la police Inter arrive
-		// (fallback system → Inter = métriques différentes). On re-sync à ce
-		// moment-là, sinon image figée sur la mauvaise hauteur.
 		if (document.fonts && document.fonts.ready) {
 			document.fonts.ready.then(syncCardImageHeights);
+		}
+
+		// Source de vérité : ResizeObserver sur chaque cardmeta. Re-sync
+		// à CHAQUE changement de taille (font, reflow, viewport, etc.) —
+		// pas besoin d'anticiper les causes. Largement supporté sur tous
+		// les navigateurs modernes (Safari 13.1+, Chrome 64+, FF 69+).
+		if ('ResizeObserver' in window) {
+			var ro = new ResizeObserver(function () {
+				syncCardImageHeights();
+			});
+			for (var i = 0; i < cardmetas.length; i++) {
+				ro.observe(cardmetas[i]);
+			}
 		}
 	}
 
