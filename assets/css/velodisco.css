@@ -2647,3 +2647,35 @@ body.category-grands-formats .vd-single__body > p em { font-style: italic; opaci
 	max-width: 480px;
 	opacity: 1;
 }
+
+
+/* ================================================================
+ * GRANDS FORMATS — Couleurs par nth-child (corrige le bug "bloc
+ * invalide" causé par les attributs style JSON dans wp:group)
+ * Ajouté le 2026-05-29 (thème v1.7.1)
+ *
+ * Au lieu de poser les couleurs en style inline + JSON attribute,
+ * on les pose en CSS pur via nth-child : les wp:group restent
+ * compatibles Gutenberg (aucun attribut style requis).
+ * ================================================================ */
+
+/* Timeline : 9 jalons, couleurs par position */
+.vd-gf01__timeline > .vd-gf01__tl-item:nth-of-type(1) { --c: #DB3F0C; }
+.vd-gf01__timeline > .vd-gf01__tl-item:nth-of-type(2) { --c: #1B8F29; }
+.vd-gf01__timeline > .vd-gf01__tl-item:nth-of-type(3) { --c: #1B8F29; }
+.vd-gf01__timeline > .vd-gf01__tl-item:nth-of-type(4) { --c: #0091C2; }
+.vd-gf01__timeline > .vd-gf01__tl-item:nth-of-type(5) { --c: #7D5EDA; }
+.vd-gf01__timeline > .vd-gf01__tl-item:nth-of-type(6) { --c: #DB3F0C; }
+.vd-gf01__timeline > .vd-gf01__tl-item:nth-of-type(7) { --c: #7D5EDA; }
+.vd-gf01__timeline > .vd-gf01__tl-item:nth-of-type(8) { --c: #0091C2; }
+.vd-gf01__timeline > .vd-gf01__tl-item:nth-of-type(9) { --c: #7D5EDA; }
+
+/* Cardmetas : couleurs par modificateurs de classe */
+.vd-gf01__cardmeta--purple { border-top-color: #7D5EDA; }
+.vd-gf01__cardmeta--purple .vd-gf01__card-icon { background: #7D5EDA; }
+.vd-gf01__cardmeta--orange { border-top-color: #DB3F0C; }
+.vd-gf01__cardmeta--orange .vd-gf01__card-icon { background: #DB3F0C; }
+.vd-gf01__cardmeta--green { border-top-color: #1B8F29; }
+.vd-gf01__cardmeta--green .vd-gf01__card-icon { background: #1B8F29; }
+.vd-gf01__cardmeta--blue { border-top-color: #0091C2; }
+.vd-gf01__cardmeta--blue .vd-gf01__card-icon { background: #0091C2; }
