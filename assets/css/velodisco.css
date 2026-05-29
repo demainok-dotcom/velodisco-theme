@@ -2535,15 +2535,18 @@ body[class*="vd-cat--grands-formats"] .vd-single__body .wp-block-columns:has(.vd
 		background: rgba(0, 0, 0, 0.03);
 	}
 }
-/* Mobile : les colonnes se déstackent, la photo doit prendre TOUTE la largeur
- * (comme le cardmeta voisin juste en dessous). On annule le flex-basis 180px
- * inline de Gutenberg, et on cadre la photo en 4/3 (ratio cardmeta typique en
- * mobile) avec object-fit:cover : visuellement, photo et cardmeta ont la même
- * taille. */
+/* Mobile : les colonnes se déstackent (le bloc Gutenberg n'a pas la classe
+ * are-stacked-on-mobile, on force flex-wrap). La photo prend ainsi la pleine
+ * largeur du parent, comme le cardmeta voisin. Ratio 4/3 + object-fit:cover
+ * pour que visuellement, photo et encart aient la même taille. */
 @media (max-width: 720px) {
+	.wp-block-columns:has(.vd-gf01__cardmeta) {
+		flex-wrap: wrap;
+	}
 	.wp-block-columns:has(.vd-gf01__cardmeta) > .wp-block-column {
 		flex-basis: 100% !important;
 		max-width: 100%;
+		width: 100%;
 	}
 	.wp-block-columns:has(.vd-gf01__cardmeta) > .wp-block-column:has(.wp-block-image) {
 		display: block;
@@ -2551,12 +2554,26 @@ body[class*="vd-cat--grands-formats"] .vd-single__body .wp-block-columns:has(.vd
 	.wp-block-columns:has(.vd-gf01__cardmeta) .wp-block-image,
 	.wp-block-columns:has(.vd-gf01__cardmeta) .wp-block-image figure {
 		height: auto;
+		width: 100%;
 	}
 	.wp-block-columns:has(.vd-gf01__cardmeta) .wp-block-image img {
 		aspect-ratio: 4 / 3;
 		height: auto;
 		object-fit: cover;
 		object-position: center top;
+	}
+
+	/* Séparateur entre chaque groupe photo/encart (s'affiche sur 2e, 3e, 4e
+	 * cardmeta — pas sur la première). Trait fin, marge généreuse. */
+	.vd-single__body .wp-block-columns:has(.vd-gf01__cardmeta) ~ .wp-block-columns:has(.vd-gf01__cardmeta) {
+		border-top: 1px solid rgba(0, 0, 0, 0.12);
+		padding-top: 2rem;
+		margin-top: 2rem;
+	}
+}
+@media (max-width: 720px) and (prefers-color-scheme: dark) {
+	.vd-single__body .wp-block-columns:has(.vd-gf01__cardmeta) ~ .wp-block-columns:has(.vd-gf01__cardmeta) {
+		border-top-color: rgba(255, 255, 255, 0.14);
 	}
 }
 
