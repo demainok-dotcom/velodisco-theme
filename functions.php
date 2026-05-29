@@ -133,6 +133,59 @@ function velodisco_no_flash_script() {
 add_action( 'wp_head', 'velodisco_no_flash_script', 1 );
 
 /**
+ * Résout TOUS les term_ids dont le slug commence par un base_slug donné.
+ *
+ * Origine du problème : WordPress génère silencieusement des doublons quand
+ * on appelle `wp_insert_term($name, $tax)` sans slug explicite et qu'un term
+ * du même nom existe déjà (ex. catégorie `grands-formats` créée vide, puis
+ * import → WP a inventé `grands-formats-2`). Ensuite, toutes les requêtes
+ * qui matchaient par slug exact rataient les articles attachés au doublon.
+ *
+ * Cette fonction couvre les deux cas en une passe.
+ *
+ * @param string $base_slug Slug racine, ex. 'grands-formats' ou 'velos'.
+ * @return int[] Liste des term_ids correspondants (vide si aucun).
+ */
+function vd_resolve_term_ids_by_base_slug( $base_slug ) {
+	$cache_key = 'vd_termids_' . $base_slug;
+	$cached    = wp_cache_get( $cache_key, 'velodisco' );
+	if ( false !== $cached ) {
+		return $cached;
+	}
+	$terms = get_terms( array(
+		'taxonomy'   => 'category',
+		'hide_empty' => false,
+		'fields'     => 'id=>slug',
+	) );
+	$ids = array();
+	if ( ! is_wp_error( $terms ) ) {
+		foreach ( $terms as $tid => $slug ) {
+			if ( $slug === $base_slug || strpos( $slug, $base_slug . '-' ) === 0 ) {
+				$ids[] = (int) $tid;
+			}
+		}
+	}
+	wp_cache_set( $cache_key, $ids, 'velodisco', 300 ); // 5 min TTL
+	return $ids;
+}
+
+/**
+ * Retourne le permalink "canonique" pour une catégorie (en pratique : le
+ * premier term dont le slug match `$base_slug`, ou `$base_slug-N`).
+ * Fallback : permalink du term homonyme (peut être 404 si rien à matcher).
+ */
+function vd_term_link_by_base_slug( $base_slug ) {
+	$ids = vd_resolve_term_ids_by_base_slug( $base_slug );
+	if ( ! empty( $ids ) ) {
+		$link = get_term_link( $ids[0], 'category' );
+		if ( ! is_wp_error( $link ) ) {
+			return $link;
+		}
+	}
+	return home_url( '/category/' . $base_slug . '/' );
+}
+
+/**
  * Précharge la police principale (poids variable, sous-ensemble latin) pour
  * accélérer le premier rendu du texte.
  */

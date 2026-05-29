@@ -134,9 +134,18 @@ function velodisco_render_home() {
 	$usedfrais = array();
 	$frais     = vd_query_ids( array( 'posts_per_page' => 50 ), $usedfrais );
 
-	// GRANDS FORMATS = catégorie dédiée (indépendant).
-	$usedgf = array();
-	$gf     = vd_query_ids( array( 'posts_per_page' => 4, 'category_name' => 'grands-formats' ), $usedgf );
+	// GRANDS FORMATS = catégorie dédiée (indépendant). Utilise le helper
+	// vd_resolve_term_ids_by_base_slug() pour couvrir `grands-formats` ET
+	// les doublons éventuels (`grands-formats-2`, etc.).
+	$usedgf  = array();
+	$gf_ids  = vd_resolve_term_ids_by_base_slug( 'grands-formats' );
+	$gf_args = array( 'posts_per_page' => 4 );
+	if ( ! empty( $gf_ids ) ) {
+		$gf_args['category__in'] = $gf_ids;
+	} else {
+		$gf_args['category_name'] = 'grands-formats'; // fallback (vide mais propre)
+	}
+	$gf = vd_query_ids( $gf_args, $usedgf );
 
 	ob_start();
 	?>
@@ -210,7 +219,7 @@ function velodisco_render_home() {
 		<div class="vd-gf__head">
 			<h2 class="vd-sectitle vd-gradient-text">Grands Formats</h2>
 			<p class="vd-gf__sub">C'est parfois mieux quand c'est plus long.</p>
-			<a class="vd-gf__all vd-gradient-text" href="<?php echo esc_url( home_url( '/category/grands-formats/' ) ); ?>">Voir tout →</a>
+			<a class="vd-gf__all vd-gradient-text" href="<?php echo esc_url( vd_term_link_by_base_slug( 'grands-formats' ) ); ?>">Voir tout →</a>
 		</div>
 		<div class="vd-gf__grid">
 			<?php foreach ( $gf as $id ) : ?>

@@ -36,8 +36,16 @@ function velodisco_render_section( $attrs = array(), $content = '' ) {
 	}
 
 	// GRANDS FORMATS : teaser site-wide (catégorie grands-formats), comme la Home.
-	$gfused = array();
-	$gf     = vd_query_ids( array( 'category_name' => 'grands-formats', 'posts_per_page' => 4 ), $gfused );
+	// Helper qui couvre `grands-formats` ET les doublons WP éventuels (-2, etc.).
+	$gfused  = array();
+	$gf_ids  = vd_resolve_term_ids_by_base_slug( 'grands-formats' );
+	$gf_args = array( 'posts_per_page' => 4 );
+	if ( ! empty( $gf_ids ) ) {
+		$gf_args['category__in'] = $gf_ids;
+	} else {
+		$gf_args['category_name'] = 'grands-formats';
+	}
+	$gf = vd_query_ids( $gf_args, $gfused );
 
 	global $wp_query;
 	$total_pages = (int) $wp_query->max_num_pages;
@@ -146,7 +154,7 @@ function velodisco_render_section( $attrs = array(), $content = '' ) {
 		<div class="vd-gf__head">
 			<h2 class="vd-sectitle vd-gradient-text">Grands Formats</h2>
 			<p class="vd-gf__sub">C'est parfois mieux quand c'est plus long.</p>
-			<a class="vd-gf__all vd-gradient-text" href="<?php echo esc_url( home_url( '/category/grands-formats/' ) ); ?>">Voir tout →</a>
+			<a class="vd-gf__all vd-gradient-text" href="<?php echo esc_url( vd_term_link_by_base_slug( 'grands-formats' ) ); ?>">Voir tout →</a>
 		</div>
 		<div class="vd-gf__grid">
 			<?php foreach ( $gf as $id ) : ?>

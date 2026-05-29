@@ -967,7 +967,19 @@ button.vd-footer__dots {
 .vd-hover-zoom:hover img { transform: scale(1.04); }
 
 /* 9b. HOME (page d'accueil — relevé Figma 1440) ---------------------------- */
-.vd-main--home { max-width: none; padding-inline: 0; margin-top: 0; } /* flush sous le header : les traits verticaux touchent la ligne du header */
+/* ---- Spacing des wrappers <main> par type de page ----
+ * Avant v1.10.0 (audit), ces valeurs étaient en INLINE style sur le main
+ * dans chaque template (`style="padding-top:...;padding-bottom:..."`), ce qui
+ * empêchait tout override CSS. Migré ici pour pouvoir ajuster sans toucher
+ * aux templates. */
+.vd-main--home { max-width: none; padding-inline: 0; margin-top: 0; padding-top: 0; padding-bottom: 0; }
+.vd-main--actu,
+.vd-main--section,
+.vd-main--search,
+.vd-contact,
+.vd-legal { padding-top: 0; padding-bottom: var(--wp--preset--spacing--60); }
+.vd-main--page { padding-top: var(--wp--preset--spacing--50); padding-bottom: var(--wp--preset--spacing--60); }
+.vd-single { padding-top: var(--wp--preset--spacing--40); padding-bottom: var(--wp--preset--spacing--60); }
 
 .vd-home {
 	max-width: 1410px;
@@ -1153,9 +1165,8 @@ button.vd-footer__dots {
 /* Le H2 .vd-sectitle a un margin-top par défaut (~48px) qui casse la symétrie.
  * Reset à 0 ici : seul le padding-top de .vd-gf compte. */
 .vd-gf__head .vd-sectitle { margin-top: 0; }
-/* C : on annule le padding-bottom de .vd-main--home pour que la carte du bas
- * touche pile la zone d'aspiration du footer (16px = margin-top naturel). */
-.vd-main--home { padding-bottom: 0; }
+/* Note : le padding-bottom: 0 de .vd-main--home est désormais dans le bloc
+ * groupé `.vd-main--*` au-dessus (l. ~975) avec les autres types de pages. */
 .vd-gf__sub { font-size: 16px; line-height: 19px; color: #6C727F; margin: 0; }
 .vd-gf__all { justify-self: end; font-weight: 600; font-size: 15px; text-decoration: none; white-space: nowrap; }
 .vd-gf__grid {
@@ -1758,11 +1769,11 @@ button.vd-footer__dots {
 [data-theme="dark"] .vd-single__date { color: var(--wp--preset--color--off-white, #F5F5F0); }
 
 /* Couleur de catégorie partagée (pour tracés d'images), posée sur le body */
-body.vd-cat--velos       { --vd-cat-color: var(--wp--preset--color--velos); }
-body.vd-cat--accessoires { --vd-cat-color: var(--wp--preset--color--accessoires); }
-body.vd-cat--composants  { --vd-cat-color: var(--wp--preset--color--composants); }
-body.vd-cat--vetements   { --vd-cat-color: var(--wp--preset--color--vetements); }
-body.vd-cat--societe     { --vd-cat-color: var(--wp--preset--color--societe); }
+body[class*="vd-cat--velos"]       { --vd-cat-color: var(--wp--preset--color--velos); }
+body[class*="vd-cat--accessoires"] { --vd-cat-color: var(--wp--preset--color--accessoires); }
+body[class*="vd-cat--composants"]  { --vd-cat-color: var(--wp--preset--color--composants); }
+body[class*="vd-cat--vetements"]   { --vd-cat-color: var(--wp--preset--color--vetements); }
+body[class*="vd-cat--societe"]     { --vd-cat-color: var(--wp--preset--color--societe); }
 
 /* Images de l'article (hero + toutes les images du corps) : coins CARRÉS + tracé 1px
  * de la couleur de catégorie (dégradé pour Grands Formats). */
@@ -2145,17 +2156,17 @@ body[class*="vd-cat--grands-formats"] .vd-single__body .wp-block-separator {
 
 /* ---- Fonds dégradés subtils par catégorie (relevé Figma, Victor gère/ajuste) ---- */
 body[class*="vd-cat--"] { background-repeat: no-repeat; }
-body.vd-cat--velos        { background-image: linear-gradient(180deg, rgba(219,63,12,0.04) 0%, transparent 41%); }
-body.vd-cat--accessoires  { background-image: linear-gradient(180deg, rgba(27,143,41,0.04) 0%, transparent 29%); }
-body.vd-cat--composants   { background-image: linear-gradient(180deg, rgba(214,150,0,0.04) 0%, transparent 46%); }
-body.vd-cat--vetements    { background-image: linear-gradient(180deg, rgba(0,145,194,0.04) 0%, transparent 39%); }
-body.vd-cat--societe      { background-image: linear-gradient(180deg, rgba(47,0,216,0.02) 0%, transparent 34%); }
+body[class*="vd-cat--velos"]        { background-image: linear-gradient(180deg, rgba(219,63,12,0.04) 0%, transparent 41%); }
+body[class*="vd-cat--accessoires"]  { background-image: linear-gradient(180deg, rgba(27,143,41,0.04) 0%, transparent 29%); }
+body[class*="vd-cat--composants"]   { background-image: linear-gradient(180deg, rgba(214,150,0,0.04) 0%, transparent 46%); }
+body[class*="vd-cat--vetements"]    { background-image: linear-gradient(180deg, rgba(0,145,194,0.04) 0%, transparent 39%); }
+body[class*="vd-cat--societe"]      { background-image: linear-gradient(180deg, rgba(47,0,216,0.02) 0%, transparent 34%); }
 body[class*="vd-cat--grands-formats"] { background-image: linear-gradient(180deg, rgba(242,78,30,0.10) 0%, rgba(11,195,124,0.10) 29.3%, rgba(26,188,254,0.10) 73.6%, rgba(255,178,0,0.10) 100%); }
-[data-theme="dark"] body.vd-cat--velos        { background-image: linear-gradient(180deg, rgba(219,63,12,0.25) 0%, transparent 54%); }
-[data-theme="dark"] body.vd-cat--accessoires  { background-image: linear-gradient(180deg, rgba(27,143,41,0.25) 0%, transparent 100%); }
-[data-theme="dark"] body.vd-cat--composants   { background-image: linear-gradient(180deg, rgba(214,150,0,0.25) 0%, transparent 54%); }
-[data-theme="dark"] body.vd-cat--vetements    { background-image: linear-gradient(180deg, rgba(0,145,194,0.25) 0%, transparent 100%); }
-[data-theme="dark"] body.vd-cat--societe      { background-image: linear-gradient(180deg, rgba(47,0,216,0.25) 0%, transparent 100%); }
+[data-theme="dark"] body[class*="vd-cat--velos"]        { background-image: linear-gradient(180deg, rgba(219,63,12,0.25) 0%, transparent 54%); }
+[data-theme="dark"] body[class*="vd-cat--accessoires"]  { background-image: linear-gradient(180deg, rgba(27,143,41,0.25) 0%, transparent 100%); }
+[data-theme="dark"] body[class*="vd-cat--composants"]   { background-image: linear-gradient(180deg, rgba(214,150,0,0.25) 0%, transparent 54%); }
+[data-theme="dark"] body[class*="vd-cat--vetements"]    { background-image: linear-gradient(180deg, rgba(0,145,194,0.25) 0%, transparent 100%); }
+[data-theme="dark"] body[class*="vd-cat--societe"]      { background-image: linear-gradient(180deg, rgba(47,0,216,0.25) 0%, transparent 100%); }
 [data-theme="dark"] body[class*="vd-cat--grands-formats"] { background-image: linear-gradient(180deg, rgba(242,78,30,0.20) 0%, rgba(11,195,124,0.20) 31.3%, rgba(26,188,254,0.20) 67.8%, rgba(255,178,0,0.20) 100%); }
 
 /* ---- Passe MOBILE de l'article (relevé Figma « Blog Page Grands Formats — Mobile », 375px) ---- */
@@ -2277,237 +2288,22 @@ body[class*="vd-cat--grands-formats"] { background-image: linear-gradient(180deg
 
 
 /* ================================================================
- * GRANDS FORMATS — Styles dédiés à la catégorie longs articles
- * Ajouté le 2026-05-28 (thème v1.6.4)
- * Classes : .vd-gf, .vd-gf-title, .vd-gf-chapeau, .vd-en-bref,
- *           .vd-gf-separator, .vd-gf-citation, .vd-gf-aside,
- *           .vd-gf-illustration, .vd-pionnieres-grid, .vd-pionniere-card,
- *           .vd-gf-sources
+ * GRANDS FORMATS — Historique
+ * Le bloc initial (v1.6.4, ~230 lignes : .vd-gf-title, .vd-en-bref,
+ * .vd-gf-citation, .vd-gf-aside, .vd-gf-illustration, .vd-pionniere-card,
+ * .vd-gf-sources, .vd-gf-separator) a été SUPPRIMÉ le 2026-05-29 (v1.10.0
+ * — audit) : ces classes ne sont plus utilisées par l'article GF actuel
+ * qui repose sur `.vd-gf01__*` + blocs Gutenberg natifs.
  *
- * Palette identitaire VeloDisco :
+ * En plus de simplifier, ça corrige un piège latent : `.vd-gf h2` (spec
+ * 0,0,2) écrasait `.vd-sectitle` (0,0,1) → le titre "Grands Formats" sur
+ * la home risquait une mauvaise taille de police.
+ *
+ * Palette officielle (cf. theme.json) :
  *   Vélos #DB3F0C · Accessoires #1B8F29 · Composants #D69600
- *   Vêtements #0091C2 · Société #7D5EDA · GF = gradient des 5
+ *   Vêtements #0091C2 · Société #785FD3 · GF = gradient des 5
  * ================================================================ */
 
-/* Note : l'ancien wrapper `.vd-gf { max-width: 720px; }` a été SUPPRIMÉ ici —
- * conflit de classe avec la section Grands Formats de la Home (ligne 1133, même
- * sélecteur, max-width 1410px). La règle ci-dessous gagnait par ordre d'apparition
- * et écrasait la home, qui se retrouvait centrée à 720px. L'article GF actuel
- * (AUTONOME) n'utilise plus la classe `.vd-gf` — il utilise `.vd-gf01__*` et les
- * blocs Gutenberg natifs. Le wrapper de largeur est dans .vd-single__body
- * (single.html). */
-
-/* Titre & chapeau */
-.vd-gf-title {
-	font-size: clamp(2.2rem, 5vw, 3.1rem);
-	font-weight: 800;
-	line-height: 1.1;
-	letter-spacing: -0.02em;
-	margin-bottom: 1.5rem;
-}
-.vd-gf-chapeau {
-	font-size: 1.25rem;
-	font-weight: 300;
-	line-height: 1.55;
-	color: var(--wp--preset--color--text-secondary, #C8C8C8);
-	margin-bottom: 2.5rem;
-	font-style: italic;
-}
-
-/* Bloc "En bref" */
-.vd-en-bref {
-	background: rgba(255, 255, 255, 0.04);
-	border-radius: 8px;
-	padding: 1.5rem 1.75rem;
-	margin: 2rem 0 3rem;
-	border-left: 4px solid transparent;
-	border-image: linear-gradient(180deg, #DB3F0C, #1B8F29, #0091C2, #7D5EDA) 1;
-}
-@media (prefers-color-scheme: light) { .vd-en-bref { background: rgba(0, 0, 0, 0.04); } }
-.vd-en-bref h3 {
-	font-size: 0.78rem;
-	font-weight: 700;
-	letter-spacing: 0.18em;
-	text-transform: uppercase;
-	margin: 0 0 0.9rem 0;
-}
-.vd-en-bref ul { list-style: none; padding: 0; margin: 0; }
-.vd-en-bref li {
-	padding: 0.35rem 0 0.35rem 1.2rem;
-	position: relative;
-	font-size: 0.96rem;
-	line-height: 1.55;
-}
-.vd-en-bref li::before {
-	content: "→";
-	position: absolute;
-	left: 0;
-	color: #DB3F0C;
-	font-weight: 700;
-}
-
-/* Séparateur dégradé multicolore (signature GF) */
-.vd-gf-separator {
-	height: 3px;
-	border: none;
-	background: linear-gradient(90deg, #DB3F0C 0%, #1B8F29 25%, #D69600 50%, #0091C2 75%, #7D5EDA 100%);
-	margin: 3.5rem auto;
-	width: 100%;
-	max-width: 480px;
-}
-
-/* Citation encadrée */
-.vd-gf-citation {
-	margin: 2.5rem 0;
-	padding: 0.5rem 0 0.5rem 2rem;
-	border-left: 3px solid #7D5EDA;
-	position: relative;
-}
-.vd-gf-citation::before {
-	content: "\201C";
-	position: absolute;
-	left: 1rem;
-	top: -1.2rem;
-	font-family: Georgia, serif;
-	font-size: 4.5rem;
-	line-height: 1;
-	color: #7D5EDA;
-	opacity: 0.4;
-}
-.vd-gf-citation p {
-	font-size: 1.2rem;
-	font-style: italic;
-	line-height: 1.5;
-	margin-bottom: 0.8rem;
-}
-.vd-gf-citation cite { font-size: 0.88rem; opacity: 0.7; font-style: normal; }
-
-/* Encadré contextuel ("Le saviez-vous", "Pour aller plus loin") */
-.vd-gf-aside {
-	background: rgba(0, 145, 194, 0.06);
-	border-left: 4px solid #0091C2;
-	border-radius: 0 8px 8px 0;
-	padding: 1.25rem 1.5rem;
-	margin: 2rem 0;
-}
-.vd-gf-aside-label {
-	font-size: 0.72rem;
-	font-weight: 700;
-	letter-spacing: 0.18em;
-	text-transform: uppercase;
-	color: #0091C2;
-	margin-bottom: 0.5rem;
-}
-.vd-gf-aside p:last-child { margin-bottom: 0; }
-
-/* Illustrations SVG inline */
-.vd-gf-illustration { margin: 2.5rem 0 3rem; text-align: center; }
-.vd-gf-illustration svg {
-	width: 100%;
-	height: auto;
-	display: block;
-	color: var(--wp--preset--color--text, currentColor);
-}
-.vd-gf-illustration figcaption {
-	font-size: 0.85rem;
-	opacity: 0.7;
-	text-align: center;
-	margin-top: 0.8rem;
-	font-style: italic;
-}
-
-/* Grille animée des pionnières (au scroll) */
-.vd-pionnieres-grid {
-	display: grid;
-	grid-template-columns: repeat(2, 1fr);
-	gap: 1rem;
-	margin: 2rem 0 3rem;
-}
-@media (max-width: 600px) { .vd-pionnieres-grid { grid-template-columns: 1fr; } }
-
-.vd-pionniere-card {
-	background: rgba(255, 255, 255, 0.04);
-	border-radius: 10px;
-	padding: 1.25rem 1.25rem 1.4rem;
-	border-top: 3px solid;
-	opacity: 0;
-	transform: translateY(30px);
-	transition: opacity 0.7s ease, transform 0.7s ease;
-}
-@media (prefers-color-scheme: light) { .vd-pionniere-card { background: rgba(0, 0, 0, 0.04); } }
-.vd-pionniere-card.is-visible { opacity: 1; transform: translateY(0); }
-@media (prefers-reduced-motion: reduce) {
-	.vd-pionniere-card { opacity: 1; transform: none; transition: none; }
-}
-.vd-pionniere-card:nth-child(1) { border-top-color: #7D5EDA; transition-delay: 0s; }
-.vd-pionniere-card:nth-child(2) { border-top-color: #DB3F0C; transition-delay: 0.15s; }
-.vd-pionniere-card:nth-child(3) { border-top-color: #1B8F29; transition-delay: 0.30s; }
-.vd-pionniere-card:nth-child(4) { border-top-color: #0091C2; transition-delay: 0.45s; }
-
-.vd-pionniere-icon {
-	width: 36px;
-	height: 36px;
-	border-radius: 50%;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	font-weight: 700;
-	font-size: 14px;
-	color: #fff;
-	margin-bottom: 0.7rem;
-}
-.vd-pionniere-card:nth-child(1) .vd-pionniere-icon { background: #7D5EDA; }
-.vd-pionniere-card:nth-child(2) .vd-pionniere-icon { background: #DB3F0C; }
-.vd-pionniere-card:nth-child(3) .vd-pionniere-icon { background: #1B8F29; }
-.vd-pionniere-card:nth-child(4) .vd-pionniere-icon { background: #0091C2; }
-
-.vd-pionniere-name {
-	font-size: 1rem;
-	font-weight: 600;
-	margin-bottom: 0.15rem;
-	line-height: 1.3;
-}
-.vd-pionniere-dates { font-size: 0.78rem; opacity: 0.6; margin-bottom: 0.7rem; }
-.vd-pionniere-deed { font-size: 0.88rem; line-height: 1.5; opacity: 0.92; }
-
-/* Sources */
-.vd-gf-sources {
-	margin-top: 4rem;
-	padding-top: 2rem;
-	border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-@media (prefers-color-scheme: light) { .vd-gf-sources { border-top-color: rgba(0, 0, 0, 0.1); } }
-.vd-gf-sources h2 { font-size: 1.3rem; margin-bottom: 1rem; }
-.vd-gf-sources ul { list-style: none; padding: 0; }
-.vd-gf-sources li {
-	padding: 0.5rem 0;
-	border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-	font-size: 0.92rem;
-	line-height: 1.5;
-}
-@media (prefers-color-scheme: light) { .vd-gf-sources li { border-bottom-color: rgba(0, 0, 0, 0.05); } }
-.vd-gf-sources li:last-child { border-bottom: none; }
-
-/* Petits ajustements typo pour la lecture longue */
-.vd-gf p { margin-bottom: 1.1rem; }
-.vd-gf h2 {
-	font-size: clamp(1.55rem, 3vw, 1.9rem);
-	font-weight: 700;
-	line-height: 1.25;
-	letter-spacing: -0.01em;
-	margin: 3rem 0 1.2rem;
-}
-.vd-gf h3 { font-size: 1.15rem; font-weight: 600; margin: 2rem 0 0.6rem; }
-
-/* Responsive : mobile */
-@media (max-width: 600px) {
-	.vd-gf-chapeau { font-size: 1.1rem; }
-	.vd-gf-citation { padding-left: 1.2rem; }
-	.vd-gf-citation::before { left: 0.4rem; font-size: 3.5rem; }
-	.vd-gf-citation p { font-size: 1.05rem; }
-	.vd-en-bref { padding: 1.25rem 1.25rem; }
-	.vd-gf-aside { padding: 1rem 1.25rem; }
-}
 
 
 /* ================================================================
@@ -2720,7 +2516,7 @@ body[class*="vd-cat--grands-formats"] .vd-single__body > p em { font-style: ital
 .wp-block-separator.vd-sep-gradient {
 	height: 3px;
 	border: none;
-	background: linear-gradient(90deg, #DB3F0C 0%, #1B8F29 25%, #D69600 50%, #0091C2 75%, #7D5EDA 100%);
+	background: linear-gradient(90deg, #DB3F0C 0%, #1B8F29 25%, #D69600 50%, #0091C2 75%, #785FD3 100%);
 	margin: 3.5rem auto;
 	width: 100%;
 	max-width: 480px;
@@ -2743,15 +2539,15 @@ body[class*="vd-cat--grands-formats"] .vd-single__body > p em { font-style: ital
 .vd-gf01__timeline > .vd-gf01__tl-item:nth-of-type(2) { --c: #1B8F29; }
 .vd-gf01__timeline > .vd-gf01__tl-item:nth-of-type(3) { --c: #1B8F29; }
 .vd-gf01__timeline > .vd-gf01__tl-item:nth-of-type(4) { --c: #0091C2; }
-.vd-gf01__timeline > .vd-gf01__tl-item:nth-of-type(5) { --c: #7D5EDA; }
+.vd-gf01__timeline > .vd-gf01__tl-item:nth-of-type(5) { --c: #785FD3; }
 .vd-gf01__timeline > .vd-gf01__tl-item:nth-of-type(6) { --c: #DB3F0C; }
-.vd-gf01__timeline > .vd-gf01__tl-item:nth-of-type(7) { --c: #7D5EDA; }
+.vd-gf01__timeline > .vd-gf01__tl-item:nth-of-type(7) { --c: #785FD3; }
 .vd-gf01__timeline > .vd-gf01__tl-item:nth-of-type(8) { --c: #0091C2; }
-.vd-gf01__timeline > .vd-gf01__tl-item:nth-of-type(9) { --c: #7D5EDA; }
+.vd-gf01__timeline > .vd-gf01__tl-item:nth-of-type(9) { --c: #785FD3; }
 
 /* Cardmetas : couleurs par modificateurs de classe */
-.vd-gf01__cardmeta--purple { border-top-color: #7D5EDA; }
-.vd-gf01__cardmeta--purple .vd-gf01__card-icon { background: #7D5EDA; }
+.vd-gf01__cardmeta--purple { border-top-color: #785FD3; }
+.vd-gf01__cardmeta--purple .vd-gf01__card-icon { background: #785FD3; }
 .vd-gf01__cardmeta--orange { border-top-color: #DB3F0C; }
 .vd-gf01__cardmeta--orange .vd-gf01__card-icon { background: #DB3F0C; }
 .vd-gf01__cardmeta--green { border-top-color: #1B8F29; }
@@ -2802,7 +2598,7 @@ body[class*="vd-cat--grands-formats"] .vd-single__body > p em { font-style: ital
 	left: 2%;
 	right: 2%;
 	height: 3px;
-	background: linear-gradient(90deg, #DB3F0C 0%, #1B8F29 25%, #D69600 50%, #0091C2 75%, #7D5EDA 100%);
+	background: linear-gradient(90deg, #DB3F0C 0%, #1B8F29 25%, #D69600 50%, #0091C2 75%, #785FD3 100%);
 	border-radius: 1px;
 	z-index: 1;
 }
@@ -2868,11 +2664,11 @@ body[class*="vd-cat--grands-formats"] .vd-single__body > p em { font-style: ital
 .vd-gf01__htl-item--c2 { --c: #1B8F29; }
 .vd-gf01__htl-item--c3 { --c: #1B8F29; }
 .vd-gf01__htl-item--c4 { --c: #0091C2; }
-.vd-gf01__htl-item--c5 { --c: #7D5EDA; }
+.vd-gf01__htl-item--c5 { --c: #785FD3; }
 .vd-gf01__htl-item--c6 { --c: #DB3F0C; }
-.vd-gf01__htl-item--c7 { --c: #7D5EDA; }
+.vd-gf01__htl-item--c7 { --c: #785FD3; }
 .vd-gf01__htl-item--c8 { --c: #0091C2; }
-.vd-gf01__htl-item--c9 { --c: #7D5EDA; }
+.vd-gf01__htl-item--c9 { --c: #785FD3; }
 
 .vd-gf01__htl-title {
 	font-weight: 600;
@@ -2914,7 +2710,7 @@ body[class*="vd-cat--grands-formats"] .vd-single__body > p em { font-style: ital
 		right: auto;
 		height: auto;
 		width: 3px;
-		background: linear-gradient(180deg, #DB3F0C 0%, #1B8F29 25%, #D69600 50%, #0091C2 75%, #7D5EDA 100%);
+		background: linear-gradient(180deg, #DB3F0C 0%, #1B8F29 25%, #D69600 50%, #0091C2 75%, #785FD3 100%);
 	}
 	.vd-gf01__htl-item {
 		text-align: left;
