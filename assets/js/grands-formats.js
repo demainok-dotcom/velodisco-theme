@@ -76,85 +76,9 @@
 		}
 	}
 
-	/**
-	 * Aligne la hauteur de chaque photo carte sur la hauteur du cardmeta
-	 * voisin QUAND ils sont effectivement empilés verticalement (mobile).
-	 *
-	 * Détection robuste du stacking via positions DOM (pas de matchMedia,
-	 * indépendant du breakpoint réel et du wrapper Gutenberg) : si la photo
-	 * et le cardmeta sont à des positions Y différentes (>5 px), c'est qu'ils
-	 * sont empilés → on aligne. Sinon (desktop, côte à côte) on relâche.
-	 */
-	function syncCardImageHeights() {
-		var cardmetas = document.querySelectorAll('.vd-gf01__cardmeta');
-		for (var i = 0; i < cardmetas.length; i++) {
-			var cm = cardmetas[i];
-			var cols = cm.closest('.wp-block-columns');
-			if (!cols) continue;
-			var imgFig = cols.querySelector('.wp-block-image');
-			var img = imgFig ? imgFig.querySelector('img') : null;
-			if (!img || !imgFig) continue;
-			var imgTop = imgFig.getBoundingClientRect().top;
-			var cmTop = cm.getBoundingClientRect().top;
-			var stacked = Math.abs(imgTop - cmTop) > 5;
-			if (stacked) {
-				var h = cm.getBoundingClientRect().height;
-				if (h > 0) {
-					img.style.height = h + 'px';
-					img.style.aspectRatio = 'auto';
-				}
-			} else {
-				img.style.height = '';
-				img.style.aspectRatio = '';
-			}
-		}
-	}
-
-	function initSyncHeights() {
-		var cardmetas = document.querySelectorAll('.vd-gf01__cardmeta');
-		if (!cardmetas.length) return;
-
-		// Triggers classiques (au cas où ResizeObserver indisponible)
-		var ticking = false;
-		function onResize() {
-			if (ticking) return;
-			ticking = true;
-			window.requestAnimationFrame(function () {
-				syncCardImageHeights();
-				ticking = false;
-			});
-		}
-		syncCardImageHeights();
-		window.addEventListener('load', syncCardImageHeights);
-		window.addEventListener('resize', onResize, { passive: true });
-		if (document.fonts && document.fonts.ready) {
-			document.fonts.ready.then(syncCardImageHeights);
-		}
-
-		// Source de vérité : ResizeObserver sur chaque cardmeta.
-		if ('ResizeObserver' in window) {
-			var ro = new ResizeObserver(function () {
-				syncCardImageHeights();
-			});
-			for (var i = 0; i < cardmetas.length; i++) {
-				ro.observe(cardmetas[i]);
-			}
-			// Garde la référence en global au cas où — empêche un éventuel GC.
-			window.__vdGfRO = ro;
-		}
-
-		// Fallback brute force : si jamais ResizeObserver ne se déclenche pas
-		// au bon moment (reflow tardif, race condition avec font ou image),
-		// on re-force le sync à plusieurs instants après le chargement.
-		[100, 500, 1000, 2000, 4000].forEach(function (delay) {
-			setTimeout(syncCardImageHeights, delay);
-		});
-	}
-
 	function init() {
 		initTimeline();
 		initCards();
-		initSyncHeights();
 	}
 
 	if (document.readyState === 'loading') {

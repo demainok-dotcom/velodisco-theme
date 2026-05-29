@@ -2535,11 +2535,13 @@ body[class*="vd-cat--grands-formats"] .vd-single__body .wp-block-columns:has(.vd
 		background: rgba(0, 0, 0, 0.03);
 	}
 }
-/* Mobile : les colonnes se déstackent (le bloc Gutenberg n'a pas la classe
- * are-stacked-on-mobile, on force flex-wrap). La photo prend ainsi la pleine
- * largeur du parent, comme le cardmeta voisin. Ratio 4/3 + object-fit:cover
- * pour que visuellement, photo et encart aient la même taille. */
+/* Mobile : approche radicale après plusieurs essais ratés à matcher photo↔cardmeta.
+ * Les 4 photos se comportent EXACTEMENT comme des images classiques du GF
+ * (pleine largeur, ratio naturel, tracé dégradé arc-en-ciel). Le cardmeta vient
+ * juste en dessous comme un encart séparé. Plus simple, plus prévisible,
+ * marche sans JS. */
 @media (max-width: 720px) {
+	/* Stack les colonnes (Gutenberg n'a pas la classe are-stacked-on-mobile) */
 	.wp-block-columns:has(.vd-gf01__cardmeta) {
 		flex-wrap: wrap;
 	}
@@ -2551,25 +2553,26 @@ body[class*="vd-cat--grands-formats"] .vd-single__body .wp-block-columns:has(.vd
 	.wp-block-columns:has(.vd-gf01__cardmeta) > .wp-block-column:has(.wp-block-image) {
 		display: block;
 	}
+	/* Reset des overrides desktop : la figure et l'image redeviennent classiques */
 	.wp-block-columns:has(.vd-gf01__cardmeta) .wp-block-image,
 	.wp-block-columns:has(.vd-gf01__cardmeta) .wp-block-image figure {
 		height: auto;
 		width: 100%;
 	}
-	/* Fallback aspect-ratio 4/3 (≈ taille cardmeta moyenne 3-4 lignes de bio).
-	 * Si le JS sync tourne (cas normal), il override avec la hauteur exacte
-	 * du cardmeta voisin via style.aspectRatio='auto' + style.height=Xpx.
-	 * Sans JS, on a au moins une image cadrée et pas un portrait à pleine
-	 * hauteur naturelle. */
 	.wp-block-columns:has(.vd-gf01__cardmeta) .wp-block-image img {
-		aspect-ratio: 4 / 3;
+		aspect-ratio: auto;
 		height: auto;
-		object-fit: cover;
-		object-position: center top;
+		border-radius: 0;
+		border: none;
+		background: transparent;
+	}
+	/* Re-active le tracé dégradé arc-en-ciel (annule notre display:none desktop) */
+	body[class*="vd-cat--grands-formats"] .vd-single__body .wp-block-columns:has(.vd-gf01__cardmeta) .wp-block-image::after {
+		display: block;
 	}
 
 	/* Séparateur entre chaque groupe photo/encart (s'affiche sur 2e, 3e, 4e
-	 * cardmeta — pas sur la première). Trait fin, marge généreuse. */
+	 * cardmeta — pas sur la première). */
 	.vd-single__body .wp-block-columns:has(.vd-gf01__cardmeta) ~ .wp-block-columns:has(.vd-gf01__cardmeta) {
 		border-top: 1px solid rgba(0, 0, 0, 0.12);
 		padding-top: 2rem;
