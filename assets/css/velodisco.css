@@ -1144,6 +1144,10 @@ button.vd-footer__dots {
 	gap: 1rem;
 	margin-bottom: clamp(1.5rem, 3vw, 2rem);
 }
+/* Le H2 .vd-sectitle a un margin-top par défaut (~48px) qui s'ajoute au padding
+ * de .vd-gf : la conséquence était un gros vide entre la ligne et le titre.
+ * Reset à 0 ici : seul le padding-top de .vd-gf compte. */
+.vd-gf__head .vd-sectitle { margin-top: 0; }
 .vd-gf__sub { font-size: 16px; line-height: 19px; color: #6C727F; margin: 0; }
 .vd-gf__all { justify-self: end; font-weight: 600; font-size: 15px; text-decoration: none; white-space: nowrap; }
 .vd-gf__grid {
