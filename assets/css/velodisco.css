@@ -2556,10 +2556,14 @@ body[class*="vd-cat--grands-formats"] .vd-single__body .wp-block-columns:has(.vd
 		height: auto;
 		width: 100%;
 	}
-	/* Pas d'aspect-ratio ici : la hauteur exacte est calée par JS sur la
-	 * hauteur du cardmeta voisin (cf. syncCardImageHeights dans
-	 * grands-formats.js). object-fit:cover évite la déformation. */
+	/* Fallback aspect-ratio 4/3 (≈ taille cardmeta moyenne 3-4 lignes de bio).
+	 * Si le JS sync tourne (cas normal), il override avec la hauteur exacte
+	 * du cardmeta voisin via style.aspectRatio='auto' + style.height=Xpx.
+	 * Sans JS, on a au moins une image cadrée et pas un portrait à pleine
+	 * hauteur naturelle. */
 	.wp-block-columns:has(.vd-gf01__cardmeta) .wp-block-image img {
+		aspect-ratio: 4 / 3;
+		height: auto;
 		object-fit: cover;
 		object-position: center top;
 	}
