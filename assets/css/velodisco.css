@@ -1974,9 +1974,15 @@ body[class*="vd-cat--grands-formats"] .vd-single__body .wp-block-separator {
 }
 /* Mobile (≤600 px) : route 2x plus rapide. L'override sur le vélo est plus bas,
  * APRÈS la déclaration de .vd-line-bike--ltr/rtl (sinon la shorthand `animation: ... 4s`
- * de la base écrase l'animation-duration: 2s). */
+ * de la base écrase l'animation-duration: 2s).
+ * On cible AUSSI le sélecteur RTL (.is-bike-rtl::after) qui a une spécificité
+ * supérieure → sans ça la route RTL restait à 4s pendant que le vélo RTL passait
+ * à 2s (désynchro spécifique au sens droite→gauche). */
 @media (max-width: 600px) {
-	.vd-single__body .wp-block-separator.is-bike-passing::after { animation-duration: 2s; }
+	.vd-single__body .wp-block-separator.is-bike-passing::after,
+	.vd-single__body .wp-block-separator.is-bike-passing.is-bike-rtl::after {
+		animation-duration: 2s;
+	}
 }
 
 /* Vélo qui traverse la barre séparateur. Le contexte de positionnement est le body de
