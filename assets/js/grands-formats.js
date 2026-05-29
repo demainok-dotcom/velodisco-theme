@@ -77,24 +77,32 @@
 	}
 
 	/**
-	 * Mobile uniquement (<= 720px) : aligne la hauteur de chaque photo
-	 * carte sur la hauteur du cardmeta voisin. Les cardmetas ont des
-	 * textes de longueurs différentes, donc des hauteurs différentes —
-	 * un aspect-ratio CSS fixe ne peut pas matcher pile chacun. Recalculé
-	 * au load + au resize (debounce léger via requestAnimationFrame).
+	 * Aligne la hauteur de chaque photo carte sur la hauteur du cardmeta
+	 * voisin QUAND ils sont effectivement empilés verticalement (mobile).
+	 *
+	 * Détection robuste du stacking via positions DOM (pas de matchMedia,
+	 * indépendant du breakpoint réel et du wrapper Gutenberg) : si la photo
+	 * et le cardmeta sont à des positions Y différentes (>5 px), c'est qu'ils
+	 * sont empilés → on aligne. Sinon (desktop, côte à côte) on relâche.
 	 */
 	function syncCardImageHeights() {
-		var isMobile = window.matchMedia('(max-width: 720px)').matches;
 		var cardmetas = document.querySelectorAll('.vd-gf01__cardmeta');
 		for (var i = 0; i < cardmetas.length; i++) {
 			var cm = cardmetas[i];
 			var cols = cm.closest('.wp-block-columns');
 			if (!cols) continue;
-			var img = cols.querySelector('.wp-block-image img');
-			if (!img) continue;
-			if (isMobile) {
-				img.style.height = cm.getBoundingClientRect().height + 'px';
-				img.style.aspectRatio = 'auto';
+			var imgFig = cols.querySelector('.wp-block-image');
+			var img = imgFig ? imgFig.querySelector('img') : null;
+			if (!img || !imgFig) continue;
+			var imgTop = imgFig.getBoundingClientRect().top;
+			var cmTop = cm.getBoundingClientRect().top;
+			var stacked = Math.abs(imgTop - cmTop) > 5;
+			if (stacked) {
+				var h = cm.getBoundingClientRect().height;
+				if (h > 0) {
+					img.style.height = h + 'px';
+					img.style.aspectRatio = 'auto';
+				}
 			} else {
 				img.style.height = '';
 				img.style.aspectRatio = '';
@@ -114,10 +122,14 @@
 			});
 		}
 		syncCardImageHeights();
-		// Une seconde passe après chargement complet (images, polices)
-		// au cas où la hauteur du cardmeta change quand la police arrive.
 		window.addEventListener('load', syncCardImageHeights);
 		window.addEventListener('resize', onResize, { passive: true });
+		// La hauteur du cardmeta change quand la police Inter arrive
+		// (fallback system → Inter = métriques différentes). On re-sync à ce
+		// moment-là, sinon image figée sur la mauvaise hauteur.
+		if (document.fonts && document.fonts.ready) {
+			document.fonts.ready.then(syncCardImageHeights);
+		}
 	}
 
 	function init() {
