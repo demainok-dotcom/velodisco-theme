@@ -1192,6 +1192,13 @@ button.vd-footer__dots {
 	-webkit-background-clip: text; background-clip: text;
 	-webkit-text-fill-color: transparent; color: transparent;
 }
+/* Home GF card — espacements verticaux INTERNES uniformes (13px partout, valeur
+ * de référence visée par Victor : gap tag↔titre v1.11.1). Les autres cartes
+ * du site gardent leurs marges propres. */
+.vd-gfcard .vd-tag         { margin: 13px 0 0; }
+.vd-gfcard__title          { margin: 13px 0 0; }
+.vd-gfcard .vd-card__excerpt { margin: 13px 0 0; }
+.vd-gfcard .vd-card__date    { margin: 13px 0 0; }
 
 .vd-empty { color: #6C727F; font-size: 14px; }
 
