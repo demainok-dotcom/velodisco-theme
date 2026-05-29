@@ -2713,12 +2713,13 @@ body[class*="vd-cat--grands-formats"] .vd-single__body > p em { font-style: ital
 	gap: 0.5rem;
 	position: relative;
 }
-/* La ligne horizontale dégradée — positionnée à 4rem du top
- * (sous les années qui font ~3rem) */
+/* La ligne horizontale dégradée — alignée verticalement avec le
+ * centre des points. Calcul : année (2.5rem) + margin-top du dot
+ * (0.7rem) + demi-dot (7px) − demi-trait (1.5px) = top de la ligne. */
 .vd-gf01__htimeline::before {
 	content: "";
 	position: absolute;
-	top: 4rem;
+	top: calc(2.5rem + 0.7rem + 5.5px);
 	left: 2%;
 	right: 2%;
 	height: 3px;
@@ -2726,7 +2727,8 @@ body[class*="vd-cat--grands-formats"] .vd-single__body > p em { font-style: ital
 	border-radius: 1px;
 	z-index: 1;
 }
-/* Chaque jalon : colonne verticale centrée */
+/* Chaque jalon : colonne verticale centrée
+ * Ordre visuel : 1) année 2) point (sur la ligne) 3) titre 4) texte */
 .vd-gf01__htl-item {
 	flex: 1 1 0;
 	min-width: 0;
@@ -2744,8 +2746,10 @@ body[class*="vd-cat--grands-formats"] .vd-single__body > p em { font-style: ital
 	opacity: 1;
 	transform: translateY(0);
 }
-/* Année (en haut, taille marquée, couleur du jalon) */
+/* Année (TOUT EN HAUT, taille marquée, couleur du jalon)
+ * order: -1 → s'affiche AVANT le pseudo-élément ::before (qui est le point) */
 .vd-gf01__htl-year {
+	order: -1;
 	font-size: 1.15rem;
 	font-weight: 700;
 	color: var(--c, inherit);
@@ -2757,7 +2761,7 @@ body[class*="vd-cat--grands-formats"] .vd-single__body > p em { font-style: ital
 	align-items: center;
 	justify-content: center;
 }
-/* Point sur la ligne — espace réservé puis bullet */
+/* Point — placé entre l'année et le titre, centré sur la ligne dégradée */
 .vd-gf01__htl-item::before {
 	content: "";
 	display: block;
@@ -2766,7 +2770,7 @@ body[class*="vd-cat--grands-formats"] .vd-single__body > p em { font-style: ital
 	border-radius: 50%;
 	background: var(--c, #888);
 	box-shadow: 0 0 0 3px #000;
-	margin: calc(0.85rem) 0 1rem;
+	margin: 0.7rem 0 1rem;
 	position: relative;
 	z-index: 2;
 	flex-shrink: 0;
@@ -2777,7 +2781,7 @@ body[class*="vd-cat--grands-formats"] .vd-single__body > p em { font-style: ital
 .vd-gf01__htl-item--major::before {
 	width: 20px;
 	height: 20px;
-	margin-top: calc(0.85rem - 3px);
+	margin-top: calc(0.7rem - 3px);
 	margin-bottom: calc(1rem - 3px);
 }
 /* Couleurs par position */
