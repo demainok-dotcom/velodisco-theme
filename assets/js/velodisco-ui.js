@@ -399,6 +399,18 @@
 			return bikeBase + 'velo-' + pad2(Math.floor(Math.random() * BIKE_COUNT) + 1) + '.png';
 		}
 
+		// Précharge les 10 PNG vélos dès l'init du module.
+		// Sans ça, le PREMIER clic déclenche le fetch en parallèle de l'animation
+		// → le vélo apparaît avec ~100-300 ms de retard, désynchronisé de la route
+		// (qui elle n'attend rien). Après le 1er clic le navigateur a tout en cache,
+		// donc les clics suivants sont synchros. On force la mise en cache à l'init.
+		(function preloadBikes() {
+			for (var i = 1; i <= BIKE_COUNT; i++) {
+				var pre = new Image();
+				pre.src = bikeBase + 'velo-' + pad2(i) + '.png';
+			}
+		})();
+
 		function spawnLineBike(sep, host) {
 			var sepRect = sep.getBoundingClientRect();
 			var hostRect = host.getBoundingClientRect();
