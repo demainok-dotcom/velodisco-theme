@@ -2277,8 +2277,13 @@ body[class*="vd-cat--grands-formats"] { background-image: linear-gradient(180deg
  *   Vêtements #0091C2 · Société #7D5EDA · GF = gradient des 5
  * ================================================================ */
 
-/* Article wrapper */
-.vd-gf { max-width: 720px; margin: 0 auto; }
+/* Note : l'ancien wrapper `.vd-gf { max-width: 720px; }` a été SUPPRIMÉ ici —
+ * conflit de classe avec la section Grands Formats de la Home (ligne 1133, même
+ * sélecteur, max-width 1410px). La règle ci-dessous gagnait par ordre d'apparition
+ * et écrasait la home, qui se retrouvait centrée à 720px. L'article GF actuel
+ * (AUTONOME) n'utilise plus la classe `.vd-gf` — il utilise `.vd-gf01__*` et les
+ * blocs Gutenberg natifs. Le wrapper de largeur est dans .vd-single__body
+ * (single.html). */
 
 /* Titre & chapeau */
 .vd-gf-title {
