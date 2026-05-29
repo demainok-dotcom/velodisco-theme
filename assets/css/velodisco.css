@@ -2537,8 +2537,9 @@ body[class*="vd-cat--grands-formats"] .vd-single__body .wp-block-columns:has(.vd
 }
 /* Mobile : les colonnes se déstackent, la photo doit prendre TOUTE la largeur
  * (comme le cardmeta voisin juste en dessous). On annule le flex-basis 180px
- * inline de Gutenberg + on relâche la hauteur (plus de stretch vertical à matcher
- * puisque les colonnes ne sont plus côte à côte). */
+ * inline de Gutenberg, et on cadre la photo en 4/3 (ratio cardmeta typique en
+ * mobile) avec object-fit:cover : visuellement, photo et cardmeta ont la même
+ * taille. */
 @media (max-width: 720px) {
 	.wp-block-columns:has(.vd-gf01__cardmeta) > .wp-block-column {
 		flex-basis: 100% !important;
@@ -2552,7 +2553,10 @@ body[class*="vd-cat--grands-formats"] .vd-single__body .wp-block-columns:has(.vd
 		height: auto;
 	}
 	.wp-block-columns:has(.vd-gf01__cardmeta) .wp-block-image img {
+		aspect-ratio: 4 / 3;
 		height: auto;
+		object-fit: cover;
+		object-position: center top;
 	}
 }
 
@@ -2890,6 +2894,11 @@ body[class*="vd-cat--grands-formats"] .vd-single__body > p em { font-style: ital
 		top: 0.45rem;
 		left: calc(-2rem - 5.5px);
 		margin: 0;
+	}
+	/* Gros point (jalon majeur, 20px) : décalage différent pour rester centré.
+	 * left = 1.5 − 10 (demi-dot) − 2rem = calc(-2rem - 8.5px). */
+	.vd-gf01__htl-item--major::before {
+		left: calc(-2rem - 8.5px);
 	}
 	.vd-gf01__htl-title { font-size: 1rem; margin-bottom: 0.3rem; }
 	.vd-gf01__htl-text { font-size: 0.9rem; }
