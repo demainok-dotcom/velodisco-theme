@@ -76,9 +76,54 @@
 		}
 	}
 
+	/**
+	 * Mobile uniquement (<= 720px) : aligne la hauteur de chaque photo
+	 * carte sur la hauteur du cardmeta voisin. Les cardmetas ont des
+	 * textes de longueurs différentes, donc des hauteurs différentes —
+	 * un aspect-ratio CSS fixe ne peut pas matcher pile chacun. Recalculé
+	 * au load + au resize (debounce léger via requestAnimationFrame).
+	 */
+	function syncCardImageHeights() {
+		var isMobile = window.matchMedia('(max-width: 720px)').matches;
+		var cardmetas = document.querySelectorAll('.vd-gf01__cardmeta');
+		for (var i = 0; i < cardmetas.length; i++) {
+			var cm = cardmetas[i];
+			var cols = cm.closest('.wp-block-columns');
+			if (!cols) continue;
+			var img = cols.querySelector('.wp-block-image img');
+			if (!img) continue;
+			if (isMobile) {
+				img.style.height = cm.getBoundingClientRect().height + 'px';
+				img.style.aspectRatio = 'auto';
+			} else {
+				img.style.height = '';
+				img.style.aspectRatio = '';
+			}
+		}
+	}
+
+	function initSyncHeights() {
+		if (!document.querySelector('.vd-gf01__cardmeta')) return;
+		var ticking = false;
+		function onResize() {
+			if (ticking) return;
+			ticking = true;
+			window.requestAnimationFrame(function () {
+				syncCardImageHeights();
+				ticking = false;
+			});
+		}
+		syncCardImageHeights();
+		// Une seconde passe après chargement complet (images, polices)
+		// au cas où la hauteur du cardmeta change quand la police arrive.
+		window.addEventListener('load', syncCardImageHeights);
+		window.addEventListener('resize', onResize, { passive: true });
+	}
+
 	function init() {
 		initTimeline();
 		initCards();
+		initSyncHeights();
 	}
 
 	if (document.readyState === 'loading') {

@@ -2556,9 +2556,10 @@ body[class*="vd-cat--grands-formats"] .vd-single__body .wp-block-columns:has(.vd
 		height: auto;
 		width: 100%;
 	}
+	/* Pas d'aspect-ratio ici : la hauteur exacte est calée par JS sur la
+	 * hauteur du cardmeta voisin (cf. syncCardImageHeights dans
+	 * grands-formats.js). object-fit:cover évite la déformation. */
 	.wp-block-columns:has(.vd-gf01__cardmeta) .wp-block-image img {
-		aspect-ratio: 4 / 3;
-		height: auto;
 		object-fit: cover;
 		object-position: center top;
 	}
