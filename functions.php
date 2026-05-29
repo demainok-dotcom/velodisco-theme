@@ -84,15 +84,26 @@ function velodisco_assets() {
 	// (timeline horizontale scroll-progressive + apparition cartes pionnières).
 	// Le JS est chargé depuis le thème pour échapper au filtre WP wptexturize
 	// qui altère les apostrophes/guillemets dans le contenu d'un post.
-	if ( is_singular( 'post' ) && has_category( 'grands-formats' ) ) {
-		$gf = '/assets/js/grands-formats.js';
-		wp_enqueue_script(
-			'velodisco-grands-formats',
-			$uri . $gf,
-			array(),
-			file_exists( $dir . $gf ) ? filemtime( $dir . $gf ) : VELODISCO_VERSION,
-			true
-		);
+	// On matche tout slug commençant par "grands-formats" (gère le doublon
+	// éventuel avec suffixe -2, -3, etc).
+	if ( is_singular( 'post' ) ) {
+		$is_gf = false;
+		foreach ( (array) get_the_category() as $cat ) {
+			if ( strpos( $cat->slug, 'grands-formats' ) === 0 ) {
+				$is_gf = true;
+				break;
+			}
+		}
+		if ( $is_gf ) {
+			$gf = '/assets/js/grands-formats.js';
+			wp_enqueue_script(
+				'velodisco-grands-formats',
+				$uri . $gf,
+				array(),
+				file_exists( $dir . $gf ) ? filemtime( $dir . $gf ) : VELODISCO_VERSION,
+				true
+			);
+		}
 	}
 }
 add_action( 'wp_enqueue_scripts', 'velodisco_assets' );
