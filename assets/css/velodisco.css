@@ -2491,3 +2491,14 @@ body.vd-cat--grands-formats { background-image: linear-gradient(180deg, rgba(242
 	.vd-en-bref { padding: 1.25rem 1.25rem; }
 	.vd-gf-aside { padding: 1rem 1.25rem; }
 }
+
+
+/* ================================================================
+ * GRANDS FORMATS — Masquer l'image mise en avant en haut de single.html
+ * Ajouté le 2026-05-29 (thème v1.6.5)
+ * Raison : sur les Grands Formats, l'article inclut déjà sa propre
+ * image d'intro stylée dans le bloc HTML personnalisé. L'image mise
+ * en avant reste utile pour la carte sociale Insta/TikTok et les
+ * cards de listing, mais ne doit pas s'afficher en double en haut.
+ * ================================================================ */
+body.category-grands-formats .vd-single__hero { display: none !important; }
