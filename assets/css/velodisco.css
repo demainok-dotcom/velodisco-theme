@@ -1193,15 +1193,18 @@ button.vd-footer__dots {
 	-webkit-text-fill-color: transparent; color: transparent;
 }
 
-/* Single article GF — la pastille `.vd-gf01__badge`.
- * Retour à la v1.11.3 : on garde inline-block (forme + largeur automatique),
- * juste padding-top/bottom: 0 et line-height: 30px pour serrer la pastille à
- * l'élément précédent (image, hr…). Ne PAS forcer display:block (v1.11.4 a
- * cassé l'alignement). */
+/* Single article GF — la pastille `.vd-gf01__badge` (état v1.11.4).
+ * display: block + width: fit-content : sort la pastille du flux inline et
+ * supprime les 5px de décalage baseline laissés par l'inline-block AUTONOME.
+ * padding-top/bottom: 0 + line-height 30px : pas de creux interne, hauteur
+ * de capsule conservée. vertical-align: top : ceinture-bretelles. */
 body[class*="vd-cat--grands-formats"] .vd-gf01__badge {
+	display: block;
+	width: fit-content;
 	padding-top: 0;
 	padding-bottom: 0;
 	line-height: 30px;
+	vertical-align: top;
 }
 /* Home GF card — espacements verticaux INTERNES uniformes (13px partout, valeur
  * de référence visée par Victor : gap tag↔titre v1.11.1). Les autres cartes
