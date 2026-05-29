@@ -1972,10 +1972,10 @@ body[class*="vd-cat--grands-formats"] .vd-single__body .wp-block-separator {
 @media (prefers-reduced-motion: reduce) {
 	.vd-single__body .wp-block-separator::after { display: none; }
 }
-/* Mobile (≤600 px) : vélo 2x plus rapide. Override sur les 4 animations concernées. */
+/* Mobile (≤600 px) : route 2x plus rapide. L'override sur le vélo est plus bas,
+ * APRÈS la déclaration de .vd-line-bike--ltr/rtl (sinon la shorthand `animation: ... 4s`
+ * de la base écrase l'animation-duration: 2s). */
 @media (max-width: 600px) {
-	.vd-line-bike--ltr,
-	.vd-line-bike--rtl { animation-duration: 2s; }
 	.vd-single__body .wp-block-separator.is-bike-passing::after { animation-duration: 2s; }
 }
 
@@ -2012,6 +2012,14 @@ body[class*="vd-cat--grands-formats"] .vd-single__body .wp-block-separator {
 	8%   { opacity: 1; }
 	92%  { opacity: 1; }
 	100% { opacity: 0; transform: translateY(calc(-100% - var(--bike-lift))) translateX(calc(-1 * var(--travel, 0px))); }
+}
+/* Mobile : durée 2s pour le vélo, SYNC avec la route (qui a son propre override
+ * dans le bloc @media plus haut). Cette règle doit venir APRÈS les bases
+ * `.vd-line-bike--ltr { animation: ... 4s }` sinon la shorthand de la base
+ * réécrase l'animation-duration à 4s sur mobile (bug v1.7.x → v1.11.7). */
+@media (max-width: 600px) {
+	.vd-line-bike--ltr,
+	.vd-line-bike--rtl { animation-duration: 2s; }
 }
 .vd-line-bike__img {
 	display: block;
