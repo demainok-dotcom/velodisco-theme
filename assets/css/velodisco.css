@@ -2522,3 +2522,51 @@ body.vd-cat--grands-formats { background-image: linear-gradient(180deg, rgba(242
 		background: rgba(0, 0, 0, 0.03);
 	}
 }
+
+
+/* ================================================================
+ * GRANDS FORMATS — Blocs "Image à insérer" (workflow d'édition)
+ * Ajouté le 2026-05-29 (thème v1.6.8)
+ * Encadré jaune pointillé visible dans l'éditeur Gutenberg ET dans
+ * le rendu public. Indique à Victor le sujet/source/licence/légende
+ * de chaque emplacement image. À supprimer en 1 clic après upload.
+ * En CSS pur, sans script — fonctionne aussi sur le rendu publié
+ * au cas où un bloc serait oublié (visible = pas oublié).
+ * ================================================================ */
+.vd-image-todo {
+	background: rgba(245, 194, 66, 0.08);
+	border: 1.5px dashed rgba(245, 194, 66, 0.55);
+	border-radius: 6px;
+	padding: 1rem 1.25rem;
+	margin: 1.5rem 0;
+	font-size: 0.88rem;
+	line-height: 1.55;
+	color: inherit;
+}
+.vd-image-todo__label {
+	display: inline-block;
+	font-size: 0.72rem;
+	font-weight: 700;
+	letter-spacing: 0.15em;
+	text-transform: uppercase;
+	color: #C7861A;
+	background: rgba(245, 194, 66, 0.18);
+	padding: 0.2rem 0.55rem;
+	border-radius: 999px;
+	margin-bottom: 0.7rem;
+}
+.vd-image-todo dl { margin: 0; }
+.vd-image-todo dt { font-weight: 600; margin-top: 0.4rem; opacity: 0.85; }
+.vd-image-todo dd { margin: 0 0 0.2rem 0; }
+.vd-image-todo a { color: inherit; text-decoration: underline; }
+.vd-image-todo code { font-size: 0.85em; padding: 0.1em 0.35em; background: rgba(0,0,0,0.1); border-radius: 3px; }
+@media (prefers-color-scheme: light) {
+	.vd-image-todo code { background: rgba(0,0,0,0.06); }
+}
+.vd-image-todo__action {
+	margin-top: 0.7rem;
+	padding-top: 0.6rem;
+	border-top: 1px dashed rgba(245, 194, 66, 0.35);
+	font-style: italic;
+	opacity: 0.85;
+}
