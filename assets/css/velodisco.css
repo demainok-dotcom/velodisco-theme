@@ -1172,7 +1172,7 @@ button.vd-footer__dots {
 	grid-template-columns: auto 1fr auto;
 	align-items: baseline;
 	gap: 1rem;
-	margin-bottom: 16px;
+	margin-bottom: 0;
 }
 /* Le H2 .vd-sectitle a un margin-top par défaut (~48px) qui casse la symétrie.
  * Reset à 0 ici : seul le padding-top de .vd-gf compte. */
