@@ -1129,25 +1129,33 @@ button.vd-footer__dots {
 /* ---- TENDANCES ---- */
 .vd-tcard { margin-bottom: clamp(1.75rem, 3vw, 2.5rem); }
 
-/* ---- GRANDS FORMATS (pleine largeur, 4 colonnes) ---- */
+/* ---- GRANDS FORMATS (pleine largeur, 4 colonnes) ----
+ * Espacements verticaux symétriques au pixel près :
+ *   A = ligne → titre  = padding-top  = 16px
+ *   B = titre → carte  = .vd-gf__head margin-bottom = 16px
+ *   C = carte → footer = .vd-main--home padding-bottom = 0  + le margin-top
+ *       naturel du footer = 16px (compensé plus bas)
+ */
 .vd-gf {
 	max-width: 1410px;
-	margin: 0 auto; /* l'espace au-dessus de la ligne GF est porté par le padding-bottom des colonnes → la ligne touche les traits verticaux */
+	margin: 0 auto;
 	padding-inline: clamp(16px, 2vw, 24px);
 	border-top: 1px solid var(--wp--preset--color--separator);
-	padding-top: clamp(0.5rem, 1vw, 0.75rem);
+	padding-top: 16px;
 }
 .vd-gf__head {
 	display: grid;
 	grid-template-columns: auto 1fr auto;
 	align-items: baseline;
 	gap: 1rem;
-	margin-bottom: clamp(1.5rem, 3vw, 2rem);
+	margin-bottom: 16px;
 }
-/* Le H2 .vd-sectitle a un margin-top par défaut (~48px) qui s'ajoute au padding
- * de .vd-gf : la conséquence était un gros vide entre la ligne et le titre.
+/* Le H2 .vd-sectitle a un margin-top par défaut (~48px) qui casse la symétrie.
  * Reset à 0 ici : seul le padding-top de .vd-gf compte. */
 .vd-gf__head .vd-sectitle { margin-top: 0; }
+/* C : on annule le padding-bottom de .vd-main--home pour que la carte du bas
+ * touche pile la zone d'aspiration du footer (16px = margin-top naturel). */
+.vd-main--home { padding-bottom: 0; }
 .vd-gf__sub { font-size: 16px; line-height: 19px; color: #6C727F; margin: 0; }
 .vd-gf__all { justify-self: end; font-weight: 600; font-size: 15px; text-decoration: none; white-space: nowrap; }
 .vd-gf__grid {
