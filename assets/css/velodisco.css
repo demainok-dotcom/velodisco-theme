@@ -2570,3 +2570,32 @@ body.vd-cat--grands-formats { background-image: linear-gradient(180deg, rgba(242
 	font-style: italic;
 	opacity: 0.85;
 }
+
+
+/* ================================================================
+ * GRANDS FORMATS — Adapter .vd-image-todo pour wp:group/wp:paragraph
+ * Ajouté le 2026-05-29 (thème v1.6.9)
+ * Les blocs sont passés de wp:html à wp:group + wp:paragraph natifs
+ * pour que les liens soient cliquables dans l'éditeur Gutenberg.
+ * ================================================================ */
+.vd-image-todo p {
+	margin: 0.4rem 0;
+	font-size: 0.88rem;
+	line-height: 1.55;
+}
+.vd-image-todo p:first-child { margin-top: 0; }
+.vd-image-todo p:last-child { margin-bottom: 0; }
+.vd-image-todo p.vd-image-todo__label {
+	margin-bottom: 0.7rem;
+}
+.vd-image-todo strong {
+	font-weight: 600;
+	opacity: 0.85;
+}
+.vd-image-todo p.vd-image-todo__action {
+	margin-top: 0.7rem;
+	padding-top: 0.6rem;
+	border-top: 1px dashed rgba(245, 194, 66, 0.35);
+	font-style: italic;
+	opacity: 0.85;
+}
