@@ -131,10 +131,7 @@
 			document.fonts.ready.then(syncCardImageHeights);
 		}
 
-		// Source de vérité : ResizeObserver sur chaque cardmeta. Re-sync
-		// à CHAQUE changement de taille (font, reflow, viewport, etc.) —
-		// pas besoin d'anticiper les causes. Largement supporté sur tous
-		// les navigateurs modernes (Safari 13.1+, Chrome 64+, FF 69+).
+		// Source de vérité : ResizeObserver sur chaque cardmeta.
 		if ('ResizeObserver' in window) {
 			var ro = new ResizeObserver(function () {
 				syncCardImageHeights();
@@ -142,7 +139,16 @@
 			for (var i = 0; i < cardmetas.length; i++) {
 				ro.observe(cardmetas[i]);
 			}
+			// Garde la référence en global au cas où — empêche un éventuel GC.
+			window.__vdGfRO = ro;
 		}
+
+		// Fallback brute force : si jamais ResizeObserver ne se déclenche pas
+		// au bon moment (reflow tardif, race condition avec font ou image),
+		// on re-force le sync à plusieurs instants après le chargement.
+		[100, 500, 1000, 2000, 4000].forEach(function (delay) {
+			setTimeout(syncCardImageHeights, delay);
+		});
 	}
 
 	function init() {
