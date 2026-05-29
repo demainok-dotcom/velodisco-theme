@@ -413,14 +413,10 @@
 			wrap.className = 'vd-line-bike vd-line-bike--' + direction;
 			wrap.setAttribute('aria-hidden', 'true');
 
-			// 3 traits de vitesse dans un container, derrière le vélo
-			var lines = document.createElement('span');
-			lines.className = 'vd-line-bike__lines';
-			for (var i = 0; i < 3; i++) {
-				var sl = document.createElement('span');
-				sl.className = 'vd-line-bike__sl';
-				lines.appendChild(sl);
-			}
+			// Note (v1.11.7) : les 3 traits de vitesse (.vd-line-bike__sl) ne sont
+			// plus créés. Préférence Victor — l'effet "ligne derrière le vélo"
+			// rendait visuellement chargé. Les règles CSS associées restent dans
+			// velodisco.css mais sans cible DOM.
 
 			var img = document.createElement('img');
 			img.className = 'vd-line-bike__img';
@@ -428,7 +424,6 @@
 			img.decoding = 'async';
 			img.src = pickBikeSrc();
 
-			wrap.appendChild(lines);
 			wrap.appendChild(img);
 
 			// Le vélo doit rester DANS la barre. Distance parcourue = barre - vélo.
