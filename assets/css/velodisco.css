@@ -2742,9 +2742,12 @@ body[class*="vd-cat--grands-formats"] .vd-single__body > p em { font-style: ital
 	transform: translateY(8px);
 	transition: opacity 0.45s ease, transform 0.45s ease;
 }
+/* Important : transform:none (et non translateY(0)) à l'état final, sinon le
+ * point reste prisonnier de son propre stacking context et la ligne (z-index:2
+ * au niveau parent) n'arrive pas à passer devant lui. */
 .vd-gf01__htl-item.is-visible {
 	opacity: 1;
-	transform: translateY(0);
+	transform: none;
 }
 /* Année (TOUT EN HAUT, taille marquée, couleur du jalon)
  * order: -1 → s'affiche AVANT le pseudo-élément ::before (qui est le point) */
