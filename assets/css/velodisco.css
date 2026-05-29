@@ -2838,3 +2838,34 @@ body.category-grands-formats .vd-single__body > p em { font-style: italic; opaci
 	.vd-gf01__htl-title { font-size: 1rem; }
 	.vd-gf01__htl-text { font-size: 0.9rem; }
 }
+
+
+/* ================================================================
+ * GRANDS FORMATS — Fix final timeline + card-icon sur <p> (v1.7.3)
+ * ================================================================ */
+
+/* Card-icon en <p> wp:paragraph natif : forcer ligne et marges */
+p.vd-gf01__card-icon {
+	display: inline-flex;
+	width: 36px;
+	height: 36px;
+	line-height: 1;
+	margin: 0 0 0.7rem 0;
+	padding: 0;
+	color: #fff !important;
+}
+
+/* Timeline horizontale : breakout pour déborder du conteneur 760px */
+.vd-gf01__hframe {
+	width: min(100vw - 2rem, 1100px);
+	max-width: none;
+	margin-left: 50%;
+	transform: translateX(-50%);
+}
+@media (max-width: 720px) {
+	.vd-gf01__hframe {
+		width: 100%;
+		margin-left: 0;
+		transform: none;
+	}
+}
